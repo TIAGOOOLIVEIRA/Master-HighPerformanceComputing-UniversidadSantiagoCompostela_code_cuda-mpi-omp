@@ -25,6 +25,7 @@ typedef struct {
 
 
 /*
+TODO: topic to explore: Profiling GPU Applications with Nsight Systems
 To compile, profiling and running:
     compute --gpu
     nvcc -g -G -c multiplematrixscaling.cu -o multiplematrixscaling.o
