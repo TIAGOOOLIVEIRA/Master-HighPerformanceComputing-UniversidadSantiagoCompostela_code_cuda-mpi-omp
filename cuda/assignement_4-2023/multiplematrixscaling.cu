@@ -25,11 +25,15 @@ typedef struct {
 
 
 /*
-To compile, run and profile:
+To compile, profiling and running:
     compute --gpu
+    nvcc -g -G -c multiplematrixscaling.cu -o multiplematrixscaling.o
+    sudo nvpp ./multiplematrixscaling
+    sudo nvprof --unified-memory-profiling off ./multiplematrixscaling
     nvcc -o multiplematrixscaling multiplematrixscaling.cu 
+    
     ./multiplematrixscaling
-    nvprof ./multiplematrixscaling
+    
     sbatch job_multmascaling.sh
     watch -n 1 squeue -u curso370
 */
@@ -216,3 +220,4 @@ __global__ void matrix_scaling_factor_kernel_cuda(const float *in, float *out, u
         //printf("\nout[%u]: %f", col, out[col]);
     }
 }
+
