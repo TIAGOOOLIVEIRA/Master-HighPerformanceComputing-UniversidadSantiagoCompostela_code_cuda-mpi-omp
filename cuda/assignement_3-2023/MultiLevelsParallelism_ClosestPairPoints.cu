@@ -1,3 +1,19 @@
+/* 
+   Programación de GPUs (General Purpose Computation on Graphics Processing Unit)
+©
+   Margarita Amor López
+   Emilio J. Padrón González
+
+    This program finds the closest pair of points in a set of points in a 2D plane.
+    Input Parameters:
+    #n: size of the vectors
+
+###########################################################################################
+Student: Tiago de Souza Oliveira
+Assignment 3 - 2023
+           Assignment 3. Multi-levels of parallelism on GPU
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <float.h>
@@ -183,5 +199,3 @@ __global__ void findClosestPointGPU(Point *points, unsigned int* indices, unsign
     }
     
 }
-
-
