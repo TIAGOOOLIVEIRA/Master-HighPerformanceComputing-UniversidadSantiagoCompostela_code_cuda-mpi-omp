@@ -9,16 +9,84 @@
  */
 
 /*
-    Tiago de Souza Oliveira - 2023
+Adding OpenMP for parallelism
+Student: Tiago de Souza Oliveira
 
+Toolikt
+    profiling
+
+    module load intel impi
     icc -qopenmp kmeans_omp.c -o kmeans_omp
+
+    ###ICC
+    icc -g -pg -openmp-stubs -o kmeans_omp kmeans_omp.c
+    icc -g -pg -qopenmp -o kmeans_omp kmeans_omp.c
+
+    ls -ls gmon.out
+    gprof -l kmeans_omp >kmeans_omp_gprof.out
+
+    more kmeans_omp_gprof.out
+    ###
+    ###GCC
+    gcc -o kmeans_omp –p -g kmeans_omp.c
+    ./kmeans_omp
+    gprof kmeans_omp gmon.out > kmeans_omp_gprof.out
+
+    ###cc
     cc -o kmeans_omp kmeans_omp.c –fopenmp
+
+    export 
+    export OMP_NUM_THREADS=8
+    ./kmeans_omp
+
+Notes
+    Incremental parallelization
+        Largeapplications->focuson the most expensive parts
+
+    gprof report tell us that the most time consuming functions are:
+    distEucl (time 97%)
+    recalculateCenters (time 2%)
+    distEucl(time .2%)
+
+    SolutionExercise25.pdf
+    To calculate the speedups I used an interactive node with 16 cores, I measured the execution times 3 times for each configuration, 
+        and calculated the average. The execution time of the sequential code was 35.1 s.
+
+    After adding #pragma omp parallel for reduction(+:distance) schedule(static,10)
+        distEucl went down to 0.01s and time % to 0.00
+
+
+    Do NOT parallelize what does NOT matter
+    Identify opportunities to use the nowait clause
+    Parallel region cost incurred only once. Potential for the “nowait” clause
+    Do not share data unless you have to
+    Avoid nested parallelism, Consider tasking instead
+    Consider task loop as an alternative to a non-static loop iteration scheduling algorithm (e.g. dynamic)
+    False Sharing occurs when multiple threads modify the same cache line at the same time
+
+    An OpenMP place defines a set where a thread may run. OpenMP supports abstract names for places: sockets, cores, and threads
+
+    pragma omp for schedule(runtime)
+    export OMP_SCHEDULE=“dynamic,25”
+
+    # Use 2 sockets to place those threads:
+    export OMP_PLACES=sockets{2}
+
+    #Spread threads as close apart as possible:
+    export OMP_PROC_BIND=close
+
+
+        lscpu
+        numactl –H
+
+            to reason about access time between nodes
 */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 
 #include <omp.h>
 
@@ -43,11 +111,18 @@ void createRandomVectors( double patterns[][Nv] ) ;
 
 int main( int argc, char *argv[] ) {
 
-	static double patterns[N][Nv] ;
+    double t1, t2;
+    t1=omp_get_wtime();
+	
+    static double patterns[N][Nv] ;
 	static double centers[Nc][Nv] ;
 
 	createRandomVectors( patterns ) ;
 	kMeans( patterns, centers ) ;
+
+    t2=omp_get_wtime();
+
+    printf("\n\n\nElapsed (tota) time: %15.15f seconds\n", t2 - t1);
 
     return EXIT_SUCCESS;    
 }
@@ -59,16 +134,31 @@ int main( int argc, char *argv[] ) {
  * 
  * 
  */
+//adding parallelism to the first for loop
 void createRandomVectors( double patterns[][Nv] ) {
+
+    double t1, t2;
 
 	srand( 1059364 ) ;
 
 	size_t i, j ;
-	for ( i = 0; i < N; i++ ) {
-		for ( j = 0; j < Nv; j++ ) {
-			patterns[i][j] = (double) (random()%100) - 0.1059364*(i+j) ;
-		}
-	}
+
+    t1=omp_get_wtime();
+    //All threads map to a place partition close to the parent thread
+    //#pragma omp parallel private(i,j)
+    //#pragma omp for collapse(2)
+    
+    //Each thread has a slice of “patterns” in its local memory
+    //#pragma omp for schedule(static,10)
+    for ( i = 0; i < N; i++ ) {
+        for ( j = 0; j < Nv; j++ ) {
+            patterns[i][j] = (double) (random()%100) - 0.1059364*(i+j) ;
+        }
+    }
+
+    t2=omp_get_wtime();
+
+    printf("\nTime taken to create random vector values is %g seconds\n\n", t2-t1);
 
 	return ;
 }
@@ -132,8 +222,16 @@ double *mallocArray( double ***array, int n, int m, int initialize ) {
         memset( arrayData, 0, n*m ) ;
     
     size_t i ;
+
+    double t1, t2;
+    t1=omp_get_wtime();
+
+    //#pragma omp parallel for private(i) shared(array) schedule(static,10) 
     for( i = 0; i < n; i++ )
         (* array)[i] = arrayData + i*m ;
+    
+    t2=omp_get_wtime();
+    printf("\nTime taken to initialize 2D array ([n][m]) is %g seconds\n\n", t2-t1);
     
     return arrayData;
 }
@@ -151,14 +249,26 @@ void initialCenters( double patterns[][Nv], double centers[][Nv] ) {
 
     int centerIndex ;
     size_t i, j ;
+
+
+    double t1, t2;
+
+    t1=omp_get_wtime();
+
+    //Placing private for "j" here in order to reduce overhead of creating/destroying threads per (i * j) iterations
+    //#pragma omp parallel for schedule(static,10) private(j)
     for ( i = 0; i < Nc; i++ ) {
         // split patterns in Nc blocks of N/Nc length
         // use rand and % to pick a random number of each block.
         centerIndex = rand()%( N/Nc*(i+1) - N/Nc*i + 1 ) + N/Nc*i ;
         for ( j = 0; j < Nv; j ++ ) {
-            centers[i][j] = patterns[centerIndex][j] ;
+                centers[i][j] = patterns[centerIndex][j] ;
         }
     }
+
+    t2=omp_get_wtime();
+    printf("\nTime taken to calculate initial centers is %g seconds\n\n", t2-t1);
+
 
     return ;
 }
@@ -178,12 +288,16 @@ double findClosestCenters( double patterns[][Nv], double centers[][Nv], int clas
 
     double error = 0.0 ;
     size_t i, j ;
+
+    //placing the parallel for here in order to reduce overhead of creating/destroying threads per (i * j) in the nested loop inside functions
+    #pragma omp parallel for private(j) reduction(+:error) schedule(static)
     for ( i = 0; i < N; i++ ) {
-        for ( j = 0; j < Nc; j++ )
-            (* distances)[i][j] = distEucl( patterns[i], centers[j] ) ;
-        classes[i] = argMin( (* distances)[i], Nc ) ;
-        error += (* distances)[i][classes[i]] ;
-    }
+            for ( j = 0; j < Nc; j++ )
+                (* distances)[i][j] = distEucl( patterns[i], centers[j] ) ;
+            classes[i] = argMin( (* distances)[i], Nc ) ;
+            error += (* distances)[i][classes[i]] ;
+        }
+ 
 
     return error;
 }
@@ -201,6 +315,10 @@ void recalculateCenters( double patterns[][Nv], double centers[][Nv], int classe
     double error = 0.0 ;
 
     size_t i, j;
+
+    double t1, t2;
+    t1=omp_get_wtime();
+
     // calculate tmp arrays
     for ( i = 0; i < N; i++ ) {
         for ( j = 0; j < Nv; j++ ) {
@@ -217,6 +335,9 @@ void recalculateCenters( double patterns[][Nv], double centers[][Nv], int classe
             (* z)[i][j] = 0.0 ;
         }
     }
+
+    t2=omp_get_wtime();
+    printf("\nTime taken for recalculateCenters is %g seconds\n\n", t2-t1);
     
     return ;
 }
@@ -233,6 +354,7 @@ double distEucl( double pattern[], double center[] ) {
 
     double distance = 0.0 ;
 
+    //#pragma omp parallel for reduction(+:distance) schedule(static,10)
     for ( int i = 0; i < Nv; i++ )
         distance += ( pattern[i]-center[i] )*( pattern[i]-center[i] ) ;
     
@@ -277,3 +399,4 @@ void freeArray( double ***array, double *arrayData ) {
 
     return ;
 }
+
