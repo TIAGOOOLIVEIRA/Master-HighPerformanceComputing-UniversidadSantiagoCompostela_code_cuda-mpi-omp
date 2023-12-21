@@ -1,0 +1,17 @@
+#!/bin/bash
+#SBATCH -o %x-%J.out
+#SBATCH -e %x-%J.error
+
+#SBATCH -J omp_job_seismic       # Job name
+#SBATCH -o omp_job_seismic.o%j   # Name of stdout output file(%j expands to jobId)
+#SBATCH -e omp_job_seismic.o%j   # Name of stderr output file(%j expands to jobId)
+
+#SBATCH --time=0-00:05:00 #requested time to run the job
+#SBATCH -c 32 #(64 cores per job)
+#SBATCH -t 00:10:00 #(10 min of execution time) 
+#SBATCH --mem=16GB #(4GB of memory) 
+#SBATCH --exclusive
+
+export OMP_NUM_THREADS=8
+time ./seismic_omp
+
