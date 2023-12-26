@@ -9,10 +9,6 @@
  */
 
 /*
-Adding OpenMP for parallelism
-Student: Tiago de Souza Oliveira
-
-Toolikt
     profiling
 
     module load intel impi
@@ -38,48 +34,48 @@ Toolikt
     export 
     export OMP_NUM_THREADS=8
     ./kmeans_omp
+*/
 
-Notes
-    Incremental parallelization
-        Largeapplications->focuson the most expensive parts
+/*Incremental parallelization
+    Largeapplications->focuson the most expensive parts
 
-    gprof report tell us that the most time consuming functions are:
-    distEucl (time 97%)
-    recalculateCenters (time 2%)
-    distEucl(time .2%)
+gprof report tell us that the most time consuming functions are:
+distEucl (time 97%)
+recalculateCenters (time 2%)
+distEucl(time .2%)
 
-    SolutionExercise25.pdf
-    To calculate the speedups I used an interactive node with 16 cores, I measured the execution times 3 times for each configuration, 
-        and calculated the average. The execution time of the sequential code was 35.1 s.
+SolutionExercise25.pdf
+To calculate the speedups I used an interactive node with 16 cores, I measured the execution times 3 times for each configuration, 
+    and calculated the average. The execution time of the sequential code was 35.1 s.
 
-    After adding #pragma omp parallel for reduction(+:distance) schedule(static,10)
-        distEucl went down to 0.01s and time % to 0.00
-
-
-    Do NOT parallelize what does NOT matter
-    Identify opportunities to use the nowait clause
-    Parallel region cost incurred only once. Potential for the “nowait” clause
-    Do not share data unless you have to
-    Avoid nested parallelism, Consider tasking instead
-    Consider task loop as an alternative to a non-static loop iteration scheduling algorithm (e.g. dynamic)
-    False Sharing occurs when multiple threads modify the same cache line at the same time
-
-    An OpenMP place defines a set where a thread may run. OpenMP supports abstract names for places: sockets, cores, and threads
-
-    pragma omp for schedule(runtime)
-    export OMP_SCHEDULE=“dynamic,25”
-
-    # Use 2 sockets to place those threads:
-    export OMP_PLACES=sockets{2}
-
-    #Spread threads as close apart as possible:
-    export OMP_PROC_BIND=close
+After adding #pragma omp parallel for reduction(+:distance) schedule(static,10)
+    distEucl went down to 0.01s and time % to 0.00
 
 
-        lscpu
-        numactl –H
+Do NOT parallelize what does NOT matter
+Identify opportunities to use the nowait clause
+Parallel region cost incurred only once. Potential for the “nowait” clause
+Do not share data unless you have to
+Avoid nested parallelism, Consider tasking instead
+Consider task loop as an alternative to a non-static loop iteration scheduling algorithm (e.g. dynamic)
+False Sharing occurs when multiple threads modify the same cache line at the same time
 
-            to reason about access time between nodes
+An OpenMP place defines a set where a thread may run. OpenMP supports abstract names for places: sockets, cores, and threads
+
+pragma omp for schedule(runtime)
+export OMP_SCHEDULE=“dynamic,25”
+
+# Use 2 sockets to place those threads:
+export OMP_PLACES=sockets{2}
+
+#Spread threads as close apart as possible:
+export OMP_PROC_BIND=close
+
+
+    lscpu
+    numactl –H
+
+        to reason about access time between nodes
 */
 
 #include <stdio.h>
@@ -319,13 +315,16 @@ void recalculateCenters( double patterns[][Nv], double centers[][Nv], int classe
     double t1, t2;
     t1=omp_get_wtime();
 
-    // calculate tmp arrays
+    #pragma omp parallel for private(j) reduction(+:error)
     for ( i = 0; i < N; i++ ) {
         for ( j = 0; j < Nv; j++ ) {
             (* y)[classes[i]][j] += patterns[i][j] ;
             (* z)[classes[i]][j] ++ ;
         }
     }
+
+    //barrier to make sure that all threads have finished the calculation of previous arrays
+    #pragma omp barrier
 
     // update step of centers
     for ( i = 0; i < Nc; i++ ) {
