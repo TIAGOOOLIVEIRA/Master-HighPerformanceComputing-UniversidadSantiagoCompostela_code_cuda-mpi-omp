@@ -20,6 +20,22 @@ Assignment 1 - 2023
 
 Taking  the sumavectores.cu code in order to reuse cross cutting functions in my solution
 
+
+
+
+To compile, run and profile:
+    compute --gpu
+    nvcc -g -G -c euclideanvectornorm.cu -o euclideanvectornorm.o
+    sudo nvpp ./euclideanvectornorm
+    sudo nvprof --unified-memory-profiling off ./euclideanvectornorm
+    nvcc -o euclideanvectornorm euclideanvectornorm.cu 
+    
+    ./euclideanvectornorm
+    
+    sbatch job_euclideanvectornorm.sh
+    watch -n 1 squeue -u curso370
+
+
 v1:
 The core functions I created to tackle that are listed below:
     1. fill_matrix: Responsibe to create a 2D matrix filled with int ascending values starting from 1
@@ -139,7 +155,7 @@ void checkparams(unsigned int *n, unsigned int *m, unsigned int *cb);
 
 
 void power_sum_matrix_GPU_2kernell_GPUmatrix(const Matrix mA, const Matrix mPowerA, const unsigned int blk_size, resnfo *const start, resnfo *const end){
-  printf("\nInitializing power_sum_matrix_GPU");
+  printf("\nInitializing power_sum_matrix_GPU_2kernell_GPUmatrix");
   unsigned int numBytes = mA.width * mA.height * sizeof(float);
 
   //to allocate memory space on GPU and copy matrix from CPU to GPU
@@ -172,7 +188,7 @@ void power_sum_matrix_GPU_2kernell_GPUmatrix(const Matrix mA, const Matrix mPowe
   //dim3 dimBlock(blk_size, blk_size);
   dim3 dimBlock(blk_size);
 
-  printf("\nCalling kernel power_reducesum_vector_kernel_cuda_struct for mA.width(%u) and mA.height(%u) dimBlock.x %u dimBlock.y %u \n", mA.width, mA.height, dimBlock.x, dimBlock.y);
+  printf("\nCalling kernel power_matrix_kernel_cuda_struct for mA.width(%u) and mA.height(%u) dimBlock.x %u dimBlock.y %u \n", mA.width, mA.height, dimBlock.x, dimBlock.y);
 
   //Number of blocks in each dimension of the grid. (gridDim.x, gridDim.y)
   //dim3 dimGrid((mA.width + dimBlock.x - 1) / dimBlock.x, (mA.height + dimBlock.y - 1) / dimBlock.y);
@@ -199,7 +215,7 @@ void power_sum_matrix_GPU_2kernell_GPUmatrix(const Matrix mA, const Matrix mPowe
   //Copy from GPU the matrix with the elements power calculated to use in the subsequent step: Sum elements on each vector
   cudaMemcpy(mPowerA.elements, d_R.elements, numBytesR, cudaMemcpyDeviceToHost); // GPU -> CPU
 
-/*
+
   printf("\n\nOriginal Matrix:");
   for(unsigned int i = 0; i < mA.height; i++){
     printf("\n");
@@ -208,13 +224,13 @@ void power_sum_matrix_GPU_2kernell_GPUmatrix(const Matrix mA, const Matrix mPowe
       printf("%f,", mA.elements[idx2d]);
     }
   } 
-*/
+
 
   cudaFree(d_A.elements);
   cudaFree(d_R.elements);
   cudaFree(d_RPowerMatrix.elements);
 
-/*
+
       //to validate reduce sum vector
       printf("\n\nReduce sum vector: mR.height(%u) mR.width(%u)", mPowerA.height, mPowerA.width);
       for(unsigned int i = 0; i < mPowerA.height; i++){
@@ -224,7 +240,7 @@ void power_sum_matrix_GPU_2kernell_GPUmatrix(const Matrix mA, const Matrix mPowe
           printf("%f,", mPowerA.elements[idx2d]);
         }
       } 
-*/
+
 }
 
 
@@ -255,18 +271,17 @@ void power_sum_matrix_GPU(const Matrix mA, const Matrix mPowerA, const unsigned 
   //dim3 dimBlock(blk_size, blk_size);
   dim3 dimBlock(blk_size);
 
-  printf("\nCalling kernel power_reducesum_vector_kernel_cuda_struct for mA.width(%u) and mA.height(%u) dimBlock.x %u dimBlock.y %u \n", mA.width, mA.height, dimBlock.x, dimBlock.y);
 
   //Number of blocks in each dimension of the grid. (gridDim.x, gridDim.y)
   //dim3 dimGrid((mA.width + dimBlock.x - 1) / dimBlock.x, (mA.height + dimBlock.y - 1) / dimBlock.y);
   dim3 dimGrid(((mA.width * mA.height) + dimBlock.x - 1)/dimBlock.x);
 
-
   timestamp(start);
 
-
+  printf("\nCalling kernel power_reducesum_vector_kernel_cuda_struct for mA.width(%u) and mA.height(%u) dimBlock.x %u dimBlock.y %u \n", mA.width, mA.height, dimBlock.x, dimBlock.y);
   //to call kernel responsible to power each element and reduce sum rows into element in a vector
   power_reducesum_vector_kernel_cuda_struct<<<dimGrid, dimBlock>>>(d_A, d_R);
+  printf("\nCalled kernel power_reducesum_vector_kernel_cuda_struct for mA.width(%u) and mA.height(%u) dimBlock.x %u dimBlock.y %u \n", mA.width, mA.height, dimBlock.x, dimBlock.y);
 
 
   cudaDeviceSynchronize();
@@ -276,7 +291,7 @@ void power_sum_matrix_GPU(const Matrix mA, const Matrix mPowerA, const unsigned 
   //Copy from GPU the matrix with the elements power calculated to use in the subsequent step: Sum elements on each vector
   cudaMemcpy(mPowerA.elements, d_R.elements, numBytesR, cudaMemcpyDeviceToHost); // GPU -> CPU
 
-/*
+
   printf("\n\nOriginal Matrix:");
   for(unsigned int i = 0; i < mA.height; i++){
     printf("\n");
@@ -285,12 +300,12 @@ void power_sum_matrix_GPU(const Matrix mA, const Matrix mPowerA, const unsigned 
       printf("%f,", mA.elements[idx2d]);
     }
   } 
-*/
+
 
   cudaFree(d_A.elements);
   cudaFree(d_R.elements);
 
-/*
+
       //to validate reduce sum vector
       printf("\n\nReduce sum vector: mR.height(%u) mR.width(%u)", mPowerA.height, mPowerA.width);
       for(unsigned int i = 0; i < mPowerA.height; i++){
@@ -300,7 +315,7 @@ void power_sum_matrix_GPU(const Matrix mA, const Matrix mPowerA, const unsigned 
           printf("%f,", mPowerA.elements[idx2d]);
         }
       } 
-*/
+
 }
 
 /*
@@ -514,8 +529,8 @@ int main(int argc, char *argv[])
 
   timestamp(&start);
   //power_matrix_GPU(d_A, d_R, cb, &startgpu, &endgpu);
-  //power_sum_matrix_GPU(d_A, v_R, cb, &startgpu, &endgpu);
-  power_sum_matrix_GPU_2kernell_GPUmatrix(d_A, v_R, cb, &startgpu, &endgpu);
+  power_sum_matrix_GPU(d_A, v_R, cb, &startgpu, &endgpu);
+  //power_sum_matrix_GPU_2kernell_GPUmatrix(d_A, v_R, cb, &startgpu, &endgpu);
   timestamp(&end);
 
   myElapsedtime(start, end, &time);
@@ -561,14 +576,9 @@ Kernel implementation for reduce sum on each row from powered Matrix
 It receives a matrix mA and assignd each thread to each row to perform the reduce sum and store the result in th vector mR
 */
 __global__ void power_reducesum_vector_kernel_cuda_struct(const Matrix mA,const Matrix mR){
-  //unsigned int col = blockIdx.x * blockDim.x + threadIdx.x;
-  //unsigned int row = blockIdx.y * blockDim.y + threadIdx.y;
-
-  int mxn = mA.width * mA.height;
-  int row = (blockIdx.x * blockDim.x + threadIdx.x)/mxn;
-  int col = (blockIdx.x * blockDim.x + threadIdx.x)%mxn;
-
-  unsigned int idx = row * mA.width + col;
+    unsigned int row = blockIdx.x;
+    unsigned int col = threadIdx.x;
+    unsigned int idx = row * mA.width + col;
 
   float r = 0;
   
@@ -577,7 +587,8 @@ __global__ void power_reducesum_vector_kernel_cuda_struct(const Matrix mA,const 
     //to reduce as a summarize operation on elements of a row from the power matrix
    for(unsigned int j = 0; j < mA.width; j++){
     unsigned int idx2d = col * mA.width + j;
-    float vp = pow(mA.elements[idx2d], 2); 
+    //https://docs.nvidia.com/cuda/cuda-math-api/group__CUDA__MATH__INTRINSIC__SINGLE.html
+    float vp = __powf(mA.elements[idx2d], 2); 
     r += vp ;
     
     //printf("\n\nRow(%u), Col(%u), Matrix.width(%u), Matrix.height(%u), idx2d(%u), mA.elements(%f), pow(mA.elements[idx2d](%f) mxn(%u) sum(%f)", row, col, mA.width, mA.height, idx2d, mA.elements[idx2d], vp, mxn, r);
@@ -587,7 +598,8 @@ __global__ void power_reducesum_vector_kernel_cuda_struct(const Matrix mA,const 
    mR.elements[idxvector] = r;
    //to debug indexes and values
    //printf("\n Row(%u), Col(%u), Matrix.width(%u), Matrix.height(%u), IdxVector(%u), sum(%f) mR.elements[idxvector](%f)", row, col, mA.width, mA.height, idxvector, r, mR.elements[idxvector]);
-  }
+  }  
+
 }
 
 /*
