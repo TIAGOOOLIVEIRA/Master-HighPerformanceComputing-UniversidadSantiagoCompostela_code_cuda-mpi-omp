@@ -576,53 +576,31 @@ Kernel implementation for reduce sum on each row from powered Matrix
 It receives a matrix mA and assignd each thread to each row to perform the reduce sum and store the result in th vector mR
 */
 __global__ void power_reducesum_vector_kernel_cuda_struct(const Matrix mA,const Matrix mR){
-  //unsigned int col = blockIdx.x * blockDim.x + threadIdx.x;
-  //unsigned int row = blockIdx.y * blockDim.y + threadIdx.y;
-  /*
-  int mxn = mA.width * mA.height;
-  int row = (blockIdx.x * blockDim.x + threadIdx.x)/mxn;
-  int col = (blockIdx.x * blockDim.x + threadIdx.x)%mxn;
-
-  unsigned int idx = row * mA.width + col;
+    unsigned int row = blockIdx.x;
+    unsigned int col = threadIdx.x;
+    unsigned int idx = row * mA.width + col;
 
   float r = 0;
-  
+ 
   //to ensure no thread will point outside matrix boundary (height)
   if(idx < mA.height){
     //to reduce as a summarize operation on elements of a row from the power matrix
    for(unsigned int j = 0; j < mA.width; j++){
     unsigned int idx2d = col * mA.width + j;
-    float vp = pow(mA.elements[idx2d], 2); 
+    //https://docs.nvidia.com/cuda/cuda-math-api/group__CUDA__MATH__INTRINSIC__SINGLE.html
+    float vp = __powf(mA.elements[idx2d], 2);
     r += vp ;
-    
+   
     //printf("\n\nRow(%u), Col(%u), Matrix.width(%u), Matrix.height(%u), idx2d(%u), mA.elements(%f), pow(mA.elements[idx2d](%f) mxn(%u) sum(%f)", row, col, mA.width, mA.height, idx2d, mA.elements[idx2d], vp, mxn, r);
-   } 
+   }
 
    unsigned int idxvector = row * mR.width + col;
    mR.elements[idxvector] = r;
    //to debug indexes and values
    //printf("\n Row(%u), Col(%u), Matrix.width(%u), Matrix.height(%u), IdxVector(%u), sum(%f) mR.elements[idxvector](%f)", row, col, mA.width, mA.height, idxvector, r, mR.elements[idxvector]);
-  }  
-  */
-
-    int row = blockIdx.y * blockDim.y + threadIdx.y;
-    int col = blockIdx.x * blockDim.x + threadIdx.x;
-
-    if (row < mA.height && col < mA.width) {
-        // Calculate the linear index for the output matrix
-        //unsigned int idx = row * mA.width + col;
-
-        // Calculate the sum of squares for each row
-        float sum = 0.0f;
-        if (col == 0) { // Ensure only one thread per row does the summation
-            for (int j = 0; j < mA.width; j++) {
-                float val = mA.elements[row * mA.width + j];
-                sum += val * val;
-            }
-            mR.elements[row] = sum; // Assuming mR is a vector (1D array)
-        }
-    }
+  } 
 }
+
 
 /*
 Kernel implementation for power calculation on each element in the matrix
