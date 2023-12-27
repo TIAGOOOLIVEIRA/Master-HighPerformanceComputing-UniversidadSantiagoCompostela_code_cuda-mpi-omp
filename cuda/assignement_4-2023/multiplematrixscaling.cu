@@ -28,10 +28,12 @@ typedef struct {
 TODO: topic to explore: Profiling GPU Applications with Nsight Systems
 To compile, profiling and running:
     compute --gpu
-    nvcc -g -G -c multiplematrixscaling.cu -o multiplematrixscaling.o
-    sudo nvpp ./multiplematrixscaling
-    sudo nvprof --unified-memory-profiling off ./multiplematrixscaling
-    nvcc -o multiplematrixscaling multiplematrixscaling.cu 
+    module load cuda/11.0
+    
+    nvcc -pg -G -c -use_fast_math multiplematrixscaling.cu -o multiplematrixscaling
+    nvprof --export-profile multiplematrixscaling_timeline.prof -f --analysis-metrics ./multiplematrixscaling
+    sudo nvvp multiplematrixscaling_timeline.prof
+
     
     ./multiplematrixscaling
     

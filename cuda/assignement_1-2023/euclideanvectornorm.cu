@@ -581,26 +581,26 @@ __global__ void power_reducesum_vector_kernel_cuda_struct(const Matrix mA,const 
     unsigned int idx = row * mA.width + col;
 
   float r = 0;
-  
+ 
   //to ensure no thread will point outside matrix boundary (height)
   if(idx < mA.height){
     //to reduce as a summarize operation on elements of a row from the power matrix
    for(unsigned int j = 0; j < mA.width; j++){
     unsigned int idx2d = col * mA.width + j;
     //https://docs.nvidia.com/cuda/cuda-math-api/group__CUDA__MATH__INTRINSIC__SINGLE.html
-    float vp = __powf(mA.elements[idx2d], 2); 
+    float vp = __powf(mA.elements[idx2d], 2);
     r += vp ;
-    
+   
     //printf("\n\nRow(%u), Col(%u), Matrix.width(%u), Matrix.height(%u), idx2d(%u), mA.elements(%f), pow(mA.elements[idx2d](%f) mxn(%u) sum(%f)", row, col, mA.width, mA.height, idx2d, mA.elements[idx2d], vp, mxn, r);
-   } 
+   }
 
    unsigned int idxvector = row * mR.width + col;
    mR.elements[idxvector] = r;
    //to debug indexes and values
    //printf("\n Row(%u), Col(%u), Matrix.width(%u), Matrix.height(%u), IdxVector(%u), sum(%f) mR.elements[idxvector](%f)", row, col, mA.width, mA.height, idxvector, r, mR.elements[idxvector]);
-  }  
-
+  } 
 }
+
 
 /*
 Kernel implementation for power calculation on each element in the matrix
