@@ -308,24 +308,30 @@ double findClosestCenters( double patterns[][Nv], double centers[][Nv], int clas
  */
 void recalculateCenters( double patterns[][Nv], double centers[][Nv], int classes[], double ***y, double ***z ) {
 
-    double error = 0.0 ;
+    //double error = 0.0 ;
 
     size_t i, j;
 
     double t1, t2;
     t1=omp_get_wtime();
 
-    #pragma omp parallel for private(j) reduction(+:error)
-    for ( i = 0; i < N; i++ ) {
-        for ( j = 0; j < Nv; j++ ) {
-            (* y)[classes[i]][j] += patterns[i][j] ;
-            (* z)[classes[i]][j] ++ ;
+
+    #pragma omp parallel
+    {
+        #pragma omp single
+        //#pragma omp parallel for private(j) reduction(+:error)
+        for ( i = 0; i < N; i++ ) {
+            for ( j = 0; j < Nv; j++ ) {
+                #pragma omp atomic
+                (* y)[classes[i]][j] += patterns[i][j] ;
+                #pragma omp atomic
+                (* z)[classes[i]][j] ++ ;
+            }
         }
     }
-
-    //barrier to make sure that all threads have finished the calculation of previous arrays
-    #pragma omp barrier
-
+    //barrier to make sure that all threads have finished the calculation of tmp arrays
+    
+    //#pragma omp barrier
     // update step of centers
     for ( i = 0; i < Nc; i++ ) {
         for ( j = 0; j < Nv; j++ ) {
