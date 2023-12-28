@@ -1,0 +1,119 @@
+CLUSTER HADOOP CON DOCKERS
+
+PASOS:
+
+1. Constuir una imagen base con el software necesario. Le añadimos la etiqueta latest
+
+  docker image build -t hpcnube-base-image:1.0.0 ./Base && docker image tag hpcnube-base-image:1.0.0 hpcnube-base-image:latest
+
+
+
+2. Construir imágenes para los diferentes servicios
+
+    2.a Construir imagen para el NameNode y ponle la etiqueta latest
+
+      docker image build -t hpcnube-namenode-image:1.0.0 ./NameNode && docker image tag hpcnube-namenode-image:1.0.0 hpcnube-namenode-image:latest
+
+    2.b Construir la imagen para el ResourceManager
+
+      docker image build -t hpcnube-resourcemanager-image:1.0.0 ./ResourceManager && docker image tag hpcnube-resourcemanager-image:1.0.0 hpcnube-resourcemanager-image:latest
+
+    2.c Construir la imagen para los DataNodes/Nodemanagers
+
+      docker image build -t hpcnube-dnnm-image:1.0.0 ./DataNode-NodeManager &&  docker image tag hpcnube-dnnm-image:1.0.0 hpcnube-dnnm-image:latest
+
+    2.d Ejecuta "docker image ls" para comprobar que se han creado las 4 imágenes
+
+
+
+3. Definir la red a la que se conectarán los contenedores
+
+  docker network create hpcnube-net
+
+    3.a Para obtener información sobre la red:
+
+      docker network inspect hpcnube-net
+
+
+
+4. Iniciar los contenedores en esa red
+
+    4.a Un contenedor para el servicio NameNode
+
+      docker container run --init --detach --name hpcnube-namenode --network=hpcnube-net --hostname hpcnube-namenode -p 9870:9870 hpcnube-namenode-image
+
+    4.b Un contenedor para el servicio ResourceManager
+
+      docker container run --init --detach --name hpcnube-resourcemanager --network=hpcnube-net --hostname hpcnube-resourcemanager -p 8088:8088 hpcnube-resourcemanager-image
+
+    4.c Cuatro contenedores que actúen como DataNodes y NodeManagers
+
+      for n in {1..4}; do docker container run --init --detach --name hpcnube-dnnm${n} --network=hpcnube-net --hostname hpcnube-dnnm${n}  hpcnube-dnnm-image; done
+
+    4.d Ejecuta "docker container ps" para ver que están ejecutándose los 6 contenedores
+
+
+5. Comprobar el estado de HDFS
+
+    5.a Entrar en el contenedor con el NameNode haciendo
+
+      docker container exec -ti hpcnube-namenode /bin/bash
+
+    5.b Una vez dentro, comprueba el estado del HDFS con 
+
+      hdfs dfsadmin -report
+
+
+
+6. Comprobar el estado de YARN
+
+    6.a Entrar en el contenedor con el ResourceManager haciendo
+
+      docker container exec -ti hpcnube-resourcemanager /bin/bash
+
+    6.b Una vez dentro, comprueba el estado del YARN con estos comandos
+
+      yarn node -list -showDetails
+      yarn top
+
+
+
+7. Comprobar la información proporcionada por los interfaces web de los servicios:
+
+  - Namenode: http://localhost:9870
+  - ResourceManager: http://localhost:8088
+  
+
+En Linux, dado el modo bridge de la red, es posible acceder a esos interfaces usando directamente la IP de los contenedores. Para comprobar la IP, ejecuta:
+  
+  docker container inspect nombre_del_contenedor | grep IPAddress
+
+
+
+8. Parar, reiniciar y borrar los contenedores:
+
+    8.a Para detener los contenedores sin borrarlos:
+
+      docker container stop nombre_del_contenedor
+
+    8.b Para reiniciar un contenedor parado
+
+      docker container start nombre_del_contenedor
+
+    8.c Para borrar un contenedor parado
+
+      docker container rm nombre_del_contenedor
+
+
+
+9. Listar y borrar las imágenes
+
+  docker images
+  docker image rm nombre_de_la_imagen:1.0.0 nombre_de_la_imagen:latest
+
+
+10. Borrar la red
+
+  docker network rm hpcnube-net
+
+
