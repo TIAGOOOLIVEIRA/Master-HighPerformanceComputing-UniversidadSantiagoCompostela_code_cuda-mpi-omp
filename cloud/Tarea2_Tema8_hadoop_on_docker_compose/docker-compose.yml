@@ -1,0 +1,67 @@
+version: '3'
+
+services:
+  hpcnube-namenode-image:
+    build:
+      context: ./NameNode
+      dockerfile: Dockerfile
+    image: hpcnube-namenode-image:latest
+
+  hpcnube-resourcemanager-image:
+    build:
+      context: ./ResourceManager
+      dockerfile: Dockerfile
+    image: hpcnube-resourcemanager-image:latest
+
+  hpcnube-dnnm-image:
+    build:
+      context: ./DataNode-NodeManager
+      dockerfile: Dockerfile
+    image: hpcnube-dnnm-image:latest
+
+  frontend-image:
+    build:
+      context: ./FrontEnd
+      dockerfile: Dockerfile
+    image: frontend-image:latest
+    volumes:
+      - /home/tiagoooliveira/.ssh/frontend-key.pub:/home/luser/.ssh/authorized_keys
+    ports:
+      - "2222:22"
+
+  hpcnube-namenode:
+    container_name: hpcnube-namenode
+    image: hpcnube-namenode-image:latest
+    networks:
+      - hpcnube-net
+    hostname: hpcnube-namenode
+    ports:
+      - "9870:9870"
+    #init: true
+
+  hpcnube-resourcemanager:
+    container_name: hpcnube-resourcemanager
+    image: hpcnube-resourcemanager-image:latest
+    networks:
+      - hpcnube-net
+    hostname: hpcnube-resourcemanager
+    ports:
+      - "8088:8088"
+    #init: true
+
+  hpcnube-dnnm:
+    build:
+      context: ./DataNode-NodeManager
+      dockerfile: Dockerfile
+    image: hpcnube-dnnm-image:latest
+    networks:
+      - hpcnube-net
+    hostname: hpcnube-dnnm
+    #init: true
+    depends_on:
+      - hpcnube-namenode
+      - hpcnube-resourcemanager
+
+networks:
+  hpcnube-net:
+
