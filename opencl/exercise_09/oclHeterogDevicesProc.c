@@ -22,6 +22,13 @@ Master on High Performance Computing
 Professor: Juan Carlos Pichel Campos
 14/jan/2024
 
+To compile and run:
+    compute --gpu
+    module load cesga/2020 pocl/1.6−CUDA−system 
+    make
+    
+    ./oclHeterogDevicesProc
+
 This code aims to demonstrate the use of OpenCL on heterogeneous devices.
 The code is based on the vector_add example from the HandsOnOpenCL repository with some additional ideas and utils functions from
 the OpenCL-Getting-Started repository.
