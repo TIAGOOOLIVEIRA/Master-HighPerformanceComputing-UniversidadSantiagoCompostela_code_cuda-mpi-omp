@@ -12,16 +12,18 @@
 int main(void) {
     int i;
     const int LIST_SIZE = 1024;
+
+    //1. Create two vectors A and B containing LIST_SIZE elements
     int *A = (int*)malloc(sizeof(int)*LIST_SIZE);
     int *B = (int*)malloc(sizeof(int)*LIST_SIZE);
 
-    //filling the vectors with data
+    //2. Filling the vectors with data
     for(i = 0; i < LIST_SIZE; i++) {
         A[i] = i;
         B[i] = LIST_SIZE - i;
     }
 
-    // Load the kernel source code into the array source_str
+    //3. Load the kernel source code into the array source_str
     FILE *fp;
     char *source_str;
     size_t source_size;
@@ -36,16 +38,17 @@ int main(void) {
     fclose( fp );
 
 
-
-
-    //starting the code for heterogenous devices, porting and reusing ideias from up above code
-    //idea here is to split into two parts: one for CPU processing and one for GPU processing,
-    //send to each device different amount of data, collect statistics and compare them
-    //also run the same code on different platforms (MacOS, Ubuntu+GPU, FTIII)
+    //idea here is to split the workload (A + B) into two parts: 
+    //  first half of A array and B for CPU processing and the second parts for GPU processing 
+    //  so each device will process half of the workload.
+    //
+    //It is also part of the task run the same code on different platforms (MacOS, Ubuntu+GPU, FTIII)
+    //  so the code should be able to detect the available devices and run the kernel on each of them.
+    //In the end some stastics should be collected and printed out for the comparision of the performance
 
     cl_int ret;
 
-    //Get all available platforms
+    //4. Get all available platforms information
     cl_uint numPlatforms;
     clGetPlatformIDs(0, NULL, &numPlatforms);
     cl_platform_id *platforms = (cl_platform_id *)malloc(sizeof(cl_platform_id) * numPlatforms);
@@ -69,13 +72,17 @@ int main(void) {
 
     //Iterate over platforms to fetch CPU and GPU devices
     for (cl_uint i = 0; i < numPlatforms; i++) {
+        //5. Get device information for each platform
         //Query CL_DEVICE_TYPE_CPU
         if (clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_CPU, 1, &cpuDevice, NULL) == CL_SUCCESS) {
-            //Context & command queue for CPU
+            
+            //6. Create oCL Context for CPU
             cpuContext = clCreateContext(NULL, 1, &cpuDevice, NULL, NULL, &ret);
+            
+            //7. Create command queue for CPU
             cpuQueue = clCreateCommandQueue(cpuContext, cpuDevice, 0, &ret);
             
-            // Create memory buffers on the CPU for each vector 
+            //8. Create memory buffers on the CPU for each vector 
             unsigned int cpuSize = sizeof(int) * cpuGlobalSize;
             cl_mem a_mem_obj = clCreateBuffer(cpuContext, CL_MEM_READ_ONLY, 
                 cpuSize, NULL, &ret);
@@ -84,32 +91,32 @@ int main(void) {
             cl_mem c_mem_obj = clCreateBuffer(cpuContext, CL_MEM_WRITE_ONLY, 
                 cpuSize, NULL, &ret);
 
-            // Copy the lists A and B to their respective memory buffers on CPU
+            //9. Copy the vectors A and B to their respective memory buffers on CPU (the first half of the workload)
             ret = clEnqueueWriteBuffer(cpuQueue, a_mem_obj, CL_TRUE, 0,
                 cpuSize, A, 0, NULL, NULL);
             ret = clEnqueueWriteBuffer(cpuQueue, b_mem_obj, CL_TRUE, 0, 
                 cpuSize, B, 0, NULL, NULL);
 
 
-            // Create a program from the kernel source
+            //10. Create a program from the kernel source
             cl_program cpuProgram = clCreateProgramWithSource(cpuContext, 1, 
                     (const char **)&source_str, (const size_t *)&source_size, &ret);
 
-            // Build the program
+            //11. Build the program
             ret = clBuildProgram(cpuProgram, 1, &cpuDevice, NULL, NULL, NULL);
                 checkError(ret, "Error when building the program on CPU");
 
-            // Create the OpenCL kernel
+            //12. Create the OpenCL kernel
             cl_kernel cpuKernel = clCreateKernel(cpuProgram, "vector_add", &ret);
 
-            // Set the arguments of the kernel
+            //13. Set the arguments of the kernel
             ret = clSetKernelArg(cpuKernel, 0, sizeof(cl_mem), (void *)&a_mem_obj);
             ret = clSetKernelArg(cpuKernel, 1, sizeof(cl_mem), (void *)&b_mem_obj);
             ret = clSetKernelArg(cpuKernel, 2, sizeof(cl_mem), (void *)&c_mem_obj);
 
             size_t localSize = 64; // Process in groups of 64
 
-            //Enqueue kernel execution for CPU
+            //14. Enqueue kernel execution for CPU (the first half of the workload)
             //Execution of a portion of the workload on the CPU
             ret = clEnqueueNDRangeKernel(cpuQueue, cpuKernel, 1, NULL, &cpuGlobalSize, &localSize, 0, NULL, NULL);
                 checkError(ret, "Error when enqueueing kernel on CPU");
@@ -134,11 +141,14 @@ int main(void) {
 
         //Query CL_DEVICE_TYPE_GPU
         if (clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_GPU, 1, &gpuDevice, NULL) == CL_SUCCESS) {
-            //Context & command queue for GPU
+            
+            //6. Create oCL Context for GPU
             gpuContext = clCreateContext(NULL, 1, &gpuDevice, NULL, NULL, &ret);
+            
+            //7. Create command queue for GPU
             gpuQueue = clCreateCommandQueue(gpuContext, gpuDevice, 0, &ret);
-            // Additional code to build and run the kernel
 
+            //8. Create memory buffers on the GPU for each vector 
             unsigned int gpuSize = sizeof(int) * gpuGlobalSize;
             cl_mem a_mem_obj = clCreateBuffer(gpuQueue, CL_MEM_READ_ONLY, 
                 gpuSize, NULL, &ret);
@@ -147,33 +157,32 @@ int main(void) {
             cl_mem c_mem_obj = clCreateBuffer(gpuQueue, CL_MEM_WRITE_ONLY, 
                 gpuSize, NULL, &ret);
 
-            // Copy the lists A and B to their respective memory buffers on GPU
+            //9. Copy the vectors A and B to their respective memory buffers on GPU (the second half of the workload)
             ret = clEnqueueWriteBuffer(gpuQueue, a_mem_obj, CL_TRUE, 0,
                 gpuSize, A + gpuGlobalSize, 0, NULL, NULL);
             ret = clEnqueueWriteBuffer(gpuQueue, b_mem_obj, CL_TRUE, 0, 
                 gpuSize, B + gpuGlobalSize, 0, NULL, NULL);
 
 
-            // Create a program from the kernel source
+            //10. Create a program from the kernel source
             cl_program gpuProgram = clCreateProgramWithSource(gpuContext, 1, 
                     (const char **)&source_str, (const size_t *)&source_size, &ret);
 
-            // Build the program
+            //11. Build the program
             ret = clBuildProgram(gpuProgram, 1, &gpuDevice, NULL, NULL, NULL);
                 checkError(ret, "Error when building the program on GPU");
 
-            // Create the OpenCL kernel
+            //12. Create the OpenCL kernel
             cl_kernel gpuKernel = clCreateKernel(gpuProgram, "vector_add", &ret);
 
-            // Set the arguments of the kernel
+            //13. Set the arguments of the kernel
             ret = clSetKernelArg(gpuKernel, 0, sizeof(cl_mem), (void *)&a_mem_obj);
             ret = clSetKernelArg(gpuKernel, 1, sizeof(cl_mem), (void *)&b_mem_obj);
             ret = clSetKernelArg(gpuKernel, 2, sizeof(cl_mem), (void *)&c_mem_obj);
 
             size_t localSize = 64; // Process in groups of 64
 
-            //Enqueue kernel execution for CPU
-            //Execution of a portion of the workload on the CPU
+            //14. Enqueue kernel execution for GPU (the second half of the workload)
             ret = clEnqueueNDRangeKernel(gpuQueue, gpuKernel, 1, &gpuOffset, &gpuGlobalSize, &localSize, 0, NULL, NULL);
                 checkError(ret, "Error when enqueueing kernel on GPU");
         
