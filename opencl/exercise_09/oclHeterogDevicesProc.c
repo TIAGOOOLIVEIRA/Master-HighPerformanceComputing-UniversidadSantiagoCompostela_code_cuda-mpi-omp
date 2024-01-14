@@ -24,7 +24,7 @@ Professor: Juan Carlos Pichel Campos
 
 To compile and run:
     compute --gpu
-    module load cesga/2020 pocl/1.6−CUDA−system 
+    module load cesga/2020 pocl/1.6-CUDA-system
     make
     
     ./oclHeterogDevicesProc
@@ -91,6 +91,7 @@ int main(void) {
 
 
     //2. Filling the vectors with data
+    printf("\n\nFilling the vectors with data");
     for(i = 0; i < halfSize; i++) {
         AfirstHalf[i] = i;
         BfirstHalf[i] = LIST_SIZE - i;
@@ -98,12 +99,14 @@ int main(void) {
         AsecondHalf[LIST_SIZE - i] = LIST_SIZE - i;
         BsecondHalf[LIST_SIZE - i] = i;
     }
+    printf("\n  Filled the vectors with data");
 
     //3. Load the kernel source code into the array source_str
     FILE *fp;
     char *source_str;
     size_t source_size;
 
+    printf("\nOpening the kernel source code vector_add_kernel.cl");
     fp = fopen("vector_add_kernel.cl", "r");
     if (!fp) {
         fprintf(stderr, "Failed to load kernel.\n");
@@ -113,6 +116,7 @@ int main(void) {
     source_size = fread( source_str, 1, MAX_SOURCE_SIZE, fp);
     fclose( fp );
 
+    printf("\n  Opened the kernel source code vector_add_kernel.cl");
 
     //idea here is to split the workload (A + B) into two parts: 
     //  first half of A array and B for CPU processing and the second parts for GPU processing 
@@ -142,6 +146,8 @@ int main(void) {
         //5. Get device information for each platform
         //Query CL_DEVICE_TYPE_CPU
         if (clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_CPU, 1, &cpuDevice, NULL) == CL_SUCCESS) {
+            printf("\n\nCPU device found on platform %d\n\n", i);
+
             ret = output_device_info(cpuDevice);
                 checkError(ret, "Error when Printing device CPU output");
 
@@ -226,6 +232,7 @@ int main(void) {
 
         //Query CL_DEVICE_TYPE_GPU
         if (clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_GPU, 1, &gpuDevice, NULL) == CL_SUCCESS) {
+            printf("\n\nGPU device found on platform %d\n\n", i);
             ret = output_device_info(gpuDevice);
                 checkError(ret, "Error when Printing device GPU output");
 
