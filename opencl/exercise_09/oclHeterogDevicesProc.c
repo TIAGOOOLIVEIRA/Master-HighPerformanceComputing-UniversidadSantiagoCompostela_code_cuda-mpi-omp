@@ -10,7 +10,6 @@
 #define MAX_SOURCE_SIZE (0x100000)
 
 int main(void) {
-    // Create the two input vectors
     int i;
     const int LIST_SIZE = 1024;
     int *A = (int*)malloc(sizeof(int)*LIST_SIZE);
