@@ -1,0 +1,38 @@
+01-citingpatents
+    To compile the project, run the following command:
+        cd /home/ulc/cursos/curso370/tarea4_tema9_spark_mapreduce/Plantillas-Hadoop/01-citingpatents
+        mvn package -e
+
+    To ensure the input data is available in the hdfs directory, run the following command:
+        hdfs dfs -mkdir  /user/curso370/data/
+        hdfs dfs -put /home/ulc/cursos/curso370/tarea4_tema9_spark_mapreduce/patentes/cite75_99.txt  /user/curso370/data
+
+    To create an output directory in the hdfs directory, run the following command:
+        hdfs dfs -mkdir  /user/curso370/data/output
+
+    To run the jar file, run the following command:
+    cd /home/ulc/cursos/curso370/tarea4_tema9_spark_mapreduce/Plantillas-Hadoop/01-citingpatents/target
+    yarn jar citingpatents-0.0.1-SNAPSHOT.jar /user/curso370/data/cite75_99.txt /user/curso370/data/output_cite75_99
+
+02-citationnumberbypatent_chained
+    To compile the project, run the following command:
+        cp /home/ulc/cursos/curso370/tarea4_tema9_spark_mapreduce/Plantillas-Hadoop/01-citingpatents/target/citingpatents-0.0.1-SNAPSHOT.jar /home/ulc/cursos/curso370/tarea4_tema9_spark_mapreduce/Plantillas-Hadoop/02-citationnumberbypatent_chained/src/resources
+        export HADOOP_CLASSPATH="./src/resources/citingpatents-0.0.1-SNAPSHOT.jar"
+        cd /home/ulc/cursos/curso370/tarea4_tema9_spark_mapreduce/Plantillas-Hadoop/02-citationnumberbypatent_chained
+        mvn package -e
+    
+    To run the jar file, run the following command:
+        yarn jar target/citationnumberbypatent_chained-0.0.1-SNAPSHOT.jar -libjars $HADOOP_CLASSPATH /user/curso370/data/cite75_99.txt /user/curso370/data/output_citationnumberbypatent_chained
+
+03-PythonClaimsCounter
+    To ensure that the python scripts are executable, run the following command:
+        chmod +x ClaimsCountMapper.py
+        chmod +x ClaimsCountReducer.py
+    
+    To ensure the input data is available in the hdfs directory, run the following command:
+        hdfs dfs -put /home/ulc/cursos/curso370/tarea4_tema9_spark_mapreduce/patentes/apat63_99.txt  /user/curso370/data
+    #/opt/cloudera/parcels/CDH-6.1.1-1.cdh6.1.1.p0.875250/lib/hadoop-mapreduce/hadoop-streaming.jar
+    #yarn jar $HADOOP_PREFIX/share/hadoop/tools/lib/hadoop-streaming-*.jar -D mapreduce.job.reduces=2 -input /user/curso370/data/apat63_99.txt -output /user/curso370/data/output_claimscount -mapper ClaimsCountMapper.py -reducer ClaimsCountReducer.py -file ClaimsCountMapper.py -file ClaimsCountReducer.py
+    
+    To submit the job, run the following command:
+        yarn jar /opt/cloudera/parcels/CDH-6.1.1-1.cdh6.1.1.p0.875250/lib/hadoop-mapreduce/hadoop-streaming.jar -D mapreduce.job.reduces=2 -input hdfs://user/curso370/data/apat63_99.txt -output hdfs://user/curso370/data/output_claimscount2 -mapper ClaimsCountMapper.py -reducer ClaimsCountReducer.py -file ClaimsCountMapper.py -file ClaimsCountReducer.py
