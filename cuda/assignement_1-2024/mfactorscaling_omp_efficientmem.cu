@@ -5,6 +5,12 @@
 #include <math.h>
 #include <omp.h>
 
+//nvcc -Xptxas -v mfactorscaling_omp_efficientmem.cu
+//nvcc -Xptxas -v mfactorscaling_omp.cu
+//time./mfactorscaling_omp_efficientmem 128 20000 20000 "0.05, 0.1,0.3, 0.4,0.5, 0.6,0.7,0.8,0.9"
+//time./mfactorscaling_omp 128 20000 20000 "0.05, 0.1,0.3,0.4,0.5,0.6,0.7,0.8,0.9"
+
+
 // Define constant memory for the factors array
 __constant__ float const_factors[10];
 
