@@ -1,0 +1,56 @@
+# Compiler and flags for ICC
+CC = icc
+CFLAGS = -std=c11
+TARGET = spmv
+LIBRARY = my_coo
+
+# Source files
+LIB_SRC = my_coo.c
+MAIN_SRC = spmv.c
+
+# Object files
+LIB_OBJ_NO_VEC = $(LIBRARY)_no_vec.o
+LIB_OBJ_VEC = $(LIBRARY)_vec.o
+LIB_OBJ_FAST_VEC = $(LIBRARY)_fast_vec.o
+MAIN_OBJ = $(TARGET).o
+
+# Optimization levels for my_coo.c
+NO_VEC = -O2 -no-vec -fstrict-aliasing
+VEC = -O2 -ftree-vectorize -fopt-info-vec-optimized -fstrict-aliasing
+FAST_VEC = -O3 -xHost -fast -ftree-vectorize -fopt-info-vec-optimized -fstrict-aliasing
+
+# Build rules
+all: spmv_no_vec spmv_vec spmv_fast_vec
+
+# Compile my_coo.c with no vectorization
+$(LIB_OBJ_NO_VEC): $(LIB_SRC)
+	$(CC) $(CFLAGS) $(NO_VEC) -c $< -o $@
+
+# Compile my_coo.c with vectorization
+$(LIB_OBJ_VEC): $(LIB_SRC)
+	$(CC) $(CFLAGS) $(VEC) -c $< -o $@
+
+# Compile my_coo.c with fast vectorization
+$(LIB_OBJ_FAST_VEC): $(LIB_SRC)
+	$(CC) $(CFLAGS) $(FAST_VEC) -c $< -o $@
+
+# Compile spmv.c without optimization (same for all cases)
+$(MAIN_OBJ): $(MAIN_SRC)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Link spmv with my_coo_no_vec
+spmv_no_vec: $(MAIN_OBJ) $(LIB_OBJ_NO_VEC)
+	$(CC) $(CFLAGS) $^ -o $@
+
+# Link spmv with my_coo_vec
+spmv_vec: $(MAIN_OBJ) $(LIB_OBJ_VEC)
+	$(CC) $(CFLAGS) $^ -o $@
+
+# Link spmv with my_coo_fast_vec
+spmv_fast_vec: $(MAIN_OBJ) $(LIB_OBJ_FAST_VEC)
+	$(CC) $(CFLAGS) $^ -o $@
+
+# Clean build files
+clean:
+	rm -f $(LIBRARY)_no_vec.o $(LIBRARY)_vec.o $(LIBRARY)_fast_vec.o $(MAIN_OBJ)
+	rm -f spmv_no_vec spmv_vec spmv_fast_vec

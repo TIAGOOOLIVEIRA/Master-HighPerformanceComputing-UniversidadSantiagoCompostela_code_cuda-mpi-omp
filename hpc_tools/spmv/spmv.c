@@ -15,6 +15,25 @@
 //ldd ./spmv
 //./spmv
 //
+
+typedef struct {
+    double *values;       // Non-zero values
+    int *row_indices;     // Row indices of non-zero values
+    int *col_pointers;    // Column pointers (start of each column in `values`)
+    int nnz;              // Number of non-zero elements
+    int size;             // Matrix size (n x n)
+} CSCMatrix;
+
+// COO Matrix Data Structure
+typedef struct {
+    double *values;  // Non-zero values
+    int *row_indices;  // Row indices of non-zero values
+    int *col_indices;  // Column indices of non-zero values
+    int nnz;  // Number of non-zero elements
+    int size;  // Matrix size (n x n)
+} COOMatrix;
+
+
 unsigned int populate_sparse_matrix(double mat[], unsigned int n, double density, unsigned int seed)
 {
   unsigned int nnz = 0;
