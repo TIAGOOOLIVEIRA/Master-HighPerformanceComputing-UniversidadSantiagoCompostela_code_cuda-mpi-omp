@@ -33,6 +33,14 @@ typedef struct {
     int size;  // Matrix size (n x n)
 } COOMatrix;
 
+// CSR Matrix Data Structure
+typedef struct {
+    double *values;      // Non-zero values
+    int *col_indices;    // Column indices of non-zero values
+    int *row_ptr;        // Row pointer array
+    int nnz;             // Number of non-zero elements
+    int size;            // Matrix size (n x n)
+} CSRMatrix;
 
 unsigned int populate_sparse_matrix(double mat[], unsigned int n, double density, unsigned int seed)
 {

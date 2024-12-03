@@ -9,7 +9,7 @@
 //gcc -fopenmp my_sparse.c -c
 //
 
-int my_sparse(const unsigned int n, const double mat[], double vec[], double result[]) {
+int my_sparse(const unsigned int n, const double* restrict mat, double* restrict vec, double* restrict result)
 {
     //GSL sparse matrix in CSR format
     gsl_spmatrix *spmat = gsl_spmatrix_alloc(n, n);
