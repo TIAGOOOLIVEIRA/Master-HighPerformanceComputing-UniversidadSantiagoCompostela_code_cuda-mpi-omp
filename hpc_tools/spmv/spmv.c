@@ -15,6 +15,35 @@
 //ldd ./spmv
 //./spmv
 //
+//gcc -O2 -ftree-vectorize -fstrict-aliasing -fopt-info-vec-optimized -fopt-info-vec=vec_report_gcc.txt spmv.c -c
+//perf stat ./spmv
+
+typedef struct {
+    double *values;       // Non-zero values
+    int *row_indices;     // Row indices of non-zero values
+    int *col_pointers;    // Column pointers (start of each column in `values`)
+    int nnz;              // Number of non-zero elements
+    int size;             // Matrix size (n x n)
+} CSCMatrix;
+
+// COO Matrix Data Structure
+typedef struct {
+    double *values;  // Non-zero values
+    int *row_indices;  // Row indices of non-zero values
+    int *col_indices;  // Column indices of non-zero values
+    int nnz;  // Number of non-zero elements
+    int size;  // Matrix size (n x n)
+} COOMatrix;
+
+// CSR Matrix Data Structure
+typedef struct {
+    double *values;      // Non-zero values
+    int *col_indices;    // Column indices of non-zero values
+    int *row_ptr;        // Row pointer array
+    int nnz;             // Number of non-zero elements
+    int size;            // Matrix size (n x n)
+} CSRMatrix;
+
 unsigned int populate_sparse_matrix(double mat[], unsigned int n, double density, unsigned int seed)
 {
   unsigned int nnz = 0;
@@ -149,10 +178,34 @@ int main(int argc, char *argv[])
   else
     printf("Result is wrong for sparse!\n");
 
+//
+    // Sparse computation using CSR solver
+    //
+    printf("\nCSR Sparse computation\n------------------\n");
+
+    // Convert dense matrix to CSR format
+    CSRMatrix csr = convert_to_csr(mat, size);
+
+    // Measure time for CSR solver
+    timestamp(&start);
+
+    my_csr(&csr, vec, mysol);
+
+    timestamp(&now);
+    printf("Time taken by CSR sparse computation: %ld ms\n", diff_milli(&start, &now));
+
+  if (check_result(refsol, mysol, size) == 1)
+    printf("Result is ok for CSR sparse!\n");
+  else
+    printf("Result is wrong for CSR sparse!\n");
+
   free(mat);
   free(vec);
   free(refsol);
   free(mysol);
+  free(csr.values);
+  free(csr.col_indices);
+  free(csr.row_ptr);
 
   return 0;
 }
