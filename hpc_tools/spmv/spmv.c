@@ -15,6 +15,8 @@
 //ldd ./spmv
 //./spmv
 //
+//gcc -O2 -ftree-vectorize -fstrict-aliasing -fopt-info-vec-optimized -fopt-info-vec=vec_report_gcc.txt spmv.c -c
+//perf stat ./spmv
 
 typedef struct {
     double *values;       // Non-zero values
@@ -176,10 +178,34 @@ int main(int argc, char *argv[])
   else
     printf("Result is wrong for sparse!\n");
 
+//
+    // Sparse computation using CSR solver
+    //
+    printf("\nCSR Sparse computation\n------------------\n");
+
+    // Convert dense matrix to CSR format
+    CSRMatrix csr = convert_to_csr(mat, size);
+
+    // Measure time for CSR solver
+    timestamp(&start);
+
+    my_csr(&csr, vec, mysol);
+
+    timestamp(&now);
+    printf("Time taken by CSR sparse computation: %ld ms\n", diff_milli(&start, &now));
+
+  if (check_result(refsol, mysol, size) == 1)
+    printf("Result is ok for CSR sparse!\n");
+  else
+    printf("Result is wrong for CSR sparse!\n");
+
   free(mat);
   free(vec);
   free(refsol);
   free(mysol);
+  free(csr.values);
+  free(csr.col_indices);
+  free(csr.row_ptr);
 
   return 0;
 }

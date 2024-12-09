@@ -47,5 +47,17 @@ CSRMatrix convert_to_csr(double *mat, int size) {
 }
 
 void my_csr(CSRMatrix *csr, double *restrict vec, double *restrict result) {
+    int size = csr->size;
 
+    // Initialize result to zero
+    for (int i = 0; i < size; i++) {
+        result[i] = 0.0;
+    }
+
+    // Perform SpMV (Sparse Matrix-Vector Multiplication)
+    for (int i = 0; i < size; i++) {
+        for (int j = csr->row_ptr[i]; j < csr->row_ptr[i + 1]; j++) {
+            result[i] += csr->values[j] * vec[csr->col_indices[j]];
+        }
+    }
 }
