@@ -15,6 +15,16 @@ With this last parallelization, the execution time was reduced: from 28s to 12s 
 Time execution for KNN sequential
 gcc -o knn knn.c -lm -pg -O2 -g
 gprof knn gmon.out > profile_sequential.txt
+[TL;DR]Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ns/call  ns/call  name    
+ 43.51     19.41    19.41 22227777   873.39   873.39  calculate_distance_test
+ 33.24     34.25    14.83                             __gmon_start__
+ 16.56     41.64     7.39                             calculate_error
+  6.63     44.59     2.96                             merge
+  0.18     44.67     0.08                             calculate_test
+
+Time Execution
 real	0m46.293s
 user	0m45.929s
 sys	0m0.247s
@@ -34,7 +44,15 @@ export OMP_NUM_THREADS=8
 Time execution for KNN with parallelism in loops (calculate_test) function
 gcc -o knn knn_omp.c -lm -pg -O2 -g -fopenmp
 gprof knn gmon.out > profile_calculate_test.txt
+[TL;DR]Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  Ts/call  Ts/call  name    
+ 45.32     20.70    20.70                             calculate_distance_test
+ 32.40     35.51    14.80                             __gmon_start__
+ 16.15     42.88     7.38                             calculate_error
+  6.24     45.73     2.85                             merge
 
+Time Execution
 real	0m32.295s
 user	0m49.355s
 sys	0m0.206s
@@ -50,6 +68,16 @@ sys	0m0.239s
 Time execution for KNN with parallelism in loops (calculate_test + calculate_distance_test)
 gcc -o knn knn_omp.c -lm -pg -O2 -g -fopenmp
 gprof knn gmon.out > profile_calculate_test__calculate_distance_test.txt
+[TL;DR]Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  Ts/call  Ts/call  name    
+ 56.63     14.79    14.79                             __gmon_start__
+ 28.30     22.17     7.39                             calculate_error
+ 10.74     24.98     2.80                             merge
+  4.37     26.12     1.14                             calculate_distance_test
+  0.08     26.14     0.02                             calculate_distance_test_old
+
+Time Execution
 real	0m28.757s
 user	0m35.249s
 sys	0m0.245s
@@ -65,6 +93,14 @@ sys	0m0.265s
 Time execution for KNN with parallelism in loops (calculate_test + calculate_distance_test + calculate_error)
 gcc -o knn knn_omp.c -lm -pg -O2 -g -fopenmp
 gprof knn gmon.out > profile_calculate_test__calculate_distance_test__calculate_error.txt
+[TL;DR]Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  Ts/call  Ts/call  name    
+ 84.10     22.92    22.92                             __gmon_start__
+ 10.78     25.85     2.94                             merge
+  5.18     27.27     1.41                             calculate_distance_test
+
+Time Execution
 real	0m12.171s
 user	0m35.817s
 sys	0m0.210s
