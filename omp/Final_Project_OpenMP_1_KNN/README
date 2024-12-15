@@ -112,3 +112,56 @@ sys	0m0.218s
 real	0m12.224s
 user	0m35.987s
 sys	0m0.2
+
+
+Optimization by leveraging GCC flags
+The performance did not improve significantly, but the vectorization was enabled.
+Also it is possible to spot the usage of 512-bit SIMD operations (fully utilizing AVX-512 capabilities) for the "64 byte vectors".
+
+gcc -o knn knn_omp.c -lm -pg -O2 -g -fopenmp -fno-trapping-math -mtune=native -march=native -fno-math-errno -fstrict-aliasing -mprefer-vector-width=512 -fopt-info-vec-missed -fopt-info-vec=vec_report.txt
+
+cat vec_report.txt
+knn.c:224:13: optimized: loop vectorized using 16 byte vectors
+knn.c:226:15: optimized: loop vectorized using 16 byte vectors
+knn.c:224:13: optimized: loop vectorized using 16 byte vectors
+knn.c:226:15: optimized: loop vectorized using 16 byte vectors
+knn.c:224:13: optimized: loop vectorized using 16 byte vectors
+knn.c:226:15: optimized: loop vectorized using 16 byte vectors
+knn.c:224:13: optimized: loop vectorized using 16 byte vectors
+knn.c:226:15: optimized: loop vectorized using 16 byte vectors
+knn.c:224:13: optimized: loop vectorized using 16 byte vectors
+knn.c:226:15: optimized: loop vectorized using 16 byte vectors
+knn.c:224:13: optimized: loop vectorized using 16 byte vectors
+knn.c:226:15: optimized: loop vectorized using 16 byte vectors
+knn.c:224:13: optimized: loop vectorized using 64 byte vectors
+knn.c:224:13: optimized: loop vectorized using 32 byte vectors
+knn.c:226:15: optimized: loop vectorized using 64 byte vectors
+knn.c:224:13: optimized: loop vectorized using 64 byte vectors
+knn.c:224:13: optimized: loop vectorized using 32 byte vectors
+knn.c:226:15: optimized: loop vectorized using 64 byte vectors
+knn.c:224:13: optimized: loop vectorized using 64 byte vectors
+knn.c:224:13: optimized: loop vectorized using 32 byte vectors
+knn.c:226:15: optimized: loop vectorized using 64 byte vectors
+knn.c:224:13: optimized: loop vectorized using 64 byte vectors
+knn.c:224:13: optimized: loop vectorized using 32 byte vectors
+knn.c:226:15: optimized: loop vectorized using 64 byte vectors
+
+
+Time Execution for GCC flags
+real	0m12.327s
+user	0m36.229s
+sys	0m0.239s
+
+real	0m12.316s
+user	0m36.442s
+sys	0m0.220s
+
+real	0m12.204s
+user	0m36.003s
+sys	0m0.199s
+
+
+Next steps:
+- Improve data alignment and memory access patterns
+- Validate the actual usage of AVX-512 instructions by inspecting the generated assembly code
+- Try to install likwid and use it to profile the code in the FT3 cluster.
