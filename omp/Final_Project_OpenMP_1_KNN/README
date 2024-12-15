@@ -38,6 +38,7 @@ real	0m46.443s
 user	0m46.028s
 sys	0m0.303s
 
+Average: 46.276s (sequential execution)
 
 
 export OMP_NUM_THREADS=8
@@ -66,6 +67,9 @@ real	0m32.468s
 user	0m49.803s
 sys	0m0.239s
 
+Average: 32.386s (parallel execution)
+Speedup: 1.4x
+
 Time execution for KNN with parallelism in loops (calculate_test + calculate_distance_test)
 gcc -o knn knn_omp.c -lm -pg -O2 -g -fopenmp
 gprof knn gmon.out > profile_calculate_test__calculate_distance_test.txt
@@ -91,6 +95,9 @@ real	0m29.047s
 user	0m36.002s
 sys	0m0.265s
 
+Average: 28.849s (parallel execution)
+Speedup: 1.6x
+
 Time execution for KNN with parallelism in loops (calculate_test + calculate_distance_test + calculate_error)
 gcc -o knn knn_omp.c -lm -pg -O2 -g -fopenmp
 gprof knn gmon.out > profile_calculate_test__calculate_distance_test__calculate_error.txt
@@ -114,6 +121,8 @@ real	0m12.224s
 user	0m35.987s
 sys	0m0.2
 
+Average: 12.174s (parallel execution)
+Speedup: 3.8x
 
 Optimization by leveraging GCC flags
 The performance did not improve significantly, but the vectorization was enabled.
