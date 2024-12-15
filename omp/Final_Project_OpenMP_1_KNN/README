@@ -1,0 +1,78 @@
+After running the sequential implementation of the knn code and running gprof to profile the code, 
+the report shows that calculate_test is a wrapper for calculate_distance_test, contributing 0.18% self-time but driving calls to calculate_distance_test.
+
+So I decided to parallelize the calculate_test function, which is the main function that calls the calculate_distance_test function.
+
+After running the parallel implementation of the knn code and running gprof to profile the code again, some improvements were observed in the profile report. 
+Also the execution time was reduced: from 46s to 32s (average). Bear in mind that the 8 threads were used in the parallel implementation (OMP_NUM_THREADS=8).
+
+Then I decided to also parallelize the calculate_distance_test function , which is the main function that calls the calculate_error function.
+It was possible to eliminate one for loop, so the execution time was reduced: from 32s to 28s (average).
+
+Finally, I decided to parallelize the calculate_error function, which is the main function that calls the calculate_distance_test function and also contributes with 28% of total time - as the gprof statistics shows.
+With this last parallelization, the execution time was reduced: from 28s to 12s (average).
+
+Time execution for KNN sequential
+gcc -o knn knn.c -lm -pg -O2 -g
+gprof knn gmon.out > profile_sequential.txt
+real	0m46.293s
+user	0m45.929s
+sys	0m0.247s
+
+real	0m46.092s
+user	0m45.679s
+sys	0m0.295s
+
+real	0m46.443s
+user	0m46.028s
+sys	0m0.303s
+
+
+
+export OMP_NUM_THREADS=8
+
+Time execution for KNN with parallelism in loops (calculate_test) function
+gcc -o knn knn_omp.c -lm -pg -O2 -g -fopenmp
+gprof knn gmon.out > profile_calculate_test.txt
+
+real	0m32.295s
+user	0m49.355s
+sys	0m0.206s
+
+real	0m32.394s
+user	0m49.586s
+sys	0m0.216s
+
+real	0m32.468s
+user	0m49.803s
+sys	0m0.239s
+
+Time execution for KNN with parallelism in loops (calculate_test + calculate_distance_test)
+gcc -o knn knn_omp.c -lm -pg -O2 -g -fopenmp
+gprof knn gmon.out > profile_calculate_test__calculate_distance_test.txt
+real	0m28.757s
+user	0m35.249s
+sys	0m0.245s
+
+real	0m28.745s
+user	0m35.138s
+sys	0m0.251s
+
+real	0m29.047s
+user	0m36.002s
+sys	0m0.265s
+
+Time execution for KNN with parallelism in loops (calculate_test + calculate_distance_test + calculate_error)
+gcc -o knn knn_omp.c -lm -pg -O2 -g -fopenmp
+gprof knn gmon.out > profile_calculate_test__calculate_distance_test__calculate_error.txt
+real	0m12.171s
+user	0m35.817s
+sys	0m0.210s
+
+real	0m12.127s
+user	0m35.844s
+sys	0m0.218s
+
+real	0m12.224s
+user	0m35.987s
+sys	0m0.2
