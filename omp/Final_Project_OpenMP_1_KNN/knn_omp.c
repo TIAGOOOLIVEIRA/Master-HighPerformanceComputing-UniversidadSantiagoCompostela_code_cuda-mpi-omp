@@ -5,6 +5,11 @@
 #include<float.h>
 #include <omp.h>
 
+
+//export OMP_NUM_THREADS=8
+//gcc -o knn knn_omp.c -lm -pg -O2 -g -fopenmp
+
+
 struct values{
   float distance;
   int index;
