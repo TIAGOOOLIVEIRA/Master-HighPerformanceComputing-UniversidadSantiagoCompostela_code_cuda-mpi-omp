@@ -70,7 +70,10 @@ void test_flattened() {
 }
 
 int main() {
-    
+    LIKWID_MARKER_INIT;
+    LIKWID_MARKER_REGISTER("malloc2d");
+    LIKWID_MARKER_REGISTER("flattened");
+
     LIKWID_MARKER_START("malloc2d");
     test_malloc2d();
     LIKWID_MARKER_STOP("malloc2d");
@@ -78,6 +81,8 @@ int main() {
     LIKWID_MARKER_START("flattened");    
     test_flattened();
     LIKWID_MARKER_STOP("flattened");
+    
+    LIKWID_MARKER_CLOSE;
 
     return 0;
 }
