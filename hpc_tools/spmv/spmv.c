@@ -124,36 +124,37 @@ int main(int argc, char *argv[])
     printf("Result is wrong!\n");
 
 
-  //
-  // Let's try now SpMV: Sparse Matrix - Dense Vector computation
-  //
+    //
+    // Sparse computation using your own implementation
+    //
+    printf("\nSparse computation\n------------------\n");
 
-  // Convert mat to a sparse format: CSR
-  // Use the gsl_spmatrix struct as datatype
+    // Time the conversion to GSL
+    timestamp(&start);
 
-  //
-  // Sparse computation using GSL's sparse algebra functions
-  //
+    // Convert dense matrix and vector to GSL structures
+    GSLData gsl_data = convert_to_gsl(size, mat, vec);
 
-  //
-  // Your own sparse implementation
-  //
+    timestamp(&now);
+    printf("Time taken by convert_to_gsl (gsl-sparse): %ld ms\n", diff_milli(&start, &now));
 
-  // Compare times (and computation correctness!)
+    // Time the computation
+    timestamp(&start);
+
+    // Perform sparse matrix-vector multiplication
+    compute_sparse(size, gsl_data, mysol);
+
+    timestamp(&now);
+    printf("Time taken by compute_sparse (gsl-matmul): %ld ms\n", diff_milli(&start, &now));
+
+    // Validate the result
+    if (check_result(refsol, mysol, size) == 1) {
+        printf("Result is correct for my_sparse!\n");
+    } else {
+        printf("Result is incorrect for my_sparse!\n");
+    }
 
 
-  // Free resources
-  //timestamp(&start);
-  //my_sparse(size, mat, vec, mysol);
-  //timestamp(&now);
-  //printf("\n\nTime taken by my sparse (GSL based) matrix-vector product: %ld ms\n", diff_milli(&start, &now));
-
-  //if (check_result(refsol, mysol, size) == 1)
-  //  printf("Result is ok for sparse!\n");
-  //else
-  //  printf("Result is wrong for sparse!\n");
-
-//
     // Sparse computation using CSR solver
     //
     printf("\nCSR Sparse computation\n------------------\n");
@@ -245,6 +246,10 @@ int main(int argc, char *argv[])
   free(csc.values);
   free(csc.row_indices);
   free(csc.col_pointers);
-  
+
+  //free gsl
+  gsl_spmatrix_free(gsl_data.spmat);
+  gsl_vector_free(gsl_data.gsl_vec);
+
   return 0;
 }
