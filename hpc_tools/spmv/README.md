@@ -32,13 +32,44 @@ Perf:
 
 
 
+$module load openblas
 
     -O0
-    gcc -O0 -lopenblas -lgslcblas spmv.c timer.c my_dense.c my_csr.c -o spmv
+    gcc -O0 -lopenblas -lgslcblas spmv.c timer.c my_dense.c my_csr.c my_coo.c my_csc.c -o spmv
     My_Dense    My_coo  My_csr  My_csc
-#1 835                  257
-#2 841                  256
-#3 850                  257
-#4 841                  280
-#5 883                  261
+#1 835          324     257     369
+#2 841          324     256     291
+#3 850          375     257     290
+#4 841          325     280     311
+#5 883          326     261     371
+avg
+
+    -O2 -fno-tree-vectorize
+    gcc -O2 -fno-tree-vectorize -lopenblas -lgslcblas spmv.c timer.c my_dense.c my_csr.c my_coo.c my_csc.c -o spmv
+    My_Dense    My_coo  My_csr  My_csc
+#1  448         185     89      79
+#2  480         185     116     83
+#3  493         185     89      77
+#4  496         185     90      82
+#5  474         186     96      86
+avg
+
+    -O3
+    gcc -O3 -lopenblas -lgslcblas spmv.c timer.c my_dense.c my_csr.c my_coo.c my_csc.c -o spmv
+    My_Dense    My_coo  My_csr  My_csc
+#1  358         186     91      82
+#2  358         185     90      77
+#3  362         185     90      78
+#4  356         184     90      80
+#5  361         185     90      81
+avg
+
+    -Ofast
+    gcc -Ofast -lopenblas -lgslcblas spmv.c timer.c my_dense.c my_csr.c my_coo.c my_csc.c -o spmv
+    My_Dense    My_coo  My_csr  My_csc
+#1  361         185     91      78
+#2  368         185     91      79
+#3  358         185     89      79
+#4  361         185     91      81
+#5  360         184     91      81
 avg
