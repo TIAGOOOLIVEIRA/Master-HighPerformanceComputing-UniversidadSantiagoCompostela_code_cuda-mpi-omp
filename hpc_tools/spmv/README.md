@@ -67,9 +67,9 @@ avg
     -Ofast
     gcc -Ofast -lopenblas -lgslcblas spmv.c timer.c my_dense.c my_csr.c my_coo.c my_csc.c -o spmv
     My_Dense    My_coo  My_csr  My_csc
-#1  361         185     91      78
-#2  368         185     91      79
-#3  358         185     89      79
-#4  361         185     91      81
-#5  360         184     91      81
+#1  361         185     91      75
+#2  368         185     91      73
+#3  358         185     89      73
+#4  361         185     91      71
+#5  360         184     91      68
 avg
