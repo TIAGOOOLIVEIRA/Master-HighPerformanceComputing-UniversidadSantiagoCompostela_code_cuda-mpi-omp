@@ -35,7 +35,7 @@ Perf:
 $module load openblas
 
     -O0
-    gcc -O0 -lopenblas -lgslcblas spmv.c timer.c my_dense.c my_csr.c my_coo.c my_csc.c -o spmv
+    gcc -O0 -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
     My_Dense    My_coo  My_csr  My_csc
 #1 835          324     257     369
 #2 841          324     256     291
@@ -45,7 +45,7 @@ $module load openblas
 avg
 
     -O2 -fno-tree-vectorize
-    gcc -O2 -fno-tree-vectorize -lopenblas -lgslcblas spmv.c timer.c my_dense.c my_csr.c my_coo.c my_csc.c -o spmv
+    gcc -O2 -fno-tree-vectorize -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
     My_Dense    My_coo  My_csr  My_csc
 #1  448         185     89      79
 #2  480         185     116     83
@@ -55,7 +55,7 @@ avg
 avg
 
     -O3
-    gcc -O3 -lopenblas -lgslcblas spmv.c timer.c my_dense.c my_csr.c my_coo.c my_csc.c -o spmv
+    gcc -O3 -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
     My_Dense    My_coo  My_csr  My_csc
 #1  358         186     91      82
 #2  358         185     90      77
@@ -65,7 +65,7 @@ avg
 avg
 
     -Ofast
-    gcc -Ofast -lopenblas -lgslcblas spmv.c timer.c my_dense.c my_csr.c my_coo.c my_csc.c -o spmv
+    gcc -Ofast -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
     My_Dense    My_coo  My_csr  My_csc
 #1  361         185     91      75
 #2  368         185     91      73
