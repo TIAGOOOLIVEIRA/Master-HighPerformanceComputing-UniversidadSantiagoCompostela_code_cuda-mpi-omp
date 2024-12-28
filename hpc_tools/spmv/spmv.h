@@ -27,7 +27,7 @@ typedef struct {
 int my_dense(const unsigned int n, const double mat[], double vec[], double result[]);
 void spmv_csc(CSCMatrix *matrix, double *vec, double *result);
 CSCMatrix convert_to_csc(double *mat, int size);
-void spmv_coo(COOMatrix *matrix, double *vec, double *result);
-COOMatrix convert_to_coo(double *mat, int size);
+void spmv_coo(const COOMatrix *restrict matrix, const double *restrict vec, double *result);
+COOMatrix convert_to_coo(const double *restrict mat, int size);
 void my_csr(CSRMatrix *csr, const double *restrict vec, double *restrict result);
 CSRMatrix convert_to_csr(const double *restrict mat, int size);
