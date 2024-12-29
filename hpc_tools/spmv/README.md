@@ -31,10 +31,13 @@ Table 1 icc Benchmark - 16384 x 16384 matrices, 10% non-zero elements
 
 ## Memory of work:
 - GCC 
+
 $module load openblas
 
-    -O0
+
+    O0
     gcc -O0 -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
+
 |       | My_Dense | My_coo | My_csr | My_csc | Ref   |
 |-------|----------|--------|--------|--------|-------|
 | #1    | 768      | 131    | 105    | 121    | 74    |
@@ -43,8 +46,9 @@ $module load openblas
 | **avg** | 768      | 131    | 104.7  | 120.3  | 74.3  |
 
 
-    -O2 -fno-tree-vectorize
+    O2 -fno-tree-vectorize
     gcc -O2 -fno-tree-vectorize -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
+
 |       | My_Dense | My_coo | My_csr | My_csc | Ref   |
 |-------|----------|--------|--------|--------|-------|
 | #1    | 361      | 83     | 35     | 30     | 75    |
@@ -53,8 +57,9 @@ $module load openblas
 | **avg** | 360      | 76.7   | 35     | 34     | 77.3  |
 
 
-    -O3
+    O3
     gcc -O3 -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
+
 |       | My_Dense | My_coo | My_csr | My_csc | Ref   |
 |-------|----------|--------|--------|--------|-------|
 | #1    | 364      | 74     | 34     | 33     | 74    |
@@ -63,8 +68,9 @@ $module load openblas
 | **avg** | 365.3    | 74.3   | 36     | 32.3   | 75.3  |
 
 
-    -Ofast
+    Ofast
     gcc -Ofast -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
+
 |       | My_Dense | My_coo | My_csr | My_csc | Ref   |
 |-------|----------|--------|--------|--------|-------|
 | #1    | 359      | 74     | 40     | 31     | 74    |
@@ -74,11 +80,13 @@ $module load openblas
 
 
 - ICC 
+
 $module load intel
 
 
-    -O0
+    O0
     icc -O0 spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -lgsl -lgslcblas -lpthread -lm -ldl -o spmv
+
 |       | My_Dense | My_coo | My_csr | My_csc | Ref   |
 |-------|----------|--------|--------|--------|-------|
 | #1    | 760      | 130    | 98     | 109    |       |
@@ -87,8 +95,9 @@ $module load intel
 | **avg** | 766      | 135.7  | 99.7  | 110.7  |       |
 
 
-    -O2 -fno-tree-vectorize
+    O2 -fno-tree-vectorize
     icc -O2 -fno-tree-vectorize spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -lgsl -lgslcblas -lpthread -lm -ldl -o spmv
+
 |       | My_Dense | My_coo | My_csr | My_csc | Ref   |
 |-------|----------|--------|--------|--------|-------|
 | #1    | 338      | 72     | 44     | 28     |       |
@@ -97,8 +106,9 @@ $module load intel
 | **avg** | 337.7    | 72     | 37     | 28     |       |
 
 
-    -O3
+    O3
     icc -O3 spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -lgsl -lgslcblas -lpthread -lm -ldl -o spmv
+
 |       | My_Dense | My_coo | My_csr | My_csc | Ref   |
 |-------|----------|--------|--------|--------|-------|
 | #1    | 151      | 72     | 24     | 28     |       |
@@ -107,8 +117,9 @@ $module load intel
 | **avg** | 150      | 72     | 22.7   | 27.7   |       |
 
 
-    -Ofast
+    Ofast
     icc -Ofast spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -lgsl -lgslcblas -lpthread -lm -ldl -o spmv
+
 |       | My_Dense | My_coo | My_csr | My_csc | Ref   |
 |-------|----------|--------|--------|--------|-------|
 | #1    | 150      | 72     | 22     | 28     |       |
@@ -117,14 +128,14 @@ $module load intel
 | **avg** | 149.7    | 71.7   | 22     | 28.3   |       |
 
 ________________________________________________________________________________________________________
-Issues when loading mkl:
-*mkl not found
+- Issues when loading mkl: *mkl not found
+
 $find / -name "libmkl_core.so" 2>/dev/null
 
-icc -O0 spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -lmkl_intel_lp64 -lmkl_core -lmkl_sequential -lgsl -lgslcblas -lpthread -lm -ldl -o spmv
-/mnt/netapp1/Optcesga_FT2_RHEL7/2020/gentoo/22072020/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../x86_64-pc-linux-gnu/bin/ld: cannot find -lmkl_intel_lp64
-/mnt/netapp1/Optcesga_FT2_RHEL7/2020/gentoo/22072020/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../x86_64-pc-linux-gnu/bin/ld: cannot find -lmkl_core
-/mnt/netapp1/Optcesga_FT2_RHEL7/2020/gentoo/22072020/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../x86_64-pc-linux-gnu/bin/ld: cannot find -lmkl_sequential
+  - icc -O0 spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -lmkl_intel_lp64 -lmkl_core -lmkl_sequential -lgsl -lgslcblas -lpthread -lm -ldl -o spmv
+  - /mnt/netapp1/Optcesga_FT2_RHEL7/2020/gentoo/22072020/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../x86_64-pc-linux-gnu/bin/ld: cannot find -lmkl_intel_lp64
+  - /mnt/netapp1/Optcesga_FT2_RHEL7/2020/gentoo/22072020/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../x86_64-pc-linux-gnu/bin/ld: cannot find -lmkl_core
+  - /mnt/netapp1/Optcesga_FT2_RHEL7/2020/gentoo/22072020/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../x86_64-pc-linux-gnu/bin/ld: cannot find -lmkl_sequential
 
 
 
