@@ -1,3 +1,5 @@
+#include <gsl/gsl_spblas.h> 
+
 typedef struct {
     double *values;       // Non-zero values
     int *row_indices;     // Row indices of non-zero values
@@ -24,9 +26,17 @@ typedef struct {
     int size;            // Matrix size (n x n)
 } CSRMatrix;
 
+typedef struct {
+    gsl_spmatrix *spmat;
+    gsl_vector *gsl_vec;
+} GSLData;
+
 int my_dense(const unsigned int n, const double mat[], double vec[], double result[]);
-int my_sparse(const unsigned int n, const double* restrict mat, double* restrict vec, double* restrict result);
-void spmv_csc(CSCMatrix *matrix, double *vec, double *result);
-void spmv_coo(COOMatrix *matrix, double *vec, double *result);
-void my_csr(CSRMatrix *csr, double *restrict vec, double *restrict result);
-CSRMatrix convert_to_csr(double *mat, int size);
+GSLData convert_to_gsl(const unsigned int n, const double *restrict mat, const double *restrict vec);
+void compute_sparse(const unsigned int n, GSLData data, double result[]);
+void spmv_csc(const CSCMatrix *restrict matrix, const double *restrict vec, double *result);
+CSCMatrix convert_to_csc(const double *restrict mat, int size);
+void spmv_coo(const COOMatrix *restrict matrix, const double *restrict vec, double *result);
+COOMatrix convert_to_coo(const double *restrict mat, int size);
+void my_csr(CSRMatrix *csr, const double *restrict vec, double *restrict result);
+CSRMatrix convert_to_csr(const double *restrict mat, int size);

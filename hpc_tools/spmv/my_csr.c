@@ -2,17 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// CSR Matrix Data Structure
-typedef struct {
-    double *values;      // Non-zero values
-    int *col_indices;    // Column indices of non-zero values
-    int *row_ptr;        // Row pointer array
-    int nnz;             // Number of non-zero elements
-    int size;            // Matrix size (n x n)
-} CSRMatrix;
-
 // Function to convert dense matrix to CSR format
-CSRMatrix convert_to_csr(double *mat, int size) {
+CSRMatrix convert_to_csr(const double *restrict mat, int size) {
     int nnz = 0;
 
     // Count non-zero elements
@@ -46,7 +37,7 @@ CSRMatrix convert_to_csr(double *mat, int size) {
     return csr;
 }
 
-void my_csr(CSRMatrix *csr, double *restrict vec, double *restrict result) {
+void my_csr(CSRMatrix *csr, const double *restrict vec, double *restrict result) {
     int size = csr->size;
 
     // Initialize result to zero

@@ -4,13 +4,13 @@
 #include <gsl/gsl_cblas.h>      // CBLAS in GSL (the GNU Scientific Library)
 #include <gsl/gsl_spmatrix.h>
 #include <gsl/gsl_vector.h>
+//#include <gsl/gsl_spblas.h> 
 #include "timer.h"
 #include "spmv.h"
 
-#define DEFAULT_SIZE 1024
-#define DEFAULT_DENSITY 0.25
+#define DEFAULT_SIZE 16384
+#define DEFAULT_DENSITY 0.1
 
-//export OMP_NUM_THREADS=2
 //gcc `ls *.o` -lopenblas -fopenmp -o spmv
 //ldd ./spmv
 //./spmv
@@ -18,31 +18,6 @@
 //gcc -O2 -ftree-vectorize -fstrict-aliasing -fopt-info-vec-optimized -fopt-info-vec=vec_report_gcc.txt spmv.c -c
 //perf stat ./spmv
 
-typedef struct {
-    double *values;       // Non-zero values
-    int *row_indices;     // Row indices of non-zero values
-    int *col_pointers;    // Column pointers (start of each column in `values`)
-    int nnz;              // Number of non-zero elements
-    int size;             // Matrix size (n x n)
-} CSCMatrix;
-
-// COO Matrix Data Structure
-typedef struct {
-    double *values;  // Non-zero values
-    int *row_indices;  // Row indices of non-zero values
-    int *col_indices;  // Column indices of non-zero values
-    int nnz;  // Number of non-zero elements
-    int size;  // Matrix size (n x n)
-} COOMatrix;
-
-// CSR Matrix Data Structure
-typedef struct {
-    double *values;      // Non-zero values
-    int *col_indices;    // Column indices of non-zero values
-    int *row_ptr;        // Row pointer array
-    int nnz;             // Number of non-zero elements
-    int size;            // Matrix size (n x n)
-} CSRMatrix;
 
 unsigned int populate_sparse_matrix(double mat[], unsigned int n, double density, unsigned int seed)
 {
@@ -149,42 +124,48 @@ int main(int argc, char *argv[])
     printf("Result is wrong!\n");
 
 
-  //
-  // Let's try now SpMV: Sparse Matrix - Dense Vector computation
-  //
+    //
+    // Sparse computation using your own implementation
+    //
+    printf("\nSparse computation\n------------------\n");
 
-  // Convert mat to a sparse format: CSR
-  // Use the gsl_spmatrix struct as datatype
+    // Time the conversion to GSL
+    timestamp(&start);
 
-  //
-  // Sparse computation using GSL's sparse algebra functions
-  //
+    // Convert dense matrix and vector to GSL structures
+    GSLData gsl_data = convert_to_gsl(size, mat, vec);
 
-  //
-  // Your own sparse implementation
-  //
+    timestamp(&now);
+    printf("Time taken by convert_to_gsl (Ref table 1:gsl-sparse): %ld ms\n", diff_milli(&start, &now));
 
-  // Compare times (and computation correctness!)
+    // Time the computation
+    timestamp(&start);
+
+    // Perform sparse matrix-vector multiplication
+    compute_sparse(size, gsl_data, mysol);
+
+    timestamp(&now);
+    printf("Time taken by compute_sparse (Ref table 1:gsl-matmul): %ld ms\n", diff_milli(&start, &now));
+
+    // Validate the result
+    if (check_result(refsol, mysol, size) == 1) {
+        printf("Result is correct for my_sparse!\n");
+    } else {
+        printf("Result is incorrect for my_sparse!\n");
+    }
 
 
-  // Free resources
-  timestamp(&start);
-  my_sparse(size, mat, vec, mysol);
-  timestamp(&now);
-  printf("\n\nTime taken by my sparse matrix-vector product: %ld ms\n", diff_milli(&start, &now));
-
-  if (check_result(refsol, mysol, size) == 1)
-    printf("Result is ok for sparse!\n");
-  else
-    printf("Result is wrong for sparse!\n");
-
-//
     // Sparse computation using CSR solver
     //
     printf("\nCSR Sparse computation\n------------------\n");
 
     // Convert dense matrix to CSR format
+    timestamp(&start);
     CSRMatrix csr = convert_to_csr(mat, size);
+
+    timestamp(&now);
+    printf("Time taken by conversion to CSR computation: %ld ms\n", diff_milli(&start, &now));
+
 
     // Measure time for CSR solver
     timestamp(&start);
@@ -199,13 +180,76 @@ int main(int argc, char *argv[])
   else
     printf("Result is wrong for CSR sparse!\n");
 
+
+    //
+    // COO Sparse computation
+    //
+    printf("\nCOO Sparse computation\n------------------\n");
+
+    // Convert dense matrix to COO format
+    timestamp(&start);
+    COOMatrix coo = convert_to_coo(mat, size);
+    timestamp(&now);
+    printf("Time taken by conversion to COO: %ld ms\n", diff_milli(&start, &now));
+
+    // Measure time for COO solver
+    timestamp(&start);
+    spmv_coo(&coo, vec, mysol);
+    timestamp(&now);
+    printf("Time taken by COO sparse computation: %ld ms\n", diff_milli(&start, &now));
+
+    if (check_result(refsol, mysol, size) == 1)
+        printf("Result is ok for COO sparse!\n");
+    else
+        printf("Result is wrong for COO sparse!\n");
+
+
+    //
+    // CSC Sparse computation
+    //
+    printf("\nCSC Sparse computation\n------------------\n");
+
+    // Convert dense matrix to CSC format
+    timestamp(&start);
+    CSCMatrix csc = convert_to_csc(mat, size);
+    timestamp(&now);
+    printf("Time taken by conversion to CSC: %ld ms\n", diff_milli(&start, &now));
+
+    // Measure time for CSC solver
+    timestamp(&start);
+    spmv_csc(&csc, vec, mysol);
+    timestamp(&now);
+    printf("Time taken by CSC sparse computation: %ld ms\n", diff_milli(&start, &now));
+
+    if (check_result(refsol, mysol, size) == 1)
+        printf("Result is ok for CSC sparse!\n");
+    else
+        printf("Result is wrong for CSC sparse!\n");
+
+
   free(mat);
   free(vec);
   free(refsol);
   free(mysol);
+
+  //free csr
   free(csr.values);
   free(csr.col_indices);
   free(csr.row_ptr);
+
+  //free COO
+  free(coo.row_indices);
+  free(coo.col_indices);
+  free(coo.values);
+
+  //free CSC
+  free(csc.values);
+  free(csc.row_indices);
+  free(csc.col_pointers);
+
+  //free gsl
+  gsl_spmatrix_free(gsl_data.spmat);
+  gsl_vector_free(gsl_data.gsl_vec);
 
   return 0;
 }
