@@ -138,6 +138,25 @@ $find / -name "libmkl_core.so" 2>/dev/null
   - /mnt/netapp1/Optcesga_FT2_RHEL7/2020/gentoo/22072020/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../x86_64-pc-linux-gnu/bin/ld: cannot find -lmkl_sequential
 
 
+________________________________________________________________________________________________________
+- Make
+
+  -- make -f Makefile.gcc
+  - make -f Makefile.gcc spmv_O2
+  - make -f Makefile.gcc spmv_O0
+  - make -f Makefile.gcc spmv_O3
+  - make -f Makefile.gcc spmv_Ofast
+  - make -f Makefile.gcc clean
+
+
+  -- make -f Makefile.icc
+  - make -f Makefile.icc spmv_O0
+  - make -f Makefile.icc spmv_O2
+  - make -f Makefile.icc spmv_O3
+  - make -f Makefile.icc spmv_Ofast
+  - make -f Makefile.icc clean
+
+
 
 ________________________________________________________________________________________________________
 ## Future Work

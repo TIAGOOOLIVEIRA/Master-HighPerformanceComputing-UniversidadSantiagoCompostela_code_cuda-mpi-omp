@@ -1,0 +1,25 @@
+# Compiler and flags
+CC = gcc
+LIBS = -lopenblas -lgsl -lgslcblas
+SRC = spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c
+OUT = spmv
+
+# Targets for different optimization levels
+.PHONY: all clean
+
+all: spmv_O0 spmv_O2 spmv_O3 spmv_Ofast
+
+spmv_O0: $(SRC)
+	$(CC) -O0 $(SRC) $(LIBS) -o spmv_O0
+
+spmv_O2: $(SRC)
+	$(CC) -O2 -fno-tree-vectorize $(SRC) $(LIBS) -o spmv_O2
+
+spmv_O3: $(SRC)
+	$(CC) -O3 $(SRC) $(LIBS) -o spmv_O3
+
+spmv_Ofast: $(SRC)
+	$(CC) -Ofast $(SRC) $(LIBS) -o spmv_Ofast
+
+clean:
+	rm -f spmv_O0 spmv_O2 spmv_O3 spmv_Ofast
