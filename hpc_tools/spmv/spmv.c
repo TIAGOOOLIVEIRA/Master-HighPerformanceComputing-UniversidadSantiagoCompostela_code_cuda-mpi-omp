@@ -9,7 +9,7 @@
 #include "spmv.h"
 
 #define DEFAULT_SIZE 16384
-#define DEFAULT_DENSITY 0.25
+#define DEFAULT_DENSITY 0.1
 
 //gcc `ls *.o` -lopenblas -fopenmp -o spmv
 //ldd ./spmv
@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
     GSLData gsl_data = convert_to_gsl(size, mat, vec);
 
     timestamp(&now);
-    printf("Time taken by convert_to_gsl (gsl-sparse): %ld ms\n", diff_milli(&start, &now));
+    printf("Time taken by convert_to_gsl (Ref table 1:gsl-sparse): %ld ms\n", diff_milli(&start, &now));
 
     // Time the computation
     timestamp(&start);
@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
     compute_sparse(size, gsl_data, mysol);
 
     timestamp(&now);
-    printf("Time taken by compute_sparse (gsl-matmul): %ld ms\n", diff_milli(&start, &now));
+    printf("Time taken by compute_sparse (Ref table 1:gsl-matmul): %ld ms\n", diff_milli(&start, &now));
 
     // Validate the result
     if (check_result(refsol, mysol, size) == 1) {

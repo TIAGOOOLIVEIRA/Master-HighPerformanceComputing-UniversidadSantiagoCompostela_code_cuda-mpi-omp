@@ -22,54 +22,47 @@ My_coo
 My_csr
 My_csc
 
-
-Profiling (to spot optimization made on the code by the compiler):
+________________________________________________________________________________________________________
+Future Work: Profiling (to spot optimization made on the code by the compiler):
 Likwid:
 Gprof:
 Valgrind:
 VTune:
 Perf:
 
-
+Memory of work:
 
 $module load openblas
 
     -O0
     gcc -O0 -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
-    My_Dense    My_coo  My_csr  My_csc
-#1 835          324     257     369
-#2 841          324     256     291
-#3 850          375     257     290
-#4 841          325     280     311
-#5 883          326     261     371
+    My_Dense    My_coo  My_csr  My_csc  Ref
+#1  768         131     105     121     74
+#2  767         131     105     120     74
+#3  769         131     104     120     75
 avg
 
     -O2 -fno-tree-vectorize
     gcc -O2 -fno-tree-vectorize -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
-    My_Dense    My_coo  My_csr  My_csc
-#1  448         185     89      79
-#2  480         185     116     83
-#3  493         185     89      77
-#4  496         185     90      82
-#5  474         186     96      86
+    My_Dense    My_coo  My_csr  My_csc  Ref
+#1  361         83      35      30      75
+#2  358         74      35      37      83
+#3  361         73      35      35      74
 avg
 
     -O3
     gcc -O3 -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
-    My_Dense    My_coo  My_csr  My_csc
-#1  358         186     91      82
-#2  358         185     90      77
-#3  362         185     90      78
-#4  356         184     90      80
-#5  361         185     90      81
+    My_Dense    My_coo  My_csr  My_csc  Ref
+#1  364         74      34      33      74
+#2  371         75      35      34      78
+#3  361         74      39      30      74
 avg
 
     -Ofast
     gcc -Ofast -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
-    My_Dense    My_coo  My_csr  My_csc
-#1  361         185     91      75
-#2  368         185     91      73
-#3  358         185     89      73
-#4  361         185     91      71
-#5  360         184     91      68
+    My_Dense    My_coo  My_csr  My_csc  Ref
+#1  359         74      40      31      74
+#2  371         75      39      32      75
+#3  367         73      34      30      74
+
 avg
