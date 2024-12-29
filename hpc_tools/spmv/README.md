@@ -9,12 +9,14 @@
 • The last column, Ref, will show the reference time for each operation, using GSL in Table 1 and Intel MKL in Table 2.
 
 Table 1 gcc Benchmark - 16384 x 16384 matrices, 10% non-zero elements
-            O0  02-novec    03-vec  Ofast-vec
-My_Dense    768 360         365.3   365.7    
-My_coo      131 76.7        74.3    74
-My_csr      104.7           36      37.7
-My_csc      120.3           32.3    31
-Ref         74.3            75.3    74.3
+| SpMV-func   | O0    | 02-novec | 03-vec | Ofast-vec |
+|-------------|--------|----------|--------|-----------|
+| My_Dense    | 768    | 360      | 365.3  | 365.7     |
+| My_coo      | 131    | 76.7     | 74.3   | 74        |
+| My_csr      | 104.7  | 35       | 36     | 37.7      |
+| My_csc      | 120.3  | 34       | 32.3   | 31        |
+| Ref         | 74.3   | 77.3     | 75.3   | 74.3      |
+
 
 Table 1 icc Benchmark - 16384 x 16384 matrices, 10% non-zero elements
             O0  02-novec    03-vec  Ofast-vec   Ref
@@ -37,32 +39,39 @@ $module load openblas
 
     -O0
     gcc -O0 -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
-    My_Dense    My_coo  My_csr  My_csc  Ref
-#1  768         131     105     121     74
-#2  767         131     105     120     74
-#3  769         131     104     120     75
-avg 768         131     104.7   120.3   74.3
+|       | My_Dense | My_coo | My_csr | My_csc | Ref   |
+|-------|----------|--------|--------|--------|-------|
+| #1    | 768      | 131    | 105    | 121    | 74    |
+| #2    | 767      | 131    | 105    | 120    | 74    |
+| #3    | 769      | 131    | 104    | 120    | 75    |
+| **avg** | 768      | 131    | 104.7  | 120.3  | 74.3  |
+
 
     -O2 -fno-tree-vectorize
     gcc -O2 -fno-tree-vectorize -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
-    My_Dense    My_coo  My_csr  My_csc  Ref
-#1  361         83      35      30      75
-#2  358         74      35      37      83
-#3  361         73      35      35      74
-avg 360         76.7    35      34      77.3
+|       | My_Dense | My_coo | My_csr | My_csc | Ref   |
+|-------|----------|--------|--------|--------|-------|
+| #1    | 361      | 83     | 35     | 30     | 75    |
+| #2    | 358      | 74     | 35     | 37     | 83    |
+| #3    | 361      | 73     | 35     | 35     | 74    |
+| **avg** | 360      | 76.7   | 35     | 34     | 77.3  |
+
 
     -O3
     gcc -O3 -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
-    My_Dense    My_coo  My_csr  My_csc  Ref
-#1  364         74      34      33      74
-#2  371         75      35      34      78
-#3  361         74      39      30      74
-avg 365.3       74.3    36      32.3    75.3
+|       | My_Dense | My_coo | My_csr | My_csc | Ref   |
+|-------|----------|--------|--------|--------|-------|
+| #1    | 364      | 74     | 34     | 33     | 74    |
+| #2    | 371      | 75     | 35     | 34     | 78    |
+| #3    | 361      | 74     | 39     | 30     | 74    |
+| **avg** | 365.3    | 74.3   | 36     | 32.3   | 75.3  |
+
 
     -Ofast
     gcc -Ofast -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
-    My_Dense    My_coo  My_csr  My_csc  Ref
-#1  359         74      40      31      74
-#2  371         75      39      32      75
-#3  367         73      34      30      74
-avg 365.7       74      37.7    31      74.3
+|       | My_Dense | My_coo | My_csr | My_csc | Ref   |
+|-------|----------|--------|--------|--------|-------|
+| #1    | 359      | 74     | 40     | 31     | 74    |
+| #2    | 371      | 75     | 39     | 32     | 75    |
+| #3    | 367      | 73     | 34     | 30     | 74    |
+| **avg** | 365.7    | 74     | 37.7   | 31     | 74.3  |
