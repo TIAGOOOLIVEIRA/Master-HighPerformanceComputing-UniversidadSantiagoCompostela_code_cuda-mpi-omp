@@ -112,6 +112,7 @@ int main(void) {
         fprintf(stderr, "Failed to load kernel.\n");
         exit(1);
     }
+
     source_str = (char*)malloc(MAX_SOURCE_SIZE);
     source_size = fread( source_str, 1, MAX_SOURCE_SIZE, fp);
     fclose( fp );
@@ -193,6 +194,7 @@ int main(void) {
             ret = clSetKernelArg(cpuKernel, 0, sizeof(cl_mem), (void *)&a_mem_obj);
             ret |= clSetKernelArg(cpuKernel, 1, sizeof(cl_mem), (void *)&b_mem_obj);
             ret |= clSetKernelArg(cpuKernel, 2, sizeof(cl_mem), (void *)&c_mem_obj);
+            ret |= clSetKernelArg(cpuKernel, 3, sizeof(int), &LIST_SIZE);
                 checkError(ret, "Error when Setting kernel CPU arguments");
 
             size_t localSize = 64; // Process in groups of 64
@@ -278,6 +280,7 @@ int main(void) {
             ret = clSetKernelArg(gpuKernel, 0, sizeof(cl_mem), (void *)&a_mem_obj);
             ret |= clSetKernelArg(gpuKernel, 1, sizeof(cl_mem), (void *)&b_mem_obj);
             ret |= clSetKernelArg(gpuKernel, 2, sizeof(cl_mem), (void *)&c_mem_obj);
+            ret |= clSetKernelArg(cpuKernel, 3, sizeof(int), &LIST_SIZE);
                 checkError(ret, "Error when Setting up GPU kernel arguments");
 
             size_t localSize = 64; // Process in groups of 64
