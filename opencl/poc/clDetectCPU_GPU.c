@@ -1,6 +1,29 @@
-#include <CL/cl.h>
+//#include <CL/cl.h>
+//if you are using MacOS, you should use the following include
+//#include <OpenCL/opencl.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifdef __APPLE__
+#include <OpenCL/opencl.h>
+#elif defined(__linux__)
+#include <CL/cl.h>
+#elif defined(_WIN32) || defined(_WIN64)
+#include <CL/cl.h>
+#else
+#error "Unsupported platform"
+#endif
+
+
+//to check if OpenCL is installd on MacOS
+//ls /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenCL.framework/Headers/cl.h
+
+//brew install clinfo
+//clinfo
+
+//For HPC cluster (FT3)
+//compute --gpu
+//module load cesga/2020 pocl/1.6-CUDA-system
 
 int main() {
     cl_uint numPlatforms;

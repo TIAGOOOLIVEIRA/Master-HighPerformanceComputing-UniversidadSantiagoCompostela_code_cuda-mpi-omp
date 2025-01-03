@@ -22,10 +22,6 @@ endif
 oclHeterogDevicesProc: oclHeterogDevicesProc.c $(COMMON_DIR)/wtime.c $(COMMON_DIR)/device_info.c
 	$(CC) $^ $(CCFLAGS) $(OPTIONS) -I $(COMMON_DIR) -o $@
 
-# Rule to compile clDetectCPU_GPU
-clDetectCPU_GPU: clDetectCPU_GPU.c
-	$(CC) clDetectCPU_GPU.c $(CCFLAGS) $(OPTIONS) -o clDetectCPU_GPU
-
 main: oclHeterogDevicesProc.c
 	gcc -Wall -g oclHeterogDevicesProc.c -o oclHeterogDevicesProc $(OPTIONS)
 
