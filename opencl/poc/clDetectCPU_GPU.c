@@ -25,6 +25,16 @@
 //compute --gpu
 //module load cesga/2020 pocl/1.6-CUDA-system
 
+/*
+Since Apple integrates both the CPU and GPU into a single unified architecture, and Apple’s OpenCL implementation treats the entire chip as a GPU platform.
+
+The output of the code will be on a MacOS M1 Pro:
+    Platform 1:
+    No CPU devices found on this platform.
+    GPU devices available: 1
+        GPU Device 1: Apple M1 Pro
+*/
+
 int main() {
     cl_uint numPlatforms;
     cl_platform_id *platforms;
