@@ -15,9 +15,20 @@ void func(const dt w[K], const dt data_IN[N][N], dt data_OUT[N][N]) {
         PIPE_LOOP: for (int j = 1; j < N - 1; ++j) {
             #pragma HLS PIPELINE II=1
             //accumulation via tree-height reduction
-            dt accum1 = w[0] * buffer[i - 1][j - 1] + w[1] * buffer[i - 1][j] + w[2] * buffer[i - 1][j + 1];
-            dt accum2 = w[3] * buffer[i][j - 1] + w[4] * buffer[i][j] + w[5] * buffer[i][j + 1];
-            dt accum3 = w[6] * buffer[i + 1][j - 1] + w[7] * buffer[i + 1][j] + w[8] * buffer[i + 1][j + 1];
+            dt accum1 = 0, accum2 = 0, accum3 = 0;
+
+            // Row 1 (k = 0)
+            for (int l = 0; l < 3; ++l) {
+                accum1 += w[0 * 3 + l] * buffer[i - 1][j + l - 1];
+            }
+            // Row 2 (k = 1)
+            for (int l = 0; l < 3; ++l) {
+                accum2 += w[1 * 3 + l] * buffer[i][j + l - 1];
+            }
+            // Row 3 (k = 2)
+            for (int l = 0; l < 3; ++l) {
+                accum3 += w[2 * 3 + l] * buffer[i + 1][j + l - 1];
+            }
 
             dt accum = accum1 + accum2 + accum3;
 
