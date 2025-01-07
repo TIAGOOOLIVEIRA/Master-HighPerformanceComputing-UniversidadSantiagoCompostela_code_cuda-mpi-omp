@@ -1,8 +1,8 @@
 #include "2D_conv.h"
 
-void func(const dt w[K], const dt data_IN[N][N], dt data_OUT[N][N]) {
+void func(const fixed_t w[K], const fixed_t data_IN[N][N], fixed_t data_OUT[N][N]) {
     //On-chip buffer, to improve performance via local memory is used
-    dt buffer[N][N];
+    fixed_t buffer[N][N];
 
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
@@ -15,7 +15,7 @@ void func(const dt w[K], const dt data_IN[N][N], dt data_OUT[N][N]) {
         PIPE_LOOP: for (int j = 1; j < N - 1; ++j) {
             #pragma HLS PIPELINE II=1
             //accumulation via tree-height reduction
-            dt accum1 = 0, accum2 = 0, accum3 = 0;
+            fixed_t accum1 = 0, accum2 = 0, accum3 = 0;
 
             // Row 1 (k = 0)
             for (int l = 0; l < 3; ++l) {
@@ -30,7 +30,7 @@ void func(const dt w[K], const dt data_IN[N][N], dt data_OUT[N][N]) {
                 accum3 += w[2 * 3 + l] * buffer[i + 1][j + l - 1];
             }
 
-            dt accum = accum1 + accum2 + accum3;
+            fixed_t accum = accum1 + accum2 + accum3;
 
             data_OUT[i][j] = accum;
         }

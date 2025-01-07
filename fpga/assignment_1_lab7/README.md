@@ -124,6 +124,24 @@ Since Fixed-point operations are computationally simpler and require fewer resou
 
 The eligible variables for the test would be "buffer" and the accumulators given the data logistc and number of arithmetic operations performed over them.
 
+
+
+#### Fixed-Point data types optimization
+
+The following statistics does not confirm any relevant increase in the performance only by converting the float into Fixed-Point.
+
+Nevertheless, the benefit for best usage of resources is relevant as can be seen mainly in the DSP, BRAM and LUT metrics.
+
+| Modules & Loops                                     | Issue Type | Slack | Latency (cycles) | Latency (ns) | Iteration Latency | Interval | Trip Count | Pipelined | BRAM       | DSP       | FF          | LUT         | URAM |
+|-----------------------------------------------------|------------|-------|------------------|--------------|-------------------|----------|------------|-----------|------------|-----------|-------------|-------------|------|
+| + func                                              | -          | 0.12  | 29828            | 1.491e+05    | -                 | 29829    | -          | no        | 18 (~0%)   | 10 (~0%)  | 1399 (~0%)  | 2675 (~0%)  | -    |
+|   + func_Pipeline_VITIS_LOOP_19_3_VITIS_LOOP_20_4   | -          | 0.12  | 9621             | 4.810e+04    | -                 | 9621     | -          | no        | -          | 10 (~0%)  | 1091 (~0%)  | 1915 (~0%)  | -    |
+|     o VITIS_LOOP_19_3_VITIS_LOOP_20_4              | -          | 4.25  | 9619             | 4.810e+04    | 17                | 1        | 9604       | yes       | -          | -         | -           | -           | -    |
+| o VITIS_LOOP_12_1                                   | -          | 4.25  | 20200            | 1.010e+05    | 202               | -        | 100        | no        | -          | -         | -           | -           | -    |
+|   o VITIS_LOOP_13_2                                 | -          | 4.25  | 200              | 1.000e+03    | 2                 | -        | 100        | no        | -          | -         | -           | -           | -    |
+
+
+
 ### Resources
   - AWS for FPGA: https://github.com/aws/aws-fpga
   - FPGA for Software Programmer: Pages(40, 41, 46, 133)

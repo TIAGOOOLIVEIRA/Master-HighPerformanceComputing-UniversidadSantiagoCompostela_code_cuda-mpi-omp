@@ -20,10 +20,11 @@ void test_func(const dt w[K], const dt data_IN[N][N], dt data_OUT[N][N]) {
 
 int main() {
     dt w[K], data_IN[N][N], sw_OUT[N][N], hw_OUT[N][N];
+    fixed_t w2[K], data_IN2[N][N], sw_OUT2[N][N], hw_OUT2[N][N];
 
     srand(42);
 
-    std::cout << "Initializing weights and input data:\n";
+    std::cout << "Initializing weights and input data for test:\n";
     for (int i = 0; i < K; ++i) {
         w[i] = rand() % 10;
     }
@@ -34,6 +35,17 @@ int main() {
         }
     }
 
+    std::cout << "Initializing weights and input data for optimizied kernel:\n";
+    for (int i = 0; i < K; ++i) {
+        w2[i] = rand() % 10;
+    }
+
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+            data_IN2[i][j] = i + j;
+        }
+    }  
+
     std::cout << "Running function (test_func):\n";
     auto start_sw = std::chrono::high_resolution_clock::now();
     test_func(w, data_IN, sw_OUT);
@@ -43,7 +55,7 @@ int main() {
 
     std::cout << "Running device function (func):\n";
     auto start_hw = std::chrono::high_resolution_clock::now();
-    func(w, data_IN, hw_OUT);
+    func(w2, data_IN2, hw_OUT2);
     auto end_hw = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed_hw = end_hw - start_hw;
     std::cout << "Device function completed in: " << elapsed_hw.count() << " seconds\n";
@@ -52,9 +64,9 @@ int main() {
     bool success = true;
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
-            if (sw_OUT[i][j] != hw_OUT[i][j]) {
+            if (sw_OUT[i][j] != hw_OUT2[i][j]) {
                 std::cout << "Mismatch at (" << i << ", " << j << "): "
-                          << "test_func_OUT = " << sw_OUT[i][j] << ", func_OUT = " << hw_OUT[i][j] << "\n";
+                          << "test_func_OUT = " << sw_OUT[i][j] << ", func_OUT = " << hw_OUT2[i][j] << "\n";
                 success = false;
             }
         }
