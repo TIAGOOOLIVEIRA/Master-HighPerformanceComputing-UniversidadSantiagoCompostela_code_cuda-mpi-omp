@@ -1,7 +1,7 @@
 OS := $(shell uname)
 OPTIONS:= 
 
-CCFLAGS=-O3 -lm
+CCFLAGS=-O3 -lm -fopenmp
 
 COMMON_DIR = ../C_common
 
@@ -23,7 +23,7 @@ oclHeterogDevicesProc: oclHeterogDevicesProc.c $(COMMON_DIR)/wtime.c $(COMMON_DI
 	$(CC) $^ $(CCFLAGS) $(OPTIONS) -I $(COMMON_DIR) -o $@
 
 main: oclHeterogDevicesProc.c
-	gcc -Wall -g oclHeterogDevicesProc.c -o oclHeterogDevicesProc $(OPTIONS)
+	gcc -Wall -g oclHeterogDevicesProc.c -o oclHeterogDevicesProc $(OPTIONS)  -fopenmp
 
 clean:
 	rm -rf oclHeterogDevicesProc
