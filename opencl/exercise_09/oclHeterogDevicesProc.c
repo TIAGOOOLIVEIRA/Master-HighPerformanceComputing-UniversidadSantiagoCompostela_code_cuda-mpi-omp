@@ -1,5 +1,29 @@
+/*
+Student: Tiago de Souza Oliveira
+    email: ti.olive@gmail.com
+Universidade de Santiago de Compotela
+Master on High Performance Computing
+Professor: Juan Carlos Pichel Campos
+14/jan/2025
+
+To compile and run:
+    compute --gpu
+    module load cesga/2020 pocl/1.6-CUDA-system
+    make
+    
+    ./oclHeterogDevicesProc
+
+
+
+https://github.com/HandsOnOpenCL/Exercises-Solutions
+https://github.com/smistad/OpenCL-Getting-Started/
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <math.h>
+#include <omp.h>
 
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
@@ -9,339 +33,253 @@
 
 #include "err_code.h"
 
-extern double wtime();
+// Kernel source
+const char *KernelSource = "__kernel void vadd(                        \n"
+"   __global float* a,                                                \n"
+"   __global float* b,                                                \n"
+"   __global float* c,                                                \n"
+"   const unsigned int count)                                         \n"
+"{                                                                    \n"
+"   int i = get_global_id(0);                                         \n"
+"   if (i < count)                                                    \n"
+"       c[i] = a[i] + b[i];                                           \n"
+"}                                                                    \n";
+
+#define TOL    (0.001)   // tolerance used in floating point comparisons
+#define LENGTH (1 << 20)
+
 extern int output_device_info(cl_device_id );
 
-#define MAX_SOURCE_SIZE (0x100000)
-
-/*
-Student: Tiago de Souza Oliveira
-    email: ti.olive@gmail.com
-Universidade de Santiago de Compotela
-Master on High Performance Computing
-Professor: Juan Carlos Pichel Campos
-14/jan/2024
-
-To compile and run:
-    compute --gpu
-    module load cesga/2020 pocl/1.6-CUDA-system
-    make
-    
-    ./oclHeterogDevicesProc
-
-This code aims to demonstrate the use of OpenCL on heterogeneous devices.
-The code is based on the vector_add example from the HandsOnOpenCL repository with some additional ideas and utils functions from
-the OpenCL-Getting-Started repository.
-
-To do so, the code is structured as following the steps in a way the global workload is split into one part for the CPU and one part for the GPU:
-    1. Create two vectors A and B containing LIST_SIZE elements
-    2. Filling the vectors with data
-    3. Load the kernel source code into the array source_str
-
-    4. Get all available platforms information
-    5. Get device information for each platform
-    6. Create oCL Context for CPU
-    7. Create command queue for CPU
-    8. Create memory buffers on the CPU for each vector 
-    9. Copy the vectors A and B to their respective memory buffers on CPU (the first half of the workload)
-    10. Create a program from the kernel source
-    11. Build the program
-    12. Create the OpenCL kernel
-    13. Set the arguments of the kernel
-    14. Enqueue kernel execution for CPU (the first half of the workload)
-
-    15. Create oCL Context for GPU
-    16. Create command queue for GPU
-    17. Create memory buffers on the GPU for each vector 
-    18. Copy the vectors A and B to their respective memory buffers on GPU (the second half of the workload)
-    19. Create a program from the kernel source
-    20. Build the program
-    21. Create the OpenCL kernel
-    22. Set the arguments of the kernel
-    23. Enqueue kernel execution for GPU (the second half of the workload)
-
-    24. Read the memory buffer C on the device to the local variable C
-    25. Display the result to the screen
-
-    26. Cleanup
-
-https://github.com/HandsOnOpenCL/Exercises-Solutions
-https://github.com/smistad/OpenCL-Getting-Started/
-*/
-
-int main(void) {
-    int i;
-    const int LIST_SIZE = 1024;
-
-    // Split the global size into two for CPU and GPU
-    size_t cpuGlobalSize = LIST_SIZE / 2;
-    size_t gpuGlobalSize = LIST_SIZE - cpuGlobalSize;
-
-    // Offsets to divide the workload between CPU and GPU
-    size_t cpuOffset = 0;
-    size_t gpuOffset = cpuGlobalSize;
-
-    //1. Create two vectors A and B containing LIST_SIZE elements    
-    int halfSize = LIST_SIZE / 2;
-    int *AfirstHalf = (int*)malloc(sizeof(int) * halfSize);
-    int *AsecondHalf = (int*)malloc(sizeof(int) * halfSize);
-
-    int *BfirstHalf = (int*)malloc(sizeof(int) * halfSize);
-    int *BsecondHalf = (int*)malloc(sizeof(int) * halfSize);
-
-
-    //2. Filling the vectors with data
-    printf("\n\nFilling the vectors with data");
-    for(i = 0; i < halfSize; i++) {
-        AfirstHalf[i] = i;
-        BfirstHalf[i] = LIST_SIZE - i;
-
-        AsecondHalf[LIST_SIZE - i] = LIST_SIZE - i;
-        BsecondHalf[LIST_SIZE - i] = i;
-    }
-    printf("\n  Filled the vectors with data");
-
-    //3. Load the kernel source code into the array source_str
-    FILE *fp;
-    char *source_str;
-    size_t source_size;
-
-    printf("\nOpening the kernel source code vector_add_kernel.cl");
-    fp = fopen("vector_add_kernel.cl", "r");
-    if (!fp) {
-        fprintf(stderr, "Failed to load kernel.\n");
-        exit(1);
-    }
-
-    source_str = (char*)malloc(MAX_SOURCE_SIZE);
-    source_size = fread( source_str, 1, MAX_SOURCE_SIZE, fp);
-    fclose( fp );
-
-    printf("\n  Opened the kernel source code vector_add_kernel.cl");
-
-    //idea here is to split the workload (A + B) into two parts: 
-    //  first half of A array and B for CPU processing and the second parts for GPU processing 
-    //  so each device will process half of the workload.
-    //
-    //It is also part of the task run the same code on different platforms (MacOS, Ubuntu+GPU, FTIII)
-    //  so the code should be able to detect the available devices and run the kernel on each of them.
-    //In the end some stastics should be collected and printed out for the comparision of the performance
-
-    cl_int ret;
-
-    //4. Get all available platforms information
-    cl_uint numPlatforms;
-    clGetPlatformIDs(0, NULL, &numPlatforms);
-    cl_platform_id *platforms = (cl_platform_id *)malloc(sizeof(cl_platform_id) * numPlatforms);
-    clGetPlatformIDs(numPlatforms, platforms, NULL);
-
-    //CPU and GPU devices
-    cl_device_id cpuDevice = NULL;
-    cl_device_id gpuDevice = NULL;
-    cl_context cpuContext, gpuContext;
-    cl_command_queue cpuQueue, gpuQueue;
- 
-
-    //Iterate over platforms to fetch CPU and GPU devices
-    for (cl_uint i = 0; i < numPlatforms; i++) {
-        //5. Get device information for each platform
-        //Query CL_DEVICE_TYPE_CPU
-        if (clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_CPU, 1, &cpuDevice, NULL) == CL_SUCCESS) {
-            printf("\n\nCPU device found on platform %d\n\n", i);
-
-            ret = output_device_info(cpuDevice);
-                checkError(ret, "Error when Printing device CPU output");
-
-
-            //6. Create oCL Context for CPU
-            cpuContext = clCreateContext(NULL, 1, &cpuDevice, NULL, NULL, &ret);
-                checkError(ret, "Error when creating the context on CPU");
-            
-            //7. Create command queue for CPU
-            cpuQueue = clCreateCommandQueue(cpuContext, cpuDevice, 0, &ret);
-                checkError(ret, "Error when Command Queue the program on CPU");
-            
-            //8. Create memory buffers on the CPU for each vector 
-            unsigned int cpuSize = sizeof(int) * cpuGlobalSize;
-            cl_mem a_mem_obj = clCreateBuffer(cpuContext, CL_MEM_READ_ONLY, 
-                cpuSize, NULL, &ret);
-            cl_mem b_mem_obj = clCreateBuffer(cpuContext, CL_MEM_READ_ONLY,
-                cpuSize, NULL, &ret);
-            cl_mem c_mem_obj = clCreateBuffer(cpuContext, CL_MEM_WRITE_ONLY, 
-                cpuSize, NULL, &ret);
-
-            //9. Copy the vectors A and B to their respective memory buffers on CPU (the first half of the workload)
-            ret = clEnqueueWriteBuffer(cpuQueue, a_mem_obj, CL_TRUE, 0,
-                cpuSize, AfirstHalf, 0, NULL, NULL);
-            ret |= clEnqueueWriteBuffer(cpuQueue, b_mem_obj, CL_TRUE, 0, 
-                cpuSize, BfirstHalf, 0, NULL, NULL);
-                    checkError(ret, "Error when copying A and B vectors to the CPU mem buffers");
-
-            //10. Create a program from the kernel source
-            cl_program cpuProgram = clCreateProgramWithSource(cpuContext, 1, 
-                    (const char **)&source_str, (const size_t *)&source_size, &ret);
-                checkError(ret, "Error when creating the program on CPU");
-
-            //11. Build the program
-            ret = clBuildProgram(cpuProgram, 1, &cpuDevice, NULL, NULL, NULL);
-                checkError(ret, "Error when building the program on CPU");
-
-            //12. Create the OpenCL kernel
-            cl_kernel cpuKernel = clCreateKernel(cpuProgram, "vector_add", &ret);
-                checkError(ret, "Error when creating the Kernel on CPU");
-
-            //13. Set the arguments of the kernel
-            ret = clSetKernelArg(cpuKernel, 0, sizeof(cl_mem), (void *)&a_mem_obj);
-            ret |= clSetKernelArg(cpuKernel, 1, sizeof(cl_mem), (void *)&b_mem_obj);
-            ret |= clSetKernelArg(cpuKernel, 2, sizeof(cl_mem), (void *)&c_mem_obj);
-            ret |= clSetKernelArg(cpuKernel, 3, sizeof(int), &LIST_SIZE);
-                checkError(ret, "Error when Setting kernel CPU arguments");
-
-            size_t localSize = 64; // Process in groups of 64
-
-            double rtime = wtime();
-
-            //14. Enqueue kernel execution for CPU (the first half of the workload)
-            //Execution of a portion of the workload on the CPU
-            ret = clEnqueueNDRangeKernel(cpuQueue, cpuKernel, 1, NULL, &cpuGlobalSize, &localSize, 0, NULL, NULL);
-                checkError(ret, "Error when enqueueing kernel on CPU");
-    
-            // Wait for the commands to complete before stopping the timer
-            ret = clFinish(cpuQueue);
-                checkError(ret, "Waiting for CPU kernel to finish");
-
-            rtime = wtime() - rtime;
-            printf("\nThe CPU Add kernel ran in %lf seconds\n",rtime);
-
-            // Read the memory buffer C on the device to the local variable C
-            int *C = (int*)malloc(cpuSize);
-            ret = clEnqueueReadBuffer(cpuQueue, c_mem_obj, CL_TRUE, 0, 
-                    cpuSize, C, 0, NULL, NULL);
-
-            // Display the result to the screen
-            for(i = 0; i < cpuSize; i++)
-                printf("%d + %d = %d\n", AfirstHalf[i], BfirstHalf[i], C[i]);
-
-            //local cleanup
-            ret = clReleaseProgram(cpuProgram);
-            ret |= clReleaseMemObject(a_mem_obj);
-            ret |= clReleaseMemObject(b_mem_obj);
-            ret |= clReleaseMemObject(c_mem_obj);
-                checkError(ret, "Error when cleaning up CPU Program and Mem buffer objects");
-
-            free(C);
-        }
-
-        //Query CL_DEVICE_TYPE_GPU
-        if (clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_GPU, 1, &gpuDevice, NULL) == CL_SUCCESS) {
-            printf("\n\nGPU device found on platform %d\n\n", i);
-            ret = output_device_info(gpuDevice);
-                checkError(ret, "Error when Printing device GPU output");
-
-            //6. Create oCL Context for GPU
-            gpuContext = clCreateContext(NULL, 1, &gpuDevice, NULL, NULL, &ret);
-                checkError(ret, "Error when creating the context on GPU");
-            
-            //7. Create command queue for GPU
-            gpuQueue = clCreateCommandQueue(gpuContext, gpuDevice, 0, &ret);
-                checkError(ret, "Error when Command Queue the context on GPU");
-
-            //8. Create memory buffers on the GPU for each vector 
-            unsigned int gpuSize = sizeof(int) * gpuGlobalSize;
-            cl_mem a_mem_obj = clCreateBuffer(gpuQueue, CL_MEM_READ_ONLY, 
-                gpuSize, NULL, &ret);
-            cl_mem b_mem_obj = clCreateBuffer(gpuQueue, CL_MEM_READ_ONLY,
-                gpuSize, NULL, &ret);
-            cl_mem c_mem_obj = clCreateBuffer(gpuQueue, CL_MEM_WRITE_ONLY, 
-                gpuSize, NULL, &ret);
-
-            //9. Copy the vectors A and B to their respective memory buffers on GPU (the second half of the workload)
-            ret = clEnqueueWriteBuffer(gpuQueue, a_mem_obj, CL_TRUE, 0,
-                gpuSize, AsecondHalf, 0, NULL, NULL);
-            ret |= clEnqueueWriteBuffer(gpuQueue, b_mem_obj, CL_TRUE, 0, 
-                gpuSize, BsecondHalf, 0, NULL, NULL);
-                    checkError(ret, "Error when copying A and B vectors to the GPU mem buffers");
-
-
-            //10. Create a program from the kernel source
-            cl_program gpuProgram = clCreateProgramWithSource(gpuContext, 1, 
-                    (const char **)&source_str, (const size_t *)&source_size, &ret);
-                checkError(ret, "Error when creating the program on GPU");
-
-            //11. Build the program
-            ret = clBuildProgram(gpuProgram, 1, &gpuDevice, NULL, NULL, NULL);
-                checkError(ret, "Error when building the program on GPU");
-
-            //12. Create the OpenCL kernel
-            cl_kernel gpuKernel = clCreateKernel(gpuProgram, "vector_add", &ret);
-                checkError(ret, "Error when creating the kernel on GPU");
-
-            //13. Set the arguments of the kernel
-            ret = clSetKernelArg(gpuKernel, 0, sizeof(cl_mem), (void *)&a_mem_obj);
-            ret |= clSetKernelArg(gpuKernel, 1, sizeof(cl_mem), (void *)&b_mem_obj);
-            ret |= clSetKernelArg(gpuKernel, 2, sizeof(cl_mem), (void *)&c_mem_obj);
-            ret |= clSetKernelArg(cpuKernel, 3, sizeof(int), &LIST_SIZE);
-                checkError(ret, "Error when Setting up GPU kernel arguments");
-
-            size_t localSize = 64; // Process in groups of 64
-
-            double rtime = wtime();
-
-            //14. Enqueue kernel execution for GPU (the second half of the workload)
-            ret = clEnqueueNDRangeKernel(gpuQueue, gpuKernel, 1, &gpuOffset, &gpuGlobalSize, &localSize, 0, NULL, NULL);
-                checkError(ret, "Error when enqueueing kernel on GPU");
-        
-            // Wait for the commands to complete before stopping the timer
-            ret = clFinish(gpuQueue);
-                checkError(ret, "Waiting for GPU kernel to finish");
-
-            rtime = wtime() - rtime;
-            printf("\nThe GPU Add kernel ran in %lf seconds\n",rtime);
-
-            // Read the memory buffer C on the device to the local variable C
-            int *C = (int*)malloc(gpuSize);
-            ret = clEnqueueReadBuffer(cpuQueue, c_mem_obj, CL_TRUE, 0, 
-                    gpuSize, C, 0, NULL, NULL);
-
-            // Display the result to the screen
-            for(i = 0; i < gpuSize; i++)
-                printf("%d + %d = %d\n", AsecondHalf[i], BsecondHalf[i], C[i]);
-
-            //local cleanup
-            ret = clReleaseProgram(gpuProgram);
-            ret |= clReleaseMemObject(a_mem_obj);
-            ret |= clReleaseMemObject(b_mem_obj);
-            ret |= clReleaseMemObject(c_mem_obj);
-                checkError(ret, "Error when cleaning up GPU Program and Mem buffer objects");
-
-            free(C);
-        }
-    }
-
-    if (cpuQueue){
-        ret = clFlush(cpuQueue);
-        ret |= clFinish(cpuQueue);
-        ret |= clReleaseCommandQueue(cpuQueue);
-            checkError(ret, "Error when cleaning up CPU Command Queue");
-    } 
-    
-    if (gpuQueue){
-        ret = clFlush(gpuQueue);
-        ret |= clFinish(gpuQueue);
-        ret |= clReleaseCommandQueue(gpuQueue);
-            checkError(ret, "Error when cleaning up GPU Command Queue");
-    } 
-
-    if (cpuContext) clReleaseContext(cpuContext);
-    if (gpuContext) clReleaseContext(gpuContext);
-    
-    free(platforms);
-
-    free(AfirstHalf);
-    free(BfirstHalf);
-    free(AsecondHalf);
-    free(BsecondHalf);
-    
-    return 0;
+// Utility to get current timestamp
+void log_timestamp(const char *message) {
+    time_t now;
+    time(&now);
+    printf("[%s] %s\n", ctime(&now), message);
 }
 
+
+void validation_loop(float *h_a1, float *h_b1, float *h_c1, float *h_a2, float *h_b2, float *h_c2, int count) {
+    int correct = 0;  // Shared variable for correct count
+
+    #pragma omp parallel for reduction(+:correct) schedule(static)
+    for (int i = 0; i < count; i++) {
+        float tmp1 = h_a1[i] + h_b1[i];  // assign element i of a+b to tmp1
+        tmp1 -= h_c1[i];                 // compute deviation of expected and output result
+
+        float tmp2 = h_a2[i] + h_b2[i];  // assign element i of a+b to tmp2
+        tmp2 -= h_c2[i];                 // compute deviation of expected and output result
+
+        if (tmp1 * tmp1 < TOL * TOL || tmp2 * tmp2 < TOL * TOL) {
+            correct++;  // Increment correct count if within tolerance
+        } else {
+            #pragma omp critical
+            {
+                printf(" tmp1 %f h_a1 %f h_b1 %f h_c1 %f \n", tmp1, h_a1[i], h_b1[i], h_c1[i]);
+                printf(" tmp2 %f h_a2 %f h_b2 %f h_c2 %f \n", tmp2, h_a2[i], h_b2[i], h_c2[i]);
+            }
+        }
+    }
+
+    // summarise results
+    printf("C = A+B:  %d out of %d results were correct.\n", correct, count);
+
+    if (correct == count) {
+        printf("Validation successful. Results match.\n");
+    } else {
+        printf("Validation failed. Errors: %d\n", correct);
+    }
+}
+
+
+int main() {
+    int err;
+    float *h_a1 = (float *)calloc(LENGTH, sizeof(float));
+    float *h_b1 = (float *)calloc(LENGTH, sizeof(float));
+    float *h_c1 = (float *)calloc(LENGTH, sizeof(float));
+
+    float *h_a2 = (float *)calloc(LENGTH, sizeof(float));
+    float *h_b2 = (float *)calloc(LENGTH, sizeof(float));
+    float *h_c2 = (float *)calloc(LENGTH, sizeof(float));
+
+    int count = LENGTH;
+
+    // Initialize data
+    log_timestamp("Initializing input data...");
+    #pragma omp parallel for
+    for (int i = 0; i < LENGTH; i++) {
+        h_a1[i] = rand() / (float)RAND_MAX;
+        h_b1[i] = rand() / (float)RAND_MAX;
+        h_a2[i] = rand() / (float)RAND_MAX;
+        h_b2[i] = rand() / (float)RAND_MAX;
+    }
+
+    cl_uint numPlatforms;
+    cl_platform_id *platforms;
+
+    // Get platforms
+    log_timestamp("Querying platforms...");
+    err = clGetPlatformIDs(0, NULL, &numPlatforms);
+    if (err != CL_SUCCESS || numPlatforms == 0) {
+        fprintf(stderr, "Failed to find any OpenCL platforms. Error code: %d\n", err);
+        return -1;
+    }
+
+    platforms = (cl_platform_id *)malloc(sizeof(cl_platform_id) * numPlatforms);
+    clGetPlatformIDs(numPlatforms, platforms, NULL);
+
+    printf("Number of platforms: %d\n", numPlatforms);
+
+    // Iterate through platforms and query devices
+    cl_device_id device_cpu = NULL, device_gpu = NULL;
+    cl_context context_cpu = NULL, context_gpu = NULL;
+    cl_command_queue queue_cpu = NULL, queue_gpu = NULL;
+
+    for (cl_uint i = 0; i < numPlatforms; i++) {
+        printf("\nPlatform %d:\n", i + 1);
+
+        // Query CPU devices
+        cl_uint numCPUDevices = 0;
+        err = clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_CPU, 1, &device_cpu, &numCPUDevices);
+        if (err == CL_SUCCESS && numCPUDevices > 0) {
+            printf("  CPU device found.\n");
+	    err = output_device_info(device_cpu);
+
+            context_cpu = clCreateContext(NULL, 1, &device_cpu, NULL, NULL, &err);
+
+            cl_command_queue_properties cpu_properties[] = {CL_QUEUE_PROPERTIES, CL_QUEUE_PROFILING_ENABLE, 0};
+
+            queue_cpu = clCreateCommandQueueWithProperties(context_cpu, device_cpu, cpu_properties, &err);
+
+        } else {
+            printf("  No CPU devices found.\n");
+        }
+
+        // Query GPU devices
+        cl_uint numGPUDevices = 0;
+        err = clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_GPU, 1, &device_gpu, &numGPUDevices);
+        if (err == CL_SUCCESS && numGPUDevices > 0) {
+            printf("  GPU device found.\n");
+            err = output_device_info(device_gpu);
+
+	    context_gpu = clCreateContext(NULL, 1, &device_gpu, NULL, NULL, &err);
+
+            cl_command_queue_properties gpu_properties[] = {CL_QUEUE_PROPERTIES, CL_QUEUE_PROFILING_ENABLE, 0};
+            queue_gpu = clCreateCommandQueueWithProperties(context_gpu, device_gpu, gpu_properties, &err);
+        } else {
+            printf("  No GPU devices found.\n");
+        }
+    }
+
+    free(platforms);
+
+    // Ensure at least one device is available
+    if (!device_cpu && !device_gpu) {
+        fprintf(stderr, "No CPU or GPU devices found. Exiting.\n");
+        return -1;
+    }
+
+    size_t global_size = LENGTH;
+    size_t local_size = 256;
+
+    cl_mem d_a1, d_b1, d_c1;
+    cl_mem d_a2, d_b2, d_c2;
+
+    // Create buffers for CPU
+    if (context_cpu) {
+        d_a1 = clCreateBuffer(context_cpu, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(float) * count, h_a1, &err);
+        d_b1 = clCreateBuffer(context_cpu, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(float) * count, h_b1, &err);
+        d_c1 = clCreateBuffer(context_cpu, CL_MEM_WRITE_ONLY, sizeof(float) * count, NULL, &err);
+    }
+
+    // Create buffers for GPU
+    if (context_gpu) {
+        d_a2 = clCreateBuffer(context_gpu, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(float) * count, h_a2, &err);
+        d_b2 = clCreateBuffer(context_gpu, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(float) * count, h_b2, &err);
+        d_c2 = clCreateBuffer(context_gpu, CL_MEM_WRITE_ONLY, sizeof(float) * count, NULL, &err);
+    }
+
+    // Create programs and kernels
+    cl_program program_cpu = NULL, program_gpu = NULL;
+    cl_kernel kernel_cpu = NULL, kernel_gpu = NULL;
+
+    if (context_cpu) {
+        program_cpu = clCreateProgramWithSource(context_cpu, 1, &KernelSource, NULL, &err);
+        clBuildProgram(program_cpu, 1, &device_cpu, NULL, NULL, NULL);
+        kernel_cpu = clCreateKernel(program_cpu, "vadd", &err);
+
+        clSetKernelArg(kernel_cpu, 0, sizeof(cl_mem), &d_a1);
+        clSetKernelArg(kernel_cpu, 1, sizeof(cl_mem), &d_b1);
+        clSetKernelArg(kernel_cpu, 2, sizeof(cl_mem), &d_c1);
+        clSetKernelArg(kernel_cpu, 3, sizeof(unsigned int), &count);
+    }
+
+    if (context_gpu) {
+        program_gpu = clCreateProgramWithSource(context_gpu, 1, &KernelSource, NULL, &err);
+        clBuildProgram(program_gpu, 1, &device_gpu, NULL, NULL, NULL);
+        kernel_gpu = clCreateKernel(program_gpu, "vadd", &err);
+
+        clSetKernelArg(kernel_gpu, 0, sizeof(cl_mem), &d_a2);
+        clSetKernelArg(kernel_gpu, 1, sizeof(cl_mem), &d_b2);
+        clSetKernelArg(kernel_gpu, 2, sizeof(cl_mem), &d_c2);
+        clSetKernelArg(kernel_gpu, 3, sizeof(unsigned int), &count);
+    }
+
+    // Execute kernels and measure time
+    double cpu_time = 0.0, gpu_time = 0.0;
+
+    if (queue_cpu) {
+        log_timestamp("Executing CPU kernel...");
+        clock_t start_cpu = clock();
+        clEnqueueNDRangeKernel(queue_cpu, kernel_cpu, 1, NULL, &global_size, NULL, 0, NULL, NULL);
+        clFinish(queue_cpu);
+        clock_t end_cpu = clock();
+        cpu_time = (double)(end_cpu - start_cpu) / CLOCKS_PER_SEC;
+    }
+
+    if (queue_gpu) {
+        log_timestamp("Executing GPU kernel...");
+        clock_t start_gpu = clock();
+        clEnqueueNDRangeKernel(queue_gpu, kernel_gpu, 1, NULL, &global_size, NULL, 0, NULL, NULL);
+        clFinish(queue_gpu);
+        clock_t end_gpu = clock();
+        gpu_time = (double)(end_gpu - start_gpu) / CLOCKS_PER_SEC;
+    }
+
+    // Read results
+    if (queue_cpu) clEnqueueReadBuffer(queue_cpu, d_c1, CL_TRUE, 0, sizeof(float) * count, h_c1, 0, NULL, NULL);
+    if (queue_gpu) clEnqueueReadBuffer(queue_gpu, d_c2, CL_TRUE, 0, sizeof(float) * count, h_c2, 0, NULL, NULL);
+
+    // Print benchmarking results
+    printf("CPU Kernel Execution Time: %.6f seconds\n", cpu_time);
+    printf("GPU Kernel Execution Time: %.6f seconds\n", gpu_time);
+
+    validation_loop(h_a1, h_b1, h_c1, h_a2, h_b2, h_c2, count);
+
+
+    log_timestamp("Cleanup and exiting...");
+
+    // Cleanup
+    clReleaseMemObject(d_a1);
+    clReleaseMemObject(d_b1);
+    clReleaseMemObject(d_c1);
+    clReleaseMemObject(d_a2);
+    clReleaseMemObject(d_b2);
+    clReleaseMemObject(d_c2);
+    clReleaseKernel(kernel_cpu);
+    clReleaseKernel(kernel_gpu);
+    clReleaseProgram(program_cpu);
+    clReleaseProgram(program_gpu);
+    clReleaseCommandQueue(queue_cpu);
+    clReleaseCommandQueue(queue_gpu);
+    clReleaseContext(context_cpu);
+    clReleaseContext(context_gpu);
+
+    free(h_a1);
+    free(h_b1);
+    free(h_c1);
+    free(h_a2);
+    free(h_b2);
+    free(h_c2);
+
+    return 0;
+}
