@@ -13,7 +13,8 @@ To compile and run:
     
     ./oclHeterogDevicesProc
 
-
+    //without omp
+    gcc oclHeterogDevicesProc.c ../C_common/wtime.c ../C_common/device_info.c -O3 -lm  -D DEVICE= -framework OpenCL -I ../C_common -o oclHeterogDevicesProc
 
 https://github.com/HandsOnOpenCL/Exercises-Solutions
 https://github.com/smistad/OpenCL-Getting-Started/
@@ -48,7 +49,8 @@ const char *KernelSource = "__kernel void vadd(                        \n"
 "}                                                                    \n";
 
 #define TOL    (0.001)   // tolerance used in floating point comparisons
-#define LENGTH (1 << 20)
+//#define LENGTH (1 << 20)
+#define LENGTH (1024)
 
 extern int output_device_info(cl_device_id );
 
@@ -61,9 +63,10 @@ void log_timestamp(const char *message) {
 
 
 void validation_loop(float *h_a1, float *h_b1, float *h_c1, float *h_a2, float *h_b2, float *h_c2, int count) {
-    int correct = 0;  // Shared variable for correct count
+    int correctcpu = 0;  // Shared variable for correct count
+    int correctgpu = 0;
 
-    #pragma omp parallel for reduction(+:correct) schedule(static)
+    #pragma omp parallel for reduction(+:correctcpu,correctgpu) schedule(static)
     for (int i = 0; i < count; i++) {
         float tmp1 = h_a1[i] + h_b1[i];  // assign element i of a+b to tmp1
         tmp1 -= h_c1[i];                 // compute deviation of expected and output result
@@ -71,24 +74,37 @@ void validation_loop(float *h_a1, float *h_b1, float *h_c1, float *h_a2, float *
         float tmp2 = h_a2[i] + h_b2[i];  // assign element i of a+b to tmp2
         tmp2 -= h_c2[i];                 // compute deviation of expected and output result
 
-        if (tmp1 * tmp1 < TOL * TOL || tmp2 * tmp2 < TOL * TOL) {
-            correct++;  // Increment correct count if within tolerance
+        if (tmp1 * tmp1 < TOL * TOL) {
+            correctcpu++;  // Increment correct count if within tolerance
         } else {
             #pragma omp critical
             {
-                printf(" tmp1 %f h_a1 %f h_b1 %f h_c1 %f \n", tmp1, h_a1[i], h_b1[i], h_c1[i]);
-                printf(" tmp2 %f h_a2 %f h_b2 %f h_c2 %f \n", tmp2, h_a2[i], h_b2[i], h_c2[i]);
+                printf(" CPU %f h_a1 %f h_b1 %f h_c1 %f \n", tmp1, h_a1[i], h_b1[i], h_c1[i]);
+            }
+        }
+	if (tmp2 * tmp2 < TOL * TOL) {
+            correctgpu++;  // Increment correct count if within tolerance
+        } else {
+            #pragma omp critical
+            {
+                printf(" GPU %f h_a2 %f h_b2 %f h_c2 %f \n", tmp2, h_a2[i], h_b2[i], h_c2[i]);
             }
         }
     }
 
     // summarise results
-    printf("C = A+B:  %d out of %d results were correct.\n", correct, count);
+    //printf("C = A+B:  %d out of %d results were correct.\n", correct, count);
 
-    if (correct == count) {
-        printf("Validation successful. Results match.\n");
+    if (correctcpu == count) {
+        printf("Validation successful for cpu. Results match.\n");
     } else {
-        printf("Validation failed. Errors: %d\n", correct);
+        printf("Validation failed for cpu. Errors: %d\n", abs(correctcpu-count));
+    }
+
+    if (correctgpu == count) {
+        printf("Validation successful for gpu. Results match.\n");
+    } else {
+        printf("Validation failed for gpu. Errors: %d\n", abs(correctgpu-count));
     }
 }
 
@@ -150,7 +166,20 @@ int main() {
 
             cl_command_queue_properties cpu_properties[] = {CL_QUEUE_PROPERTIES, CL_QUEUE_PROFILING_ENABLE, 0};
 
-            queue_cpu = clCreateCommandQueueWithProperties(context_cpu, device_cpu, cpu_properties, &err);
+            #ifdef __APPLE__  // macOS-specific
+                queue_cpu = clCreateCommandQueue(context_cpu, device_cpu, 0, &err);
+                if (err != CL_SUCCESS) {
+                    fprintf(stderr, "Failed to create command queue (deprecated). Error code: %d\n", err);
+                    return -1;
+                }
+            #else  // Other platforms
+                cl_command_queue_properties cpu_properties[] = {CL_QUEUE_PROPERTIES, 0, 0};
+                queue_cpu = clCreateCommandQueueWithProperties(context_cpu, device_cpu, cpu_properties, &err);
+                if (err != CL_SUCCESS) {
+                    fprintf(stderr, "Failed to create command queue with properties. Error code: %d\n", err);
+                    return -1;
+                }
+            #endif
 
         } else {
             printf("  No CPU devices found.\n");
@@ -166,7 +195,22 @@ int main() {
 	    context_gpu = clCreateContext(NULL, 1, &device_gpu, NULL, NULL, &err);
 
             cl_command_queue_properties gpu_properties[] = {CL_QUEUE_PROPERTIES, CL_QUEUE_PROFILING_ENABLE, 0};
-            queue_gpu = clCreateCommandQueueWithProperties(context_gpu, device_gpu, gpu_properties, &err);
+
+            #ifdef __APPLE__  // macOS-specific
+                queue_gpu = clCreateCommandQueue(context_gpu, device_gpu, 0, &err);
+                if (err != CL_SUCCESS) {
+                    fprintf(stderr, "Failed to create GPU command queue (deprecated). Error code: %d\n", err);
+                    return -1;
+                }
+            #else  // Other platforms
+                cl_command_queue_properties gpu_properties[] = {CL_QUEUE_PROPERTIES, 0, 0};  // Default properties
+                queue_gpu = clCreateCommandQueueWithProperties(context_gpu, device_gpu, gpu_properties, &err);
+                if (err != CL_SUCCESS) {
+                    fprintf(stderr, "Failed to create GPU command queue with properties. Error code: %d\n", err);
+                    return -1;
+                }
+            #endif            
+            
         } else {
             printf("  No GPU devices found.\n");
         }
@@ -180,8 +224,11 @@ int main() {
         return -1;
     }
 
-    size_t global_size = LENGTH;
-    size_t local_size = 256;
+    size_t global_size[1], local_size[1];
+    global_size[0] = LENGTH;
+    local_size[0] = 256;
+    
+    
 
     cl_mem d_a1, d_b1, d_c1;
     cl_mem d_a2, d_b2, d_c2;
@@ -195,9 +242,16 @@ int main() {
 
     // Create buffers for GPU
     if (context_gpu) {
-        d_a2 = clCreateBuffer(context_gpu, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(float) * count, h_a2, &err);
-        d_b2 = clCreateBuffer(context_gpu, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(float) * count, h_b2, &err);
+        d_a2 = clCreateBuffer(context_gpu, CL_MEM_READ_ONLY, sizeof(float) * count, NULL, &err);
+        d_b2 = clCreateBuffer(context_gpu, CL_MEM_READ_ONLY, sizeof(float) * count, NULL, &err);
         d_c2 = clCreateBuffer(context_gpu, CL_MEM_WRITE_ONLY, sizeof(float) * count, NULL, &err);
+
+		
+	    // Write a and b vectors into compute device memory
+    	err = clEnqueueWriteBuffer(context_gpu, d_a2, CL_FALSE, 0, sizeof(float) * count, h_a2, 0, NULL, NULL);
+
+    	err = clEnqueueWriteBuffer(context_gpu, d_b2, CL_FALSE, 0, sizeof(float) * count, h_b2, 0, NULL, NULL);
+
     }
 
     // Create programs and kernels
@@ -212,7 +266,7 @@ int main() {
         clSetKernelArg(kernel_cpu, 0, sizeof(cl_mem), &d_a1);
         clSetKernelArg(kernel_cpu, 1, sizeof(cl_mem), &d_b1);
         clSetKernelArg(kernel_cpu, 2, sizeof(cl_mem), &d_c1);
-        clSetKernelArg(kernel_cpu, 3, sizeof(unsigned int), &count);
+        clSetKernelArg(kernel_cpu, 3, sizeof(int), &count);
     }
 
     if (context_gpu) {
@@ -223,7 +277,7 @@ int main() {
         clSetKernelArg(kernel_gpu, 0, sizeof(cl_mem), &d_a2);
         clSetKernelArg(kernel_gpu, 1, sizeof(cl_mem), &d_b2);
         clSetKernelArg(kernel_gpu, 2, sizeof(cl_mem), &d_c2);
-        clSetKernelArg(kernel_gpu, 3, sizeof(unsigned int), &count);
+        clSetKernelArg(kernel_gpu, 3, sizeof(int), &count);
     }
 
     // Execute kernels and measure time
@@ -232,7 +286,7 @@ int main() {
     if (queue_cpu) {
         log_timestamp("Executing CPU kernel...");
         clock_t start_cpu = clock();
-        clEnqueueNDRangeKernel(queue_cpu, kernel_cpu, 1, NULL, &global_size, NULL, 0, NULL, NULL);
+        clEnqueueNDRangeKernel(queue_cpu, kernel_cpu, 1, NULL, &global_size, local_size, 0, NULL, NULL);
         clFinish(queue_cpu);
         clock_t end_cpu = clock();
         cpu_time = (double)(end_cpu - start_cpu) / CLOCKS_PER_SEC;
@@ -241,7 +295,7 @@ int main() {
     if (queue_gpu) {
         log_timestamp("Executing GPU kernel...");
         clock_t start_gpu = clock();
-        clEnqueueNDRangeKernel(queue_gpu, kernel_gpu, 1, NULL, &global_size, NULL, 0, NULL, NULL);
+        clEnqueueNDRangeKernel(queue_gpu, kernel_gpu, 1, NULL, &global_size, local_size, 0, NULL, NULL);
         clFinish(queue_gpu);
         clock_t end_gpu = clock();
         gpu_time = (double)(end_gpu - start_gpu) / CLOCKS_PER_SEC;
