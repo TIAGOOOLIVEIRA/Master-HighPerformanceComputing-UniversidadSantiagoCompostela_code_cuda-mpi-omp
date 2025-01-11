@@ -23,7 +23,9 @@ https://github.com/smistad/OpenCL-Getting-Started/
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
