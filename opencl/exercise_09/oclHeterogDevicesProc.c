@@ -23,10 +23,7 @@ https://github.com/smistad/OpenCL-Getting-Started/
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
-
-#ifdef _OPENMP
 #include <omp.h>
-#endif
 
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
@@ -50,6 +47,8 @@ const char *KernelSource = "__kernel void vadd(                        \n"
 
 #define TOL    (0.001)   // tolerance used in floating point comparisons
 #define LENGTH (1 << 20)
+
+extern int output_device_info(cl_device_id );
 
 // Utility to get current timestamp
 void log_timestamp(const char *message) {
@@ -143,6 +142,8 @@ int main() {
         err = clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_CPU, 1, &device_cpu, &numCPUDevices);
         if (err == CL_SUCCESS && numCPUDevices > 0) {
             printf("  CPU device found.\n");
+	    err = output_device_info(device_cpu);
+
             context_cpu = clCreateContext(NULL, 1, &device_cpu, NULL, NULL, &err);
 
             cl_command_queue_properties cpu_properties[] = {CL_QUEUE_PROPERTIES, CL_QUEUE_PROFILING_ENABLE, 0};
@@ -158,7 +159,9 @@ int main() {
         err = clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_GPU, 1, &device_gpu, &numGPUDevices);
         if (err == CL_SUCCESS && numGPUDevices > 0) {
             printf("  GPU device found.\n");
-            context_gpu = clCreateContext(NULL, 1, &device_gpu, NULL, NULL, &err);
+            err = output_device_info(device_gpu);
+
+	    context_gpu = clCreateContext(NULL, 1, &device_gpu, NULL, NULL, &err);
 
             cl_command_queue_properties gpu_properties[] = {CL_QUEUE_PROPERTIES, CL_QUEUE_PROFILING_ENABLE, 0};
             queue_gpu = clCreateCommandQueueWithProperties(context_gpu, device_gpu, gpu_properties, &err);
