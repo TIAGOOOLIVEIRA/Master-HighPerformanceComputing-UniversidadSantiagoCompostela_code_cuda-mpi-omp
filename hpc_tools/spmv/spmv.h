@@ -31,21 +31,10 @@ typedef struct {
     gsl_vector *gsl_vec;
 } GSLData;
 
-/*
-typedef struct {
-    int *row_ptr;     // Row pointer array
-    int *col_indices; // Column indices array
-    double *values;   // Non-zero values array
-    int nnz;          // Number of non-zero elements
-    int size;         // Matrix size (n x n)
-} MKLCSRMatrix;
-*/
 
 int my_dense(const unsigned int n, const double mat[], double vec[], double result[]);
 GSLData convert_to_gsl(const unsigned int n, const double *restrict mat, const double *restrict vec);
 void compute_sparse(const unsigned int n, GSLData data, double result[]);
-//MKLCSRMatrix convert_to_mkl_csr(const unsigned int n, const double *restrict mat);
-//void compute_sparse_mkl(const MKLCSRMatrix *csr, const double *restrict vec, double *restrict result);
 void spmv_csc(const CSCMatrix *restrict matrix, const double *restrict vec, double *result);
 CSCMatrix convert_to_csc(const double *restrict mat, int size);
 void spmv_coo(const COOMatrix *restrict matrix, const double *restrict vec, double *result);
