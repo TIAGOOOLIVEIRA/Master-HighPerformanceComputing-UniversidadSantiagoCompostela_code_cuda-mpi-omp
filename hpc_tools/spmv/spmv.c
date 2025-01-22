@@ -154,28 +154,6 @@ int main(int argc, char *argv[])
         printf("Result is incorrect for my_sparse!\n");
     }
 
-    /*
-    // Convert dense matrix to MKL CSR format
-    timestamp(&start);
-    MKLCSRMatrix mklCsr = convert_to_mkl_csr(size, mat);
-    timestamp(&now);
-    printf("Time taken by convert_to_mkl_csr (Ref table 2:mkl-sparse): %ld ms\n", diff_milli(&start, &now));
-
-    // Perform sparse matrix-vector multiplication
-    timestamp(&start);
-    compute_sparse_mkl(&mklCsr, vec, mysol);
-    timestamp(&now);
-    printf("Time taken by compute_sparse_mkl (Ref table 2: mkl-sparse): %ld ms\n", diff_milli(&start, &now));
-
-    // Validate the result
-    if (check_result(refsol, mysol, size) == 1) {
-        printf("Result is correct for MKL sparse computation!\n");
-    } else {
-        printf("Result is incorrect for MKL sparse computation!\n");
-    }
-    */
-
-
     // Sparse computation using CSR solver
     //
     printf("\nCSR Sparse computation\n------------------\n");
