@@ -1,0 +1,25 @@
+# Compiler and flags
+CC = icc
+MKL_LIBS = -lmkl_core -lmkl_intel_lp64 -lmkl_intel_thread -liomp5 -lpthread -lm
+SRC = spmv_mkl.c my_sparseCSR_mkl.c timer.c
+OUT = spmv_mkl
+
+# Targets for different optimization levels
+.PHONY: all clean
+
+all: $(OUT)_O0 $(OUT)_O2 $(OUT)_O3 $(OUT)_Ofast
+
+$(OUT)_O0: $(SRC)
+	$(CC) -O0 $(SRC) $(MKL_LIBS) -o $(OUT)_O0
+
+$(OUT)_O2: $(SRC)
+	$(CC) -O2 -fno-tree-vectorize $(SRC) $(MKL_LIBS) -o $(OUT)_O2
+
+$(OUT)_O3: $(SRC)
+	$(CC) -O3 $(SRC) $(MKL_LIBS) -o $(OUT)_O3
+
+$(OUT)_Ofast: $(SRC)
+	$(CC) -Ofast $(SRC) $(MKL_LIBS) -o $(OUT)_Ofast
+
+clean:
+	rm -f $(OUT)_O0 $(OUT)_O2 $(OUT)_O3 $(OUT)_Ofast

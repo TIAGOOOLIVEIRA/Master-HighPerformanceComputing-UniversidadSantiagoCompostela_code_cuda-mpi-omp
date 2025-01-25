@@ -26,8 +26,9 @@ Table 1 icc Benchmark - 16384 x 16384 matrices, 10% non-zero elements
 | My_coo      | 135.7  | 72       | 72     | 71.7      |
 | My_csr      | 99.7   | 37       | 22.7   | 22        |
 | My_csc      | 110.7  | 28       | 27.7   | 28.3      |
-| Ref         |        |          |        |           |
+| Ref         | 22.3   | 22       | 22     | 22.7      |
 
+**Execution time scale is in milliseconds for all benchmarking
 
 ## Memory of work:
 - GCC 
@@ -81,61 +82,63 @@ $module load openblas
 
 - ICC 
 
-$module load intel
+$module load intel imkl
 
 
     O0
     icc -O0 spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -lgsl -lgslcblas -lpthread -lm -ldl -o spmv
 
+    O0 --> MKL
+    icc -O0 spmv_mkl.c my_sparseCSR_mkl.c timer.c -lmkl_core -lmkl_intel_lp64 -lmkl_intel_thread -liomp5 -lpthread -lm -o spmv_mkl
+
 |       | My_Dense | My_coo | My_csr | My_csc | Ref   |
 |-------|----------|--------|--------|--------|-------|
-| #1    | 760      | 130    | 98     | 109    |       |
-| #2    | 766      | 144    | 100    | 112    |       |
-| #3    | 772      | 133    | 101    | 111    |       |
-| **avg** | 766      | 135.7  | 99.7  | 110.7  |       |
+| #1    | 760      | 130    | 98     | 109    |  23   |
+| #2    | 766      | 144    | 100    | 112    |  22   |
+| #3    | 772      | 133    | 101    | 111    |  23   |
+| **avg** | 766      | 135.7  | 99.7  | 110.7  | 22.3 |
 
 
     O2 -fno-tree-vectorize
     icc -O2 -fno-tree-vectorize spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -lgsl -lgslcblas -lpthread -lm -ldl -o spmv
 
+    O2 -fno-tree-vectorize --> MKL
+    icc -O2 -fno-tree-vectorize spmv_mkl.c my_sparseCSR_mkl.c timer.c -lmkl_core -lmkl_intel_lp64 -lmkl_intel_thread -liomp5 -lpthread -lm -o spmv_mkl
+
 |       | My_Dense | My_coo | My_csr | My_csc | Ref   |
 |-------|----------|--------|--------|--------|-------|
-| #1    | 338      | 72     | 44     | 28     |       |
-| #2    | 337      | 72     | 33     | 28     |       |
-| #3    | 338      | 72     | 34     | 28     |       |
-| **avg** | 337.7    | 72     | 37     | 28     |       |
+| #1    | 338      | 72     | 44     | 28     | 22    |
+| #2    | 337      | 72     | 33     | 28     | 22    |
+| #3    | 338      | 72     | 34     | 28     | 22    |
+| **avg** | 337.7    | 72     | 37     | 28     | 22    |
 
 
     O3
     icc -O3 spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -lgsl -lgslcblas -lpthread -lm -ldl -o spmv
 
+    O3 --> MKL
+    icc -O3 spmv_mkl.c my_sparseCSR_mkl.c timer.c -lmkl_core -lmkl_intel_lp64 -lmkl_intel_thread -liomp5 -lpthread -lm -o spmv_mkl
+
 |       | My_Dense | My_coo | My_csr | My_csc | Ref   |
 |-------|----------|--------|--------|--------|-------|
-| #1    | 151      | 72     | 24     | 28     |       |
-| #2    | 149      | 72     | 22     | 27     |       |
-| #3    | 150      | 72     | 22     | 28     |       |
-| **avg** | 150      | 72     | 22.7   | 27.7   |       |
+| #1    | 151      | 72     | 24     | 28     | 22    |
+| #2    | 149      | 72     | 22     | 27     | 22    |
+| #3    | 150      | 72     | 22     | 28     |  22   |
+| **avg** | 150      | 72     | 22.7   | 27.7   | 22    |
 
 
     Ofast
     icc -Ofast spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -lgsl -lgslcblas -lpthread -lm -ldl -o spmv
 
+    Ofast --> MKL
+    icc -Ofast spmv_mkl.c my_sparseCSR_mkl.c timer.c -lmkl_core -lmkl_intel_lp64 -lmkl_intel_thread -liomp5 -lpthread -lm -o spmv_mkl
+
 |       | My_Dense | My_coo | My_csr | My_csc | Ref   |
 |-------|----------|--------|--------|--------|-------|
-| #1    | 150      | 72     | 22     | 28     |       |
-| #2    | 148      | 72     | 22     | 29     |       |
-| #3    | 151      | 71     | 22     | 28     |       |
-| **avg** | 149.7    | 71.7   | 22     | 28.3   |       |
-
-________________________________________________________________________________________________________
-- Issues when loading mkl: *mkl not found
-
-$find / -name "libmkl_core.so" 2>/dev/null
-
-  - icc -O0 spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -lmkl_intel_lp64 -lmkl_core -lmkl_sequential -lgsl -lgslcblas -lpthread -lm -ldl -o spmv
-  - /mnt/netapp1/Optcesga_FT2_RHEL7/2020/gentoo/22072020/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../x86_64-pc-linux-gnu/bin/ld: cannot find -lmkl_intel_lp64
-  - /mnt/netapp1/Optcesga_FT2_RHEL7/2020/gentoo/22072020/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../x86_64-pc-linux-gnu/bin/ld: cannot find -lmkl_core
-  - /mnt/netapp1/Optcesga_FT2_RHEL7/2020/gentoo/22072020/usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../x86_64-pc-linux-gnu/bin/ld: cannot find -lmkl_sequential
+| #1    | 150      | 72     | 22     | 28     | 22    |
+| #2    | 148      | 72     | 22     | 29     | 23    |
+| #3    | 151      | 71     | 22     | 28     | 23    |
+| **avg** | 149.7    | 71.7   | 22     | 28.3   | 22.7  |
 
 
 ________________________________________________________________________________________________________
@@ -155,6 +158,14 @@ ________________________________________________________________________________
   - make -f Makefile.icc spmv_O3
   - make -f Makefile.icc spmv_Ofast
   - make -f Makefile.icc clean
+
+
+  -- make -f Makefile.icc.mkl
+  - make -f Makefile.icc.mkl spmv_mkl_O0
+  - make -f Makefile.icc.mkl spmv_mkl_O2
+  - make -f Makefile.icc.mkl spmv_mkl_O3
+  - make -f Makefile.icc.mkl spmv_mkl_Ofast
+  - make -f Makefile.icc.mkl clean
 
 
 
