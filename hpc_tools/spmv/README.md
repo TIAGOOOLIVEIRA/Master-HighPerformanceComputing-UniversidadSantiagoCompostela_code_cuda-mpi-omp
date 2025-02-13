@@ -192,7 +192,10 @@ $ module load intel vtune imkl valgrind
 ### Optimization
 - VTune
 
+  - GCC
     $ vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./spmv
+
+
 
 
 ```c
@@ -416,3 +419,150 @@ enter: vtune -report summary -report-knob show-issues=false -r <my_result_dir>.
 Alternatively, you may view the report in the csv format: vtune -report
 <report_name> -format=csv.
 vtune: Executing actions 100 % done   
+
+```
+
+
+
+  - ICC
+
+    $ vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./spmv_mkl
+
+
+
+
+```c
+vtune: Collection started. To stop the collection, either press CTRL-C or enter from another console window: vtune -r /mnt/netapp2/Home_FT2/home/ulc/cursos/curso370/hpctools/2025/git_emilio/spmv/r001ps -command stop.
+Matriz size: 16384 x 16384 (268435456 elements)
+26837519 non-zero elements (10.00%)
+
+Dense computation
+----------------
+Time taken by CBLAS dense computation: 323 ms
+Time taken by convert_to_mkl_csr (Ref table 2:mkl-sparse): 909 ms
+MKL CSR Matrix created successfully.
+Matrix size: 16384
+NNZ: 26837519
+mkl_sparse_d_mv completed successfully
+Time taken by compute_sparse_mkl (Ref table 2: mkl-sparse): 41 ms
+Result is correct for MKL sparse computation!
+vtune: Collection stopped.
+vtune: Using result path `/mnt/netapp2/Home_FT2/home/ulc/cursos/curso370/hpctools/2025/git_emilio/spmv/r001ps'
+vtune: Executing actions 75 % Generating a report                              Elapsed Time: 5.248s
+    IPC: 2.127
+    DP GFLOPS: 0.189
+    Average CPU Frequency: 3.298 GHz
+Logical Core Utilization: 0.6% (0.773 out of 128)
+ | The metric value is low, which may signal a poor logical CPU cores
+ | utilization. Consider improving physical core utilization as the first step
+ | and then look at opportunities to utilize logical cores, which in some cases
+ | can improve processor throughput and overall performance of multi-threaded
+ | applications.
+ |
+    Physical Core Utilization: 1.2% (0.774 out of 64)
+     | The metric value is low, which may signal a poor physical CPU cores
+     | utilization caused by:
+     |     - load imbalance
+     |     - threading runtime overhead
+     |     - contended synchronization
+     |     - thread/process underutilization
+     |     - incorrect affinity that utilizes logical cores instead of physical
+     |       cores
+     | Run the HPC Performance Characterization analysis to estimate the
+     | efficiency of MPI and OpenMP parallelism or run the Locks and Waits
+     | analysis to identify parallel bottlenecks for other parallel runtimes.
+     |
+Microarchitecture Usage: 47.2% of Pipeline Slots
+ | You code efficiency on this platform is too low.
+ | 
+ | Possible cause: memory stalls, instruction starvation, branch misprediction
+ | or long latency instructions.
+ | 
+ | Next steps: Run Microarchitecture Exploration analysis to identify the cause
+ | of the low microarchitecture usage efficiency.
+ |
+    Retiring: 47.2% of Pipeline Slots
+    Front-End Bound: 21.1% of Pipeline Slots
+     | Issue: A significant portion of Pipeline Slots is remaining empty due to
+     | issues in the Front-End.
+     | 
+     | Tips:  Make sure the code working size is not too large, the code layout
+     | does not require too many memory accesses per cycle to get enough
+     | instructions for filling four pipeline slots, or check for microcode
+     | assists.
+     |
+    Bad Speculation: 18.9% of Pipeline Slots
+     | A significant proportion of pipeline slots containing useful work are
+     | being cancelled. This can be caused by mispredicting branches or by
+     | machine clears. Note that this metric value may be highlighted due to
+     | Branch Resteers issue.
+     |
+    Back-End Bound: 12.8% of Pipeline Slots
+        Memory Bound: 4.2% of Pipeline Slots
+            L1 Bound: 2.7% of Clockticks
+            L2 Bound: 1.6% of Clockticks
+            L3 Bound: 1.0% of Clockticks
+                L3 Latency: 0.4% of Clockticks
+            DRAM Bound: 4.6% of Clockticks
+                Memory Bandwidth: 13.3% of Clockticks
+                Memory Latency: 4.9% of Clockticks
+                    Local DRAM: 0.9% of Clockticks
+                    Remote DRAM: 30.5% of Clockticks
+                    Remote Cache: 25.4% of Clockticks
+            Store Bound: 0.2% of Clockticks
+        Core Bound: 8.6% of Pipeline Slots
+Memory Bound: 4.2% of Pipeline Slots
+    Cache Bound: 5.3% of Clockticks
+    DRAM Bound: 4.6% of Clockticks
+    NUMA: % of Remote Accesses: 43.2%
+Vectorization: 18.9% of Packed FP Operations
+    Instruction Mix
+        SP FLOPs: 0.0% of uOps
+            Packed: 0.0% from SP FP
+                128-bit: 0.0% from SP FP
+                256-bit: 0.0% from SP FP
+                512-bit: 0.0% from SP FP
+            Scalar: 0.0% from SP FP
+        DP FLOPs: 1.4% of uOps
+            Packed: 18.9% from DP FP
+                128-bit: 0.0% from DP FP
+                256-bit: 0.0% from DP FP
+                512-bit: 18.9% from DP FP
+            Scalar: 81.1% from DP FP
+        x87 FLOPs: 0.0% of uOps
+        Non-FP: 98.6% of uOps
+    FP Arith/Mem Rd Instr. Ratio: 0.055
+    FP Arith/Mem Wr Instr. Ratio: 0.111
+Collection and Platform Info
+    Application Command Line: ./spmv_mkl 
+    Operating System: 4.18.0-305.3.1.el8_4.x86_64 \S Kernel \r on an \m 
+    Computer Name: login210-19
+    Result Size: 3.5 MB 
+    Collection start time: 23:21:20 12/02/2025 UTC
+    Collection stop time: 23:21:25 12/02/2025 UTC
+    Collector Type: Driverless Perf per-process counting
+    CPU
+        Name: Intel(R) Xeon(R) Processor code named Icelake
+        Frequency: 2.200 GHz
+        Logical CPU Count: 128
+        Cache Allocation Technology
+            Level 2 capability: not detected
+            Level 3 capability: available
+
+Recommendations:
+    Hotspots: Start with Hotspots analysis to understand the efficiency of your algorithm.
+     | Use Hotspots analysis to identify the most time consuming functions.
+     | Drill down to see the time spent on every line of code.
+    Threading: There is poor utilization of logical CPU cores (0.6%) in your application.
+     |  Use Threading to explore more opportunities to increase parallelism in
+     | your application.
+    Microarchitecture Exploration: There is low microarchitecture usage (47.2%) of available hardware resources.
+     | Run Microarchitecture Exploration analysis to analyze CPU
+     | microarchitecture bottlenecks that can affect application performance.
+
+If you want to skip descriptions of detected performance issues in the report,
+enter: vtune -report summary -report-knob show-issues=false -r <my_result_dir>.
+Alternatively, you may view the report in the csv format: vtune -report
+<report_name> -format=csv.
+vtune: Executing actions 100 % done  
+```
