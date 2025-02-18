@@ -196,6 +196,10 @@ $ module load intel vtune imkl valgrind
     $ vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./spmv
 
 
+<img src="images/vtune_summary_gsl.png" alt="VTune Summary GSL" width="500">
+<img src="images/vtune_flamegraph_gsl.png" alt="VTune Flame Graph GSL" width="500">
+<img src="images/vtune_callercallee_gsl.png" alt="VTune Caller/Callee GSL" width="500">
+<img src="images/vtune_bottomup_gsl.png" alt="VTune BottomUp GSL" width="500">
 
 
 ```c
@@ -429,7 +433,10 @@ vtune: Executing actions 100 % done
     $ vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./spmv_mkl
 
 
-
+<img src="images/vtune_summary_mkl.png" alt="VTune Summary MKL" width="500">
+<img src="images/vtune_flamegraph_mkl.png" alt="VTune Flame Graph MKL" width="500">
+<img src="images/vtune_callercallee_mkl.png" alt="VTune Caller/Callee MKL" width="500">
+<img src="images/vtune_bottomup_mkl.png" alt="VTune BottomUp MKL" width="500">
 
 ```c
 vtune: Collection started. To stop the collection, either press CTRL-C or enter from another console window: vtune -r /mnt/netapp2/Home_FT2/home/ulc/cursos/curso370/hpctools/2025/git_emilio/spmv/r001ps -command stop.
