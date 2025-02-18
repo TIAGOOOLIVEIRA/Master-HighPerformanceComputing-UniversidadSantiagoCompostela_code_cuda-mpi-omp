@@ -972,6 +972,76 @@ Samples: 8K of event 'cache-misses:u', Event count (approx.): 31788176
 ```
 
 
+- Likwid
+
+  - GCC
+
+    $ likwid-perfctr -C 0 -g FLOPS_DP ./spmv
+
+```c
+--------------------------------------------------------------------------------
+Group 1: FLOPS_DP
++------------------------------------------+---------+-------------+
+|                   Event                  | Counter |  HWThread 0 |
++------------------------------------------+---------+-------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 70959299815 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 72781668087 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 54342563652 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE |   PMC0  |      393216 |
+|    FP_ARITH_INST_RETIRED_SCALAR_DOUBLE   |   PMC1  |  1100715696 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC2  |   134217728 |
++------------------------------------------+---------+-------------+
+
++-------------------------+------------+
+|          Metric         | HWThread 0 |
++-------------------------+------------+
+|   Runtime (RDTSC) [s]   |    22.1888 |
+|   Runtime unhalted [s]  |    25.9199 |
+|       Clock [MHz]       |  3760.7120 |
+|           CPI           |     1.0257 |
+|       DP [MFLOP/s]      |    73.8380 |
+|     AVX DP [MFLOP/s]    |    24.1956 |
+|     Packed [MUOPS/s]    |     6.0666 |
+|     Scalar [MUOPS/s]    |    49.6069 |
+| Vectorization ratio [%] |    10.8968 |
++-------------------------+------------+
+```
+
+  - ICC
+
+    $ likwid-perfctr -C 0 -g FLOPS_DP ./spmv_mkl
+
+```c
+--------------------------------------------------------------------------------
+Group 1: FLOPS_DP
++------------------------------------------+---------+-------------+
+|                   Event                  | Counter |  HWThread 0 |
++------------------------------------------+---------+-------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 28567156211 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  | 22837816782 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  | 17957601792 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_DOUBLE |   PMC0  |       16386 |
+|    FP_ARITH_INST_RETIRED_SCALAR_DOUBLE   |   PMC1  |   349136187 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_DOUBLE |   PMC2  |   147644758 |
++------------------------------------------+---------+-------------+
+
++-------------------------+------------+
+|          Metric         | HWThread 0 |
++-------------------------+------------+
+|   Runtime (RDTSC) [s]   |     8.1176 |
+|   Runtime unhalted [s]  |     8.1332 |
+|       Clock [MHz]       |  3571.0669 |
+|           CPI           |     0.7994 |
+|       DP [MFLOP/s]      |   115.7669 |
+|     AVX DP [MFLOP/s]    |    72.7530 |
+|     Packed [MUOPS/s]    |    18.1903 |
+|     Scalar [MUOPS/s]    |    43.0098 |
+| Vectorization ratio [%] |    29.7226 |
++-------------------------+------------+
+
+```
+
+
 Analysis
 
 Optimization code
