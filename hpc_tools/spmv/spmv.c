@@ -7,6 +7,7 @@
 //#include <gsl/gsl_spblas.h> 
 #include "timer.h"
 #include "spmv.h"
+#include <omp.h>
 
 #define DEFAULT_SIZE 16384
 #define DEFAULT_DENSITY 0.1
@@ -21,21 +22,30 @@
 
 unsigned int populate_sparse_matrix(double mat[], unsigned int n, double density, unsigned int seed)
 {
-  unsigned int nnz = 0;
+    unsigned int nnz = 0;
 
-  srand(seed);
+    #pragma omp parallel 
+    {
+        unsigned int local_nnz = 0;
+        unsigned int thread_seed = seed + omp_get_thread_num();
 
-  for (unsigned int i = 0; i < n * n; i++) {
-    if ((rand() % 100) / 100.0 < density) {
-      // Get a pseudorandom value between -9.99 e 9.99
-      mat[i] = ((double)(rand() % 10) + (double)rand() / RAND_MAX) * (rand() % 2 == 0 ? 1 : -1);
-      nnz++;
-    } else {
-      mat[i] = 0;
+        #pragma omp for
+        for (unsigned int i = 0; i < n * n; i++) {
+            if ((rand_r(&thread_seed) % 100) / 100.0 < density) {
+                //pseudorandom value between -9.99 and 9.99
+                mat[i] = ((double)(rand_r(&thread_seed) % 10) + (double)rand_r(&thread_seed) / RAND_MAX) * 
+                         (rand_r(&thread_seed) % 2 == 0 ? 1 : -1);
+                local_nnz++;
+            } else {
+                mat[i] = 0;
+            }
+        }
+
+        #pragma omp atomic
+        nnz += local_nnz;
     }
-  }
 
-  return nnz;
+    return nnz;
 }
 
 unsigned int populate_vector(double vec[], unsigned int size, unsigned int seed)
