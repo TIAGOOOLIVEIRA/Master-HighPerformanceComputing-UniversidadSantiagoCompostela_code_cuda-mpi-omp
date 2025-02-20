@@ -1,12 +1,13 @@
 #include "spmv.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <omp.h>
 
 CSCMatrix convert_to_csc(const double *restrict mat, int size) {
     int nnz = 0;
 
     // Count non-zero elements
+    #pragma omp parallel for reduction(+:nnz)
     for (int i = 0; i < size * size; i++) {
         if (mat[i] != 0.0) {
             nnz++;
@@ -39,21 +40,20 @@ CSCMatrix convert_to_csc(const double *restrict mat, int size) {
     return csc;
 }
 
-void spmv_csc(const CSCMatrix *restrict matrix, const double *restrict vec, double *result) {
+void spmv_csc(const CSCMatrix *restrict matrix, const double *restrict vec, double *restrict result) {
     int size = matrix->size;
 
-    // Initialize the result vector to zero
-    //#pragma omp parallel for
+    #pragma omp parallel for
     for (int i = 0; i < size; i++) {
         result[i] = 0.0;
     }
 
-    // Perform the SpMV operation
-    //#pragma omp parallel for
+    #pragma omp parallel for
     for (int col = 0; col < size; col++) {
         for (int idx = matrix->col_pointers[col]; idx < matrix->col_pointers[col + 1]; idx++) {
             int row = matrix->row_indices[idx];
-            //#pragma omp atomic
+
+            #pragma omp atomic
             result[row] += matrix->values[idx] * vec[col];
         }
     }

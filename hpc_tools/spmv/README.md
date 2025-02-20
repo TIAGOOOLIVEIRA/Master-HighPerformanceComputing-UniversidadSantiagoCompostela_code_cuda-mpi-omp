@@ -1054,3 +1054,17 @@ Analysis
 Optimization code
 
 Optimization compiler arguments
+
+
+| **Flag**                     | **Purpose** |
+|------------------------------|------------|
+| `-mprefer-vector-width=512`  | Prefers **512-bit SIMD** (AVX-512 if supported) to maximize vectorization efficiency. |
+| `-fstrict-aliasing`          | Assumes **no aliasing**, allowing the compiler to optimize memory access and **improve vectorization**. |
+| `-march=native`              | **Optimizes** the generated code **specifically for the host CPU** by enabling all supported instruction sets. |
+| `-mtune=native`              | **Tunes** the performance of the binary for **the current CPU**, selecting the best scheduling strategies. |
+
+
+gcc -pg -O3 -fopenmp -mprefer-vector-width=512 -fstrict-aliasing -march=native -mtune=native -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
+module load imkl intel vtune valgrind
+export OMP_NUM_THREADS=8
+
