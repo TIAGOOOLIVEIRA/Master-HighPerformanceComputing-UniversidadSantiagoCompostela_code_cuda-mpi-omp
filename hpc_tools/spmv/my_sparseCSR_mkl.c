@@ -12,6 +12,7 @@ MKLCSRMatrix convert_to_mkl_csr(const unsigned int n, const double *restrict mat
     int *row_counts = (int *)calloc(n, sizeof(int));
     int nnz = 0;
 
+    /*
     #pragma omp parallel for reduction(+:nnz)
     for (unsigned int i = 0; i < n; i++) {
         for (unsigned int j = 0; j < n; j++) {
@@ -21,6 +22,33 @@ MKLCSRMatrix convert_to_mkl_csr(const unsigned int n, const double *restrict mat
             }
         }
     }
+    */
+
+    int total_nnz = 0;
+
+    #pragma omp parallel
+    {
+        int local_nnz = 0;
+        #pragma omp for
+        for (unsigned int i = 0; i < n; i++) {
+            int count = 0;
+
+            // Use vectorization for inner loop
+            #pragma omp simd reduction(+:count)
+            for (unsigned int j = 0; j < n; j++) {
+                count += (mat[i * n + j] != 0.0);
+            }
+
+            row_counts[i] = count;
+            local_nnz += count;
+        }
+
+        #pragma omp atomic
+        total_nnz += local_nnz;
+    }
+
+    *nnz = total_nnz;
+
 
     csr.nnz = nnz;
 
