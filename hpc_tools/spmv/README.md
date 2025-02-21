@@ -1064,7 +1064,11 @@ Optimization compiler arguments
 | `-mtune=native`              | **Tunes** the performance of the binary for **the current CPU**, selecting the best scheduling strategies. |
 
 
-gcc -pg -O3 -fopenmp -mprefer-vector-width=512 -fstrict-aliasing -march=native -mtune=native -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv
+gcc -pg -O3 -fopenmp -mprefer-vector-width=512 -fstrict-aliasing -march=native -mtune=native -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv_mkl
 module load imkl intel vtune valgrind
+export MKL_NUM_THREADS=1
 export OMP_NUM_THREADS=8
+export MKL_VERBOSE=1
 
+
+icc -O3 spmv_mkl.c my_sparseCSR_mkl.c timer.c -lmkl_core -lmkl_intel_lp64 -fopenmp  -lmkl_intel_thread -liomp5 -lpthread -lm -o spmv_mkl
