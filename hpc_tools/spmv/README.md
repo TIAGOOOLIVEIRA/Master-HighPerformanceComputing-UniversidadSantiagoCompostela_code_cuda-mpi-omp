@@ -1194,3 +1194,11 @@ vtune -collect performance-snapshot -collect memory-access -collect hotspots -co
 <img src="images/vtune_flamegraph_gsl_optim.png" alt="VTune Optimiation Flame Graph GSL" width="500">
 <img src="images/vtune_callercallee_gsl_optim.png" alt="VTune Optimiation Caller/Callee GSL" width="500">
 <img src="images/vtune_bottomup_gsl_optim.png" alt="VTune Optimiation BottomUp GSL" width="500">
+
+
+
+### References
+  - Parallel and High Performance Computing (Robert Robey and Yuliana Zamora)
+  - Multicore and GPU Programming. An Integrated Approach (Gerassimos Barlas)
+  - https://community.intel.com/t5/Blogs/Tech-Innovation/Artificial-Intelligence-AI/Boost-the-Performance-of-AI-ML-Applications-using-Intel-VTune/post/1638896
+  - https://www.intel.com/content/dam/develop/external/us/en/documents/31848-compilerautovectorizationguide.pdf
