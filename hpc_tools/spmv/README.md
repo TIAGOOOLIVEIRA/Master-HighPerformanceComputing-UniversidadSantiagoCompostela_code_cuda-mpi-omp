@@ -1049,11 +1049,40 @@ Group 1: FLOPS_DP
 ```
 
 
-Analysis
+### Analysis
+Both profiling tools show that the following functions are that ones which contribute the most for the CPU time on the gcc compiler 
 
-Optimization code
+1. convert_to_gsl
+2. populate_sparse_matrix
+3. convert_to_csc
+4. convert_to_csr
+5. my_dense
 
-Optimization compiler arguments
+For the ICC compiler, apart of the operations inside the main function, the folloing function is the one which contributes the most for the CPU time
+
+1. convert_to_mkl_csr
+
+
+________________________________________________________________________________________________________
+
+
+- vtune
+  - Caller/Callee, Bottom-up, Flame-Graph and vtune "-collect {collectors}"
+
+- valgrind
+  - asd
+
+- perf
+  - asd
+
+- likwid tells 
+  - asd
+
+### Optimization code
+
+
+
+### Optimization compiler arguments
 
 
 | **Flag**                     | **Purpose** |
@@ -1064,8 +1093,10 @@ Optimization compiler arguments
 | `-mtune=native`              | **Tunes** the performance of the binary for **the current CPU**, selecting the best scheduling strategies. |
 
 
-gcc -pg -O3 -fopenmp -mprefer-vector-width=512 -fstrict-aliasing -march=native -mtune=native -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv_mkl
 module load imkl intel vtune valgrind
+
+gcc -pg -O3 -fopenmp -mprefer-vector-width=512 -fstrict-aliasing -march=native -mtune=native -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv_mkl
+
 export MKL_NUM_THREADS=1
 export OMP_NUM_THREADS=8
 export MKL_VERBOSE=1
