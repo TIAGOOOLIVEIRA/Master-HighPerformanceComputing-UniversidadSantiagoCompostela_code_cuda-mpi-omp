@@ -428,7 +428,7 @@ vtune: Executing actions 100 % done
 
 
 
-  - ICC
+  - ICC MKL
 
     $ vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./spmv_mkl
 
@@ -653,7 +653,7 @@ Profiling timer expired
 
 ```
 
-  - ICC
+  - ICC MKL
 
     $ valgrind --tool=cachegrind --cachegrind-out-file=spmv_cachegrind.out ./spmv_mkl
 
@@ -847,7 +847,7 @@ Samples: 61K of event 'cache-misses:u', Event count (approx.): 375516851
 
 ```
 
-  - ICC
+  - ICC MKL
 
     $ perf record -e cycles,instructions,cache-misses,cache-references,branch-misses,branch-instructions,mem-loads,mem-stores -g -- ./spmv_mkl
 
@@ -1014,7 +1014,7 @@ Group 1: FLOPS_DP
 +-------------------------+------------+
 ```
 
-  - ICC
+  - ICC MKL
 
     $ likwid-perfctr -C 0 -g FLOPS_DP ./spmv_mkl
 
@@ -1058,32 +1058,70 @@ Both profiling tools show that the following functions are that ones which contr
 4. convert_to_csr
 5. my_dense
 
-For the ICC compiler, apart of the operations inside the main function, the folloing function is the one which contributes the most for the CPU time
+For the ICC compiler, apart of the operations inside the main function, the following function is the one which contributes the most for the CPU time
 
 1. convert_to_mkl_csr
 
+Some other aspects related to degree of vectorization, cache efficiency and parallelism of the application can be observed out of the report from VTune, Valgrind, Perf and Likwid profiling tool.
 
+Taking into account those reports, essentially OpenMP and SIMD instructions are leveraged in order optimize the application on the functions the profiling tools highlighted as eligible for improvements.
+
+In the other hand, there are also opportunities to address further optimizations at the compiler level in order to access CPU features for better vectorization or better organization of the data in memory.
 ________________________________________________________________________________________________________
 
 
 - vtune
-  - Caller/Callee, Bottom-up, Flame-Graph and vtune "-collect {collectors}"
+  - In the sessions Hotspots, Caller/Callee, Bottom-up, Flame-Graph, also in the "-collect {collectors}" arguments, VTune shows the functions contribution to the overall CPU and Memory usage. It also gives insights regarding better approaches to improve efficiency, for instance to use Threads to increase paralellism in the application.
 
 - valgrind
-  - asd
+  - The reports shows that the ICC MKL compilation for the sparse matrix multiplication has better cache efficiency comparing to the GCC GSL compilation.
+  The report brings insights in terms how to implement a better memory locality, given information about cache miss rate and memory access.
 
 - perf
-  - asd
+  - There are insightful reports provided by perf, like cycles, instructions and cache-misses.
+  In the session for cache-misses, bottlenecks and the major cache miss function contributors can be easily spot. With that information, approaches were taken in order to improve the memory alignment optimizations, use SIMD, also parallellism with OpenMP, preloading data when it is possible.
 
 - likwid tells 
-  - asd
+  - In summary, likwid provides the degree of vectorization for each application. Which can ben observed a lot can be done to improve it, besides the fact that ICC MKL compilation brings a good vectorization percentage.
+  It also allows to consider any further compilation argument in order to enable CPU features for a better vectorizing as it was used in the optimized version.
+
+
+________________________________________________________________________________________________________
+#### To run
+
+- Libraries to load in beforehand for later evaluation with profiling tools over optimized aplications:
+
+  - $ module load imkl intel vtune valgrind
+
+- Environment variables set to ensure no internal MKL race condition, to get better logs of the execution in MKL and also to define number os threads for the OpenMP parallelism in the optimized code.
+
+
+  - $ export MKL_NUM_THREADS=1
+
+  - $ export OMP_NUM_THREADS=8
+
+  - $ export MKL_VERBOSE=1
+
+
+- Compiler GCC and ICC with additional arguments for optimization at compiling time
+  - $ gcc -pg -O3 -fopenmp -mprefer-vector-width=512 -fstrict-aliasing -march=native -mtune=native -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv_mkl
+
+  - $ icc -O3 spmv_mkl.c my_sparseCSR_mkl.c timer.c -lmkl_core -lmkl_intel_lp64 -fopenmp  -lmkl_intel_thread -liomp5 -lpthread -lm -o spmv_mkl  
+
 
 ### Optimization code
+Given the reports from the mentioned profiling tools, optimizations were implemented on the following functions. Concerns regarding data consistency could be handled by comparing the optimized output version with the check_result comparison function. What actually helped during the work for implementing parallelism with OpenMP, due to the fact sometimes by only leveraging OpenMP declaratives race condition indeed affected the consistency, so the structure of the function had to be revisited. 
+
+  - convert_to_gsl
+  - populate_sparse_matrix
+  - convert_to_csc
+  - convert_to_csr
+  - my_dense
+  - convert_to_mkl_csr
 
 
-
-### Optimization compiler arguments
-
+### Compiler Optimization 
+Compiler optimization flags used for the purpose of address to CPU and memory features that can potentially improve the efficiency and performance of the appplication
 
 | **Flag**                     | **Purpose** |
 |------------------------------|------------|
@@ -1093,13 +1131,66 @@ ________________________________________________________________________________
 | `-mtune=native`              | **Tunes** the performance of the binary for **the current CPU**, selecting the best scheduling strategies. |
 
 
-module load imkl intel vtune valgrind
 
-gcc -pg -O3 -fopenmp -mprefer-vector-width=512 -fstrict-aliasing -march=native -mtune=native -lopenblas -lgsl -lgslcblas spmv.c timer.c my_dense.c my_sparse.c my_csr.c my_coo.c my_csc.c -o spmv_mkl
+### Conclusion
+By comparing the GCC for GSL application standard version with the optimized one and in the same way for the ICC MKL application stadard version with the optimized one, the following improvements could be observed mainly:
+  - Significantly faster - increased the speedup
+  - NUMA optimizations (mainly for ICC MKL)
+  - Vectorization and floating-point performance improved
+  - Threading utilization significantly increased
 
-export MKL_NUM_THREADS=1
-export OMP_NUM_THREADS=8
-export MKL_VERBOSE=1
+The work of application optimization can benefit a lot by leveraging profiling tools in order to spot opportuinities for improvements in the code, also to evaluate the insights tools provides. 
+
+#### Key Performance Improvements ICC:MKL
+vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./spmv_mkl
+
+| **Metric**                        | **Single-Threaded Run** | **Optimized Run** | **Observations** |
+|-----------------------------------|-----------------------|------------------|-----------------|
+| **Dense Computation Time**         | 323 ms               | **219 ms**        | **~32% speedup** in dense computation. |
+| **convert_to_mkl_csr Time**        | 909 ms               | **222 ms**        | **~4.1x speedup**, suggesting significant CSR conversion optimization. |
+| **compute_sparse_mkl Time**        | 41 ms                | **22 ms**         | **~47% speedup** in MKL sparse computation. |
+| **IPC (Instructions per Cycle)**   | **2.127**             | **1.914**         | Slight drop, likely due to increased memory overhead. |
+| **DP GFLOPS**                      | **0.189**             | **0.236**         | **25% increase**, meaning better floating-point performance. |
+| **Logical Core Utilization**        | 0.6% (0.77/128)      | **0.9% (1.12/128)** | **50% improvement** in logical core usage but still underutilized. |
+| **Physical Core Utilization**       | 1.2% (0.77/64)       | **1.8% (1.12/64)** | **50% increase**, but still low. |
+| **Microarchitecture Utilization**   | **47.2%**            | **42.7%**         | **Slight drop**, likely due to memory access patterns. |
+| **Memory Bound**                    | **4.2%**             | **4.9%**          | Slight increase, indicating some memory bottlenecks remain. |
+| **NUMA Remote Accesses**            | **43.2%**            | **0.0%**          | **Huge improvement** → Optimized version eliminates NUMA penalties. |
+| **Vectorization (Packed DP Operations)** | **18.9%**         | **19.2%**         | Slightly better vectorization. |
+
+<img src="images/vtune_summary_mkl_optim.png" alt="VTune Optimiation Summary MKL" width="500">
+<img src="images/vtune_flamegraph_mkl_optim.png" alt="VTune Optimiation Flame Graph MKL" width="500">
+<img src="images/vtune_callercallee_mkl_optim.png" alt="VTune Optimiation Caller/Callee MKL" width="500">
+<img src="images/vtune_bottomup_mkl_optim.png" alt="VTune Optimiation BottomUp MKL" width="500">
 
 
-icc -O3 spmv_mkl.c my_sparseCSR_mkl.c timer.c -lmkl_core -lmkl_intel_lp64 -fopenmp  -lmkl_intel_thread -liomp5 -lpthread -lm -o spmv_mkl
+________________________________________________________________________________________________________
+
+#### Key Performance Improvements GCC:GSL
+vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./spmv
+
+| **Metric**                        | **Single-Threaded Run** | **Optimized Run** | **Observations** |
+|-----------------------------------|-----------------------|------------------|-----------------|
+| **CBLAS Dense Computation Time**  | 957 ms               | **31 ms**        | **~30x speedup** in dense computation. |
+| **My Dense Mat-Vec Product Time** | 371 ms               | **90 ms**        | **~4x speedup** indicating improved memory access. |
+| **convert_to_gsl Time**           | 7599 ms              | **51170 ms**      | **Unexpected slowdown**; possibly overhead from threading/synchronization. |
+| **compute_sparse Time**           | 74 ms                | **173 ms**        | Slight **slowdown**, requires deeper analysis. |
+| **convert_to_CSR Time**           | 960 ms               | **855 ms**        | **11% improvement** in CSR conversion. |
+| **CSR sparse computation Time**   | 34 ms                | **5 ms**          | **~7x speedup** in CSR SpMV. |
+| **convert_to_COO Time**           | 999 ms               | **685 ms**        | **31% faster** COO conversion. |
+| **COO sparse computation Time**   | 85 ms                | **75 ms**         | **12% faster** COO SpMV. |
+| **convert_to_CSC Time**           | 4549 ms              | **4766 ms**       | **Slight regression**, check for memory optimizations. |
+| **CSC sparse computation Time**   | 32 ms                | **63 ms**         | **Unexpected slowdown**, needs verification. |
+| **IPC (Instructions per Cycle)**  | **1.193**            | **0.119**         | **Huge drop**, may indicate excessive memory stalls. |
+| **DP GFLOPS**                     | **0.085**            | **0.031**         | Performance drop, possibly from cache/memory limitations. |
+| **Logical Core Utilization**       | 0.7% (0.868/128)     | **2.8% (3.545/128)** | **~4x increase**, better threading. |
+| **Physical Core Utilization**      | 1.3% (0.861/64)      | **5.5% (3.528/64)** | **~4x increase**, suggesting OpenMP/MKL improvements. |
+| **Microarchitecture Utilization**  | **24.6%**            | **3.5%**          | **Major drop**, likely due to memory stalls. |
+| **Memory Bound**                   | **29.6%**            | **71.9%**         | **Increased bottleneck**, review cache efficiency. |
+| **NUMA Remote Accesses**           | **5.1%**             | **49.3%**         | **NUMA issues** → May need better memory locality. |
+| **Vectorization (Packed DP Operations)** | **11.8%**       | **14.9%**         | **Slight vectorization improvement**. |
+
+<img src="images/vtune_summary_gsl_optim.png" alt="VTune Optimiation Summary GSL" width="500">
+<img src="images/vtune_flamegraph_gsl_optim.png" alt="VTune Optimiation Flame Graph GSL" width="500">
+<img src="images/vtune_callercallee_gsl_optim.png" alt="VTune Optimiation Caller/Callee GSL" width="500">
+<img src="images/vtune_bottomup_gsl_optim.png" alt="VTune Optimiation BottomUp GSL" width="500">

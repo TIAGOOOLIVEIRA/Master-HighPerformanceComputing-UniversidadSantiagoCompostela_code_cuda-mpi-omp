@@ -33,7 +33,6 @@ MKLCSRMatrix convert_to_mkl_csr(const unsigned int n, const double *restrict mat
         for (unsigned int i = 0; i < n; i++) {
             int count = 0;
 
-            // Use vectorization for inner loop
             #pragma omp simd reduction(+:count)
             for (unsigned int j = 0; j < n; j++) {
                 count += (mat[i * n + j] != 0.0);
