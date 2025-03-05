@@ -12,3 +12,11 @@ https://developer.nvidia.com/cuda-code-samples
 https://docs.nvidia.com/cuda/volta-compatibility-guide/index.html
 
 Nvidia Nano Jetson Orin 
+
+References
+https://github.com/drkennetz/cuda_examples/
+https://github.com/openhackathons-org/gpubootcamp.git
+
+HLRS
+    VTune_Profiling.pdf
+        GPU
