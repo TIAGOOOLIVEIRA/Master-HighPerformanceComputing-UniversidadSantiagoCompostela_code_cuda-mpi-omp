@@ -2,7 +2,7 @@
 
 
 /*
-clang++ -std=c++17 -I/opt/homebrew/include -L/opt/homebrew/lib -ltbb -o fig_1_04  fig_1_04.cpp
+clang++ -std=c++17 -I/opt/homebrew/include -L/opt/homebrew/lib -ltbb -o simple_unbalanced_binary_tree  simple_unbalanced_binary_tree.cpp
 
 */
 
