@@ -13,9 +13,9 @@ This repository contains an example of how to use PyTorch with a single GPU for 
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/pytorch_singleGPU.git
-    cd pytorch_singleGPU
-    ```
+    git clone https://github.com/yourusername/Master-HighPerformanceComputing-UniversidadSantiagoCompostela_code_cuda-mpi-omp.git
+    cd Master-HighPerformanceComputing-UniversidadSantiagoCompostela_code_cuda-mpi-omp/hpc_tools/pytorch_singleGPU
+
 
 2. Create a virtual environment and activate it:
     ```bash
@@ -29,11 +29,24 @@ This repository contains an example of how to use PyTorch with a single GPU for 
     ```
 
 ## Usage
+Before running the example script, ensure that your environment is properly set up. Follow these steps:
 
-To run the example script, use the following command:
-```bash
-python main.py
-```
+1. Set up the environment by running the `setup_env.py` script:
+    ```bash
+    python setup_env.py
+    ```
+
+2. Submit the training job using the SLURM script:
+    ```bash
+    sbatch train_bert_squad.sh
+    ```
+
+This will:
+- Prepare the environment by installing necessary dependencies.
+- Submit the job to train a BERT model on the SQuAD dataset using a single GPU.
+
+Make sure to check the SLURM output files for job status and results.
+
 
 This script will:
 - Initialize a neural network model.
@@ -43,10 +56,9 @@ This script will:
 
 ## File Structure
 
-- `main.py`: The main script to run the example.
-- `model.py`: Contains the neural network model definition.
-- `data_loader.py`: Handles data loading and preprocessing.
-- `train.py`: Contains the training loop and evaluation functions.
+- `train_bert_squad.py`: Script to train a BERT model on the SQuAD dataset using a single GPU.
+- `train_bert_squad.sh`: Script to submit the job of train a BERT model on the SQuAD dataset using a single GPU.
+- `setup_env.py`: Sets up the environment by installing necessary dependencies and configurations.
 - `requirements.txt`: Lists the required Python packages.
 
 ## Contributing
