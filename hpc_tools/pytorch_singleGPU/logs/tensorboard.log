@@ -1,0 +1,9 @@
+[curso370@login210-18 deliverable_1]$ tail -n 100 tensorboard.log
+TensorFlow installation not found - running with reduced feature set.
+
+NOTE: Using experimental fast data loading logic. To disable, pass
+    "--load_fast=false" and report issues on GitHub. More details:
+    https://github.com/tensorflow/tensorboard/issues/4784
+
+TensorBoard 2.11.2 at http://c209-15:6006/ (Press CTRL+C to quit)
+[curso370@login210-18 deliverable_1]$ tail -n 100 tensorboard.log

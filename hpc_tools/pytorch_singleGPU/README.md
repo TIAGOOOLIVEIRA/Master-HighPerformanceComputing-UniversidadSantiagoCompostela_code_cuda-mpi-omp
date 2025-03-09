@@ -69,6 +69,24 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
+## Logs
+
+- tail -n 100 gpu_usage.log
+- tail -n 100 tensorboard.log
+- tail -n 100 training_error.log
+- tail -n 100 training_output.log
+
+- $ ls -la bert_squad_trained
+```total 427368
+drwxr-xr-x 2 curso370 ulc      4096 Mar  9 23:34 .
+drwxr-xr-x 4 curso370 ulc      4096 Mar  9 23:41 ..
+-rw-r--r-- 1 curso370 ulc       685 Mar  9 23:34 config.json
+-rw-r--r-- 1 curso370 ulc 435644909 Mar  9 23:34 pytorch_model.bin
+-rw-r--r-- 1 curso370 ulc       125 Mar  9 23:34 special_tokens_map.json
+-rw-r--r-- 1 curso370 ulc       366 Mar  9 23:34 tokenizer_config.json
+-rw-r--r-- 1 curso370 ulc    231508 Mar  9 23:34 vocab.txt
+```
+
 ## Acknowledgements
 
 This project is part of the Master in High Performance Computing at Universidad de Santiago de Compostela.

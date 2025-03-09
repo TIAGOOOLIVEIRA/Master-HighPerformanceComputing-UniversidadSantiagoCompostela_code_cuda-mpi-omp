@@ -1,0 +1,101 @@
+[curso370@login210-18 deliverable_1]$ tail -n 100 training_output.log
+📊 Step 5406: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5407: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5408: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5409: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5410: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+Epoch 3 | Step 5410 | Loss: 5.5468
+📊 Step 5411: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5412: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5413: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5414: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5415: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5416: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5417: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5418: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5419: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5420: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+Epoch 3 | Step 5420 | Loss: 5.5468
+📊 Step 5421: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5422: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5423: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5424: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5425: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5426: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5427: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5428: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5429: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5430: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+Epoch 3 | Step 5430 | Loss: 5.5466
+📊 Step 5431: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5432: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5433: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5434: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5435: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5436: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5437: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5438: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5439: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5440: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+Epoch 3 | Step 5440 | Loss: 5.5463
+📊 Step 5441: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5442: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5443: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5444: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5445: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5446: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5447: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5448: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5449: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5450: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+Epoch 3 | Step 5450 | Loss: 5.5463
+📊 Step 5451: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5452: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5453: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5454: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5455: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5456: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5457: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5458: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5459: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5460: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+Epoch 3 | Step 5460 | Loss: 5.5462
+📊 Step 5461: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5462: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5463: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5464: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5465: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5466: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5467: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5468: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5469: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5470: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+Epoch 3 | Step 5470 | Loss: 5.5461
+📊 Step 5471: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5472: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5473: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+📊 Step 5474: GPU Memory Allocated: 1.63 GB, Reserved: 6.53 GB
+✅ Training completed in 1566.77 seconds
+✅ Training Completed & Model Saved
+Training Job Completed
+GPU Usage Summary:
+2025/03/09 23:31:31.656, NVIDIA A100-PCIE-40GB, 84 %, 56 %, 40960 MiB, 7275 MiB
+2025/03/09 23:31:41.656, NVIDIA A100-PCIE-40GB, 79 %, 52 %, 40960 MiB, 7275 MiB
+2025/03/09 23:31:51.657, NVIDIA A100-PCIE-40GB, 84 %, 56 %, 40960 MiB, 7275 MiB
+2025/03/09 23:32:01.658, NVIDIA A100-PCIE-40GB, 84 %, 56 %, 40960 MiB, 7275 MiB
+2025/03/09 23:32:11.658, NVIDIA A100-PCIE-40GB, 82 %, 54 %, 40960 MiB, 7275 MiB
+2025/03/09 23:32:21.659, NVIDIA A100-PCIE-40GB, 84 %, 56 %, 40960 MiB, 7275 MiB
+2025/03/09 23:32:31.659, NVIDIA A100-PCIE-40GB, 84 %, 56 %, 40960 MiB, 7275 MiB
+2025/03/09 23:32:41.660, NVIDIA A100-PCIE-40GB, 84 %, 56 %, 40960 MiB, 7275 MiB
+2025/03/09 23:32:51.661, NVIDIA A100-PCIE-40GB, 82 %, 54 %, 40960 MiB, 7275 MiB
+2025/03/09 23:33:01.661, NVIDIA A100-PCIE-40GB, 82 %, 54 %, 40960 MiB, 7275 MiB
+2025/03/09 23:33:11.662, NVIDIA A100-PCIE-40GB, 84 %, 56 %, 40960 MiB, 7275 MiB
+2025/03/09 23:33:21.662, NVIDIA A100-PCIE-40GB, 81 %, 52 %, 40960 MiB, 7275 MiB
+2025/03/09 23:33:31.663, NVIDIA A100-PCIE-40GB, 84 %, 56 %, 40960 MiB, 7275 MiB
+2025/03/09 23:33:41.664, NVIDIA A100-PCIE-40GB, 83 %, 54 %, 40960 MiB, 7275 MiB
+2025/03/09 23:33:51.664, NVIDIA A100-PCIE-40GB, 84 %, 56 %, 40960 MiB, 7275 MiB
+2025/03/09 23:34:01.665, NVIDIA A100-PCIE-40GB, 83 %, 55 %, 40960 MiB, 7275 MiB
+2025/03/09 23:34:11.665, NVIDIA A100-PCIE-40GB, 79 %, 52 %, 40960 MiB, 7275 MiB
+2025/03/09 23:34:21.666, NVIDIA A100-PCIE-40GB, 84 %, 56 %, 40960 MiB, 7275 MiB
+2025/03/09 23:34:31.667, NVIDIA A100-PCIE-40GB, 82 %, 54 %, 40960 MiB, 7275 MiB
+2025/03/09 23:34:41.667, NVIDIA A100-PCIE-40GB, 84 %, 56 %, 40960 MiB, 7275 MiB
