@@ -17,10 +17,10 @@ This repository contains an example of how to use PyTorch with a single GPU for 
     cd Master-HighPerformanceComputing-UniversidadSantiagoCompostela_code_cuda-mpi-omp/hpc_tools/pytorch_singleGPU
 
 
-2. Create a virtual environment and activate it:
+2. For manual installation - Create a virtual environment and activate it:
     ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    python -m venv mypython_env
+    source mypython_env/bin/activate  # On Windows use `mypython_env\Scripts\activate`
     ```
 
 3. Install the required packages:
@@ -31,7 +31,7 @@ This repository contains an example of how to use PyTorch with a single GPU for 
 ## Usage
 Before running the example script, ensure that your environment is properly set up. Follow these steps:
 
-1. Set up the environment by running the `setup_env.py` script:
+1. For automated instalation - Set up the environment by running the `setup_env.py` script:
     ```bash
     python setup_env.py
     ```
