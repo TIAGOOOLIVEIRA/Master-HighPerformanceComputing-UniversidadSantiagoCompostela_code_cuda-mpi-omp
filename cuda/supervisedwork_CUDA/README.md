@@ -9,6 +9,12 @@ https://developer.nvidia.com/cuda-code-samples
     https://github.com/nvidia/cuda-samples
 
 
+## Proof of concept
+
+### ABC
+
+### BCA
+
 ## Profiling
 
 
