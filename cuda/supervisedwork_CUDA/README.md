@@ -17,6 +17,10 @@ https://developer.nvidia.com/cuda-code-samples
 
 ## Profiling
 
+## C++ 20 for CUDA
+    How the old C used nowadays in NVIDIA GPUs can be transformed into a lethal Weapon with C++ 20 LinkedIn.pdf 
+        bi-pointer strategy
+
 
 https://docs.nvidia.com/cuda/volta-compatibility-guide/index.html
 
