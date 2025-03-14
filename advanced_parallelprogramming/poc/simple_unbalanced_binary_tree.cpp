@@ -3,7 +3,8 @@
 
 /*
 clang++ -std=c++17 -I/opt/homebrew/include -L/opt/homebrew/lib -ltbb -o simple_unbalanced_binary_tree  simple_unbalanced_binary_tree.cpp
-
+#TODO
+    create a cmake file to compile in HPC and MacOS
 */
 
 struct Node {
