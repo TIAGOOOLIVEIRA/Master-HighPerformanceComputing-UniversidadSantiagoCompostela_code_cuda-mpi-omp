@@ -66,12 +66,12 @@ size_t findValidMax(std::vector<int>& path, Node_t *root, const std::vector<std:
   // Check all conditions are fulfilled by the value or store 0 otherwise
   //TODO
     //Parallelize with with TBB 
-    //Analyze with Vtune
+    //consider vectorization
+    //Analyze with Vtune, likwid,...
+  
 
-    //1 Jumping Right In_ Hello TBB _ Pro TBB_ C++ Parallel Programming with Threading Building Blocks.pdf
-    //c_c-data-structures-and-algorithms-in-c.pdf
-        //13.2.2 The Adjacency List Structure
-
+  //parallelize to distribute conditions(root->value); when !condition signal to stop.
+  //need of global variable? Mutex?
   for (const std::function<bool(size_t)>& condition : conditions) {
     if (!condition(root->value)) {
       max = 0;
