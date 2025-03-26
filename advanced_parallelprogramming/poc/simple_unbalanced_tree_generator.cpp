@@ -133,14 +133,25 @@ std::vector<int> generateUniqueRandomValues(int size, int start, int end) {
     return std::vector<int>(unique_values.begin(), unique_values.end());
 }
 
-int main() {
-    std::vector<int> values = generateUniqueRandomValues(60, 1, 60);
+int main(int argc, char* argv[]) {
+    if (argc < 5) {
+        std::cerr << "Usage: " << argv[0] << " <size> <start> <end> <print_inorder (0|1)>\n";
+        return 1;
+    }
 
+    int size = std::stoi(argv[1]);
+    int start = std::stoi(argv[2]);
+    int end = std::stoi(argv[3]);
+    bool print_inorder = std::stoi(argv[4]) != 0;
+
+    std::vector<int> values = generateUniqueRandomValues(size, start, end);
     auto tree = generateTree(values);
 
-    std::cout << "Inorder traversal: ";
-    inorder(tree);
-    std::cout << "\n";
+    if (print_inorder) {
+        std::cout << "Inorder traversal: ";
+        inorder(tree);
+        std::cout << "\n";
+    }
 
     std::vector<std::function<bool(int)>> conditions = {
         [](int x) { return x % 2 == 0; },

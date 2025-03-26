@@ -11,6 +11,14 @@ The file http://gac.udc.es/~basilio/ppa_project.cpp contains a sequential progra
 
 ## Profiling 
 
+- Profiling (to spot optimization made on the code by the compiler):
+  - Likwid
+  - Valgrind
+  - VTune
+  - Perf
+
+
+
 ## References
     3. Flow Graphs _ Pro TBB_ C++ Parallel Programming with Threading Building Blocks.pdf
         Future work: redesign the tree as a Flow:graph
