@@ -9,6 +9,8 @@
 #include <mutex>
 #include <future>
 #include <chrono>
+#include <unordered_set>
+
 #include <tbb/tbb.h>
 
 /*
@@ -32,7 +34,7 @@ struct Node_t {
     explicit Node_t(int val) : value(val), left(nullptr), right(nullptr) {}
 };
 
-// Inserts a value into an unbalanced binary tree
+//Inserts a value into an unbalanced binary tree
 void insert(std::unique_ptr<Node_t>& root, int value) {
     if (!root) {
         root = std::make_unique<Node_t>(value);
@@ -42,14 +44,14 @@ void insert(std::unique_ptr<Node_t>& root, int value) {
     else insert(root->right, value);
 }
 
-// Tree generator from vector
+//Tree generator from vector
 std::unique_ptr<Node_t> generateTree(const std::vector<int>& values) {
     std::unique_ptr<Node_t> root = nullptr;
     for (int val : values) insert(root, val);
     return root;
 }
 
-// TBB-parallelized generic findValidMax
+//TBB-parallelized generic findValidMax
 int findValidMaxTBB(const std::unique_ptr<Node_t>& root,
                     const std::vector<std::function<bool(int)>>& conditions,
                     size_t depth_cutoff = 3) {
@@ -111,7 +113,7 @@ int findValidMaxThreads(const std::unique_ptr<Node_t>& root,
     return maxValid.load() == std::numeric_limits<int>::min() ? -1 : maxValid.load();
 }
 
-// Utility to print the tree inorder (for testing)
+//to print the tree inorder (for testing)
 void inorder(const std::unique_ptr<Node_t>& node) {
     if (!node) return;
     inorder(node->left);
@@ -119,8 +121,21 @@ void inorder(const std::unique_ptr<Node_t>& node) {
     inorder(node->right);
 }
 
+std::vector<int> generateUniqueRandomValues(int size, int start, int end) {
+    std::unordered_set<int> unique_values;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(start, end);
+
+    while (unique_values.size() < static_cast<size_t>(size)) {
+        unique_values.insert(dist(gen));
+    }
+    return std::vector<int>(unique_values.begin(), unique_values.end());
+}
+
 int main() {
-    std::vector<int> values = {10, 5, 1, 7, 20, 15, 30, 25, 27, 26};
+    std::vector<int> values = generateUniqueRandomValues(60, 1, 60);
+
     auto tree = generateTree(values);
 
     std::cout << "Inorder traversal: ";
