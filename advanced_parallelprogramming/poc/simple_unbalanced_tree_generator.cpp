@@ -6,11 +6,10 @@
 #include <atomic>
 #include <algorithm>
 #include <thread>
-#include <mutex>
 #include <future>
 #include <chrono>
+#include <random>
 #include <unordered_set>
-
 #include <tbb/tbb.h>
 
 /*
@@ -23,19 +22,24 @@ Inorder traversal prints values in sorted order, regardless of tree shape.
 
 #TODO
     create a cmake file to compile in HPC and MacOS
+    add makefile with tests to benchmark both findValidMax* alternatives for different sizes
 */
 
+/*
+std::shared_ptr ensures safe memory access during concurrent traversals, even if a node is being visited in parallel by multiple threads.
+std::async and std::thread copy arguments, and std::unique_ptr is non-copyable → you'd need to pass raw pointers or references.
+*/
 
 struct Node_t {
     int value;
-    std::unique_ptr<Node_t> left;
-    std::unique_ptr<Node_t> right;
+    std::shared_ptr<Node_t> left;
+    std::shared_ptr<Node_t> right;
 
     explicit Node_t(int val) : value(val), left(nullptr), right(nullptr) {}
 };
 
 //Inserts a value into an unbalanced binary tree
-void insert(std::unique_ptr<Node_t>& root, int value) {
+void insert(std::shared_ptr<Node_t>& root, int value) {
     if (!root) {
         root = std::make_unique<Node_t>(value);
         return;
@@ -45,20 +49,20 @@ void insert(std::unique_ptr<Node_t>& root, int value) {
 }
 
 //Tree generator from vector
-std::unique_ptr<Node_t> generateTree(const std::vector<int>& values) {
-    std::unique_ptr<Node_t> root = nullptr;
+std::shared_ptr<Node_t> generateTree(const std::vector<int>& values) {
+    std::shared_ptr<Node_t> root = nullptr;
     for (int val : values) insert(root, val);
     return root;
 }
 
 //TBB-parallelized generic findValidMax
-int findValidMaxTBB(const std::unique_ptr<Node_t>& root,
+int findValidMaxTBB(const std::shared_ptr<Node_t>& root,
                     const std::vector<std::function<bool(int)>>& conditions,
                     size_t depth_cutoff = 3) {
     std::atomic<int> maxValid{std::numeric_limits<int>::min()};
 
-    std::function<void(const std::unique_ptr<Node_t>&, size_t)> visit;
-    visit = [&](const std::unique_ptr<Node_t>& node, size_t depth) {
+    std::function<void(const std::shared_ptr<Node_t>&, size_t)> visit;
+    visit = [&](const std::shared_ptr<Node_t>& node, size_t depth) {
         if (!node) return;
 
         if (std::all_of(conditions.begin(), conditions.end(),
@@ -83,14 +87,44 @@ int findValidMaxTBB(const std::unique_ptr<Node_t>& root,
     return maxValid.load() == std::numeric_limits<int>::min() ? -1 : maxValid.load();
 }
 
-// std::thread-based findValidMax
-int findValidMaxThreads(const std::unique_ptr<Node_t>& root,
+
+//std::thread-based optimistic lock-free findValidMax
+int findValidMaxOptimistic(const std::shared_ptr<Node_t>& root, const std::vector<std::function<bool(int)>>& conditions) {
+    std::atomic<int> maxValid{std::numeric_limits<int>::min()};
+
+    std::function<void(std::shared_ptr<Node_t>)> visit;
+    visit = [&](std::shared_ptr<Node_t> node) {
+        if (!node) return;
+
+        if (std::all_of(conditions.begin(), conditions.end(), [&](const auto& cond) { return cond(node->value); })) {
+            int curr = node->value;
+            int prev = maxValid.load();
+            while (curr > prev && !maxValid.compare_exchange_weak(prev, curr)) {}
+        }
+
+        std::future<void> left, right;
+        if (node->left)
+            left = std::async(std::launch::async, visit, node->left);
+        if (node->right)
+            right = std::async(std::launch::async, visit, node->right);
+
+        if (left.valid()) left.get();
+        if (right.valid()) right.get();
+    };
+
+    visit(root);
+    return maxValid.load() == std::numeric_limits<int>::min() ? -1 : maxValid.load();
+
+}
+
+//std::thread-based findValidMax
+int findValidMaxThreads(const std::shared_ptr<Node_t>& root,
                         const std::vector<std::function<bool(int)>>& conditions) {
     std::atomic<int> maxValid{std::numeric_limits<int>::min()};
     std::mutex mtx;
 
-    std::function<void(const std::unique_ptr<Node_t>&)> visit;
-    visit = [&](const std::unique_ptr<Node_t>& node) {
+    std::function<void(const std::shared_ptr<Node_t>&)> visit;
+    visit = [&](const std::shared_ptr<Node_t>& node) {
         if (!node) return;
 
         if (std::all_of(conditions.begin(), conditions.end(),
@@ -114,7 +148,7 @@ int findValidMaxThreads(const std::unique_ptr<Node_t>& root,
 }
 
 //to print the tree inorder (for testing)
-void inorder(const std::unique_ptr<Node_t>& node) {
+void inorder(const std::shared_ptr<Node_t>& node) {
     if (!node) return;
     inorder(node->left);
     std::cout << node->value << " ";
@@ -166,11 +200,19 @@ int main(int argc, char* argv[]) {
     int result_threads = findValidMaxThreads(tree, conditions);
     auto end2 = std::chrono::high_resolution_clock::now();
 
+
+    auto start3 = std::chrono::high_resolution_clock::now();
+    int result_optimistic = findValidMaxOptimistic(tree, conditions);
+    auto end3 = std::chrono::high_resolution_clock::now();
+
     std::cout << "[TBB] Max: " << result_tbb << " | Time: "
               << std::chrono::duration_cast<std::chrono::microseconds>(end1 - start1).count() << "us\n";
 
     std::cout << "[Threads] Max: " << result_threads << " | Time: "
               << std::chrono::duration_cast<std::chrono::microseconds>(end2 - start2).count() << "us\n";
+
+    std::cout << "[Optimistic Threads] Max: " << result_optimistic << " | Time: "
+              << std::chrono::duration_cast<std::chrono::microseconds>(end3 - start3).count() << "us\n";
 
     return 0;
 }

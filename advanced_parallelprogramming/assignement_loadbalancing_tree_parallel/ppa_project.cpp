@@ -63,15 +63,6 @@ size_t findValidMax(std::vector<int>& path, Node_t *root, const std::vector<std:
 
   size_t max = root->value;
 
-  // Check all conditions are fulfilled by the value or store 0 otherwise
-  //TODO
-    //Parallelize with with TBB 
-    //consider vectorization
-    //Analyze with Vtune, likwid,...
-  
-
-  //parallelize to distribute conditions(root->value); when !condition signal to stop.
-  //need of global variable? Mutex?
   for (const std::function<bool(size_t)>& condition : conditions) {
     if (!condition(root->value)) {
       max = 0;
