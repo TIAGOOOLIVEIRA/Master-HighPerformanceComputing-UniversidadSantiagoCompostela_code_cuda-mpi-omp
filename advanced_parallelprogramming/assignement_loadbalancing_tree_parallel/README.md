@@ -104,8 +104,22 @@ Key optimizations applied:
 
     Memory Locality: Reused and minimized allocations for path tracking.
 
-## Profiling 
- VTune Insights
+## Profiling - VTune Insights
+The VTune reports can be found in the following folder, where the files represents profiling on the latest fine-tunings on the function findValidMaxTBB_SharedPtr.
+
+This loop evaluation with VTune helped to isolate the issues also to understand what strategy to take for fine-tunning out of the suggestions made in the report.
+
+
+- /analysis
+
+  - vtune_collect.log
+  - vtune_collect2.log
+  - vtune_collect3.log
+
+- /VTune
+  - $ module load intel vtune valgrind
+  - $ vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./ppa_project_par
+
 
 Key Findings (HPC Environment - Intel Xeon, 64 cores):
 
@@ -137,7 +151,7 @@ Recommendations from VTune:
 |                          | macOS (M1, 8 Cores) | HPC (Xeon, 64 Cores) |
 |--------------------------|---------------------|------------------------|
 | `findValidMax`           | Slower              | ~190s                  |
-| `findValidMaxTBB`        | Faster              | ~449s                  |
+| `findValidMaxTBB_SharedPtr`        | Faster              | ~449s                  |
 | **Speedup (TBB vs Seq)** | ~1.4×               | ~0.42× (slower)        |
 
 ---
@@ -214,7 +228,7 @@ Recommendations from VTune:
 
 ### Why TBB Performs Worse in HPC
 
-    ⚖️ Load Imbalance:
+    Load Imbalance:
 
         Tree is highly unbalanced, leading to task starvation.
 
@@ -222,19 +236,19 @@ Recommendations from VTune:
 
         TBB's work-stealing fails to spread the workload effectively.
 
-    💸 Threading Overhead:
+    Threading Overhead:
 
         Fine-grained tasks cause scheduling overhead.
 
         task_group incurs more cost than benefit in shallow subtrees.
 
-    🧵 Poor Core Utilization (1.5%):
+    Poor Core Utilization (1.5%):
 
         Tasks are not long enough to keep threads busy.
 
         Task spawning faster than task processing.
 
-    🧠 Memory/Store Bound:
+    Memory/Store Bound:
 
         8.7% backend stalls on memory.
 
@@ -257,19 +271,26 @@ On HPC Xeon environments, sequential outperforms due to:
 
     Memory contention and atomic synchronization bottlenecks
 
-Takeaway: For highly unbalanced trees, an actor-style batching system with intelligent load distribution (via task queues) performs more consistently across architectures. Hybrid strategies combining OpenMP and TBB offer promising directions for scalable performance — especially when combined with dynamic work allocation and profiling feedback.
+Since the tree is highly unbalanced, it is a valid assumption that an actor-style batching system with intelligent load distribution (via task queues, for instance) performs more consistently across architectures. Also hybrid strategies combining OpenMP and TBB offer promising directions for scalable performance — especially when combined with dynamic work allocation and profiling feedback.
 
 ## Future work
-The results in the interactive investigation or fine-tuning process shows that by adding parallelism without proper orchestration or load balancing does not guarantee performance—especially on highly irregular data structures like unbalanced trees. Adopting a pure Actor Model approach can bring architectural clarity and adaptive concurrency.
+The results collected in the fine-tuning evaluation process show that by adding parallelism without proper orchestration or load balancing does not guarantee higher performance, especially on highly irregular data structures like unbalanced trees. Good assumption is that a pure Actor Model approach can bring architectural clarity and adaptive concurrency.
 
-•Dynamic Load Balancing of Unbalanced Computations Using Message Passing
-•Data-parallel load balancing strategies
-•Strategies for Dynamic Load Balancing on Highly Parallel Computers
-•Parallel Programming and High-Performance Computing Part 6: Dynamic Load Balancing
-•Dynamic Load Balancing Strategies for Parallel Computers
-•Distributed dynamic load balancing for task parallel programming
+
+- References for Load Balancing Strategies
+  - Dynamic Load Balancing of Unbalanced Computations Using Message Passing
+  - Data-parallel load balancing strategies
+  - Strategies for Dynamic Load Balancing on Highly Parallel Computers
+  - Parallel Programming and High-Performance Computing Part 6: Dynamic Load Balancing
+  - Dynamic Load Balancing Strategies for Parallel Computers
+  - Distributed dynamic load balancing for task parallel programming
 
 ### Actor Model (Actor Model Architecture Proposal for Tree Traversal)
+For the brevity, in the following a schema to be used for implementing the Actor Model in this application.
+
+For a pure Actor Model implementation, changes in the core architecture should be done.
+
+Nevertheless, hybrid parallelism would also benefit for local loops leveraging TBB, OpenMP also std::threads for a lock-free/optimistic approach.
 
 ```text
 +-------------------------+
