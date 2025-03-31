@@ -14,19 +14,21 @@
 
 
 /*
-clang++ -std=c++17 -I/opt/homebrew/include -L/opt/homebrew/lib -ltbb -o ppa_project_par ppa_project_par.cpp
-export OMP_NUM_THREADS=8
-export TBB_NUM_THREADS=8
+To build for macOS:
+    make
+To build for HPC 
+    make hpc
+To clean:
+    make clean
 
-clang++ -std=c++17 -Xpreprocessor -fopenmp -I/opt/homebrew/opt/libomp/include \
-        -L/opt/homebrew/opt/libomp/lib -lomp \
-        -I/opt/homebrew/include -L/opt/homebrew/lib -ltbb \
-        -o ppa_project_par ppa_project_par.cpp
+To reserver resources on HPC:
+    compute -c 1 --mem 64
+To run
+    ./ppa_project_par
 
-compute -c 1 --mem 64
-./ppa_project_par
-module load intel vtune valgrind
-vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./ppa_project_par
+To profile
+    module load intel vtune valgrind
+    vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./ppa_project_par
 */
 
 static int NChildren = 2;
@@ -108,6 +110,82 @@ size_t findValidMax(std::vector<int>& path, const std::shared_ptr<Node_t>& root,
     return max;
 }
 
+
+//Actor model with TBB + OpenMP
+//This is a hybrid approach that uses TBB for task parallelism and OpenMP for thread parallelism within deep or heavy subtrees.
+//The TBB task group is used to manage the parallel execution of tasks, while OpenMP is used for parallelizing the execution of tasks within the TBB task group.
+//This approach intends for better load balancing and can improve performance in cases where the tree structure is uneven or has deep subtrees.
+size_t findValidMaxTBB_SharedPtr(std::vector<int>& path,
+    const std::shared_ptr<Node_t>& root,
+    const std::vector<std::function<bool(size_t)>>& conditions) {
+
+        struct PathWithMax {
+            size_t value;
+            std::vector<int> path;
+        };
+    
+        std::atomic<size_t> maxValid{0};
+        std::shared_ptr<PathWithMax> bestPathWithMax = nullptr;
+    
+        tbb::task_arena arena;
+
+        arena.execute([&] {
+            std::function<void(const std::shared_ptr<Node_t>&, std::vector<int>)> actor;
+            actor = [&](const std::shared_ptr<Node_t>& node, std::vector<int> currentPath) -> void {
+                if (!node) return;
+    
+                bool isValid = std::all_of(conditions.begin(), conditions.end(),
+                                           [&](const auto& cond) { return cond(node->value); });
+                if (isValid) {
+                    size_t prev = maxValid.load();
+                    while (node->value > prev && !maxValid.compare_exchange_weak(prev, node->value)) {}
+    
+                    if (node->value > prev) {
+                        auto newPath = std::make_shared<PathWithMax>(PathWithMax{node->value, currentPath});
+                        auto expected = std::atomic_load(&bestPathWithMax);
+                        while ((expected == nullptr || newPath->value > expected->value) &&
+                               !std::atomic_compare_exchange_weak(&bestPathWithMax, &expected, newPath)) {}
+                    }
+                }
+
+                size_t childCount = node->children.size();
+                if (childCount > 0) {
+                    //=====actor model coordination with hybrid TBB + OpenMP=====
+                    tbb::task_group tg;
+                    for (size_t i = 0; i < childCount; ++i) {
+                        tg.run([&, i] {
+                            std::vector<int> childPath = currentPath;
+                            childPath.push_back(static_cast<int>(i));
+    
+                            const auto& child = node->children[i];
+                            if (child && child->children.size() > 4) {
+                                //OpenMP inside deep or heavy subtrees
+                                #pragma omp parallel
+                                {
+                                    #pragma omp single nowait
+                                    actor(child, childPath);
+                                }
+                            } else {
+                                //otherwise run recursively
+                                actor(child, childPath);
+                            }
+                        });
+                    }
+                    tg.wait();
+                }
+            };
+    
+            actor(root, {});
+        });       
+        
+        auto finalPath = std::atomic_load(&bestPathWithMax);
+        if (finalPath) path = finalPath->path;
+        return maxValid.load();
+
+        
+}
+
+
 size_t findValidMaxTBB_SharedPtr_actor(std::vector<int>& path,
     const std::shared_ptr<Node_t>& root,
     const std::vector<std::function<bool(size_t)>>& conditions) {
@@ -150,7 +228,7 @@ size_t findValidMaxTBB_SharedPtr_actor(std::vector<int>& path,
                     }
                 }
 
-                // Batching children
+                //batching children
                 constexpr size_t batchSize = 4;
                 for (size_t i = 0; i < node->children.size(); i += batchSize) {
                     for (size_t j = i; j < std::min(i + batchSize, node->children.size()); ++j) {
@@ -167,78 +245,6 @@ size_t findValidMaxTBB_SharedPtr_actor(std::vector<int>& path,
     if (finalPath) path = finalPath->path;
     return maxValid.load();
 }
-
-
-size_t findValidMaxTBB_SharedPtr(std::vector<int>& path,
-    const std::shared_ptr<Node_t>& root,
-    const std::vector<std::function<bool(size_t)>>& conditions) {
-
-        struct PathWithMax {
-            size_t value;
-            std::vector<int> path;
-        };
-    
-        std::atomic<size_t> maxValid{0};
-        std::shared_ptr<PathWithMax> bestPathWithMax = nullptr;
-    
-        tbb::task_arena arena;
-
-        arena.execute([&] {
-            std::function<void(const std::shared_ptr<Node_t>&, std::vector<int>)> actor;
-            actor = [&](const std::shared_ptr<Node_t>& node, std::vector<int> currentPath) -> void {
-                if (!node) return;
-    
-                bool isValid = std::all_of(conditions.begin(), conditions.end(),
-                                           [&](const auto& cond) { return cond(node->value); });
-                if (isValid) {
-                    size_t prev = maxValid.load();
-                    while (node->value > prev && !maxValid.compare_exchange_weak(prev, node->value)) {}
-    
-                    if (node->value > prev) {
-                        auto newPath = std::make_shared<PathWithMax>(PathWithMax{node->value, currentPath});
-                        auto expected = std::atomic_load(&bestPathWithMax);
-                        while ((expected == nullptr || newPath->value > expected->value) &&
-                               !std::atomic_compare_exchange_weak(&bestPathWithMax, &expected, newPath)) {}
-                    }
-                }
-
-                size_t childCount = node->children.size();
-                if (childCount > 0) {
-                    // Actor-style coordination with hybrid TBB + OpenMP
-                    tbb::task_group tg;
-                    for (size_t i = 0; i < childCount; ++i) {
-                        tg.run([&, i] {
-                            std::vector<int> childPath = currentPath;
-                            childPath.push_back(static_cast<int>(i));
-    
-                            const auto& child = node->children[i];
-                            if (child && child->children.size() > 4) {
-                                // Use OpenMP inside deep or heavy subtrees
-                                #pragma omp parallel
-                                {
-                                    #pragma omp single nowait
-                                    actor(child, childPath);
-                                }
-                            } else {
-                                // Otherwise run recursively
-                                actor(child, childPath);
-                            }
-                        });
-                    }
-                    tg.wait();
-                }
-            };
-    
-            actor(root, {});
-        });       
-        
-        auto finalPath = std::atomic_load(&bestPathWithMax);
-        if (finalPath) path = finalPath->path;
-        return maxValid.load();
-
-        
-}
-
 
 size_t findValidMaxTBB_SharedPtr6(std::vector<int>& path,
     const std::shared_ptr<Node_t>& root,
