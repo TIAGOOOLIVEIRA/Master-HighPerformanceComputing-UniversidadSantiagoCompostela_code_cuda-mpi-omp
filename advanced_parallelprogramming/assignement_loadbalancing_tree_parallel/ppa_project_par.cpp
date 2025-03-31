@@ -10,13 +10,23 @@
 #include <random>
 #include <chrono>
 #include <climits>
+#include <omp.h>
 
 
 /*
 clang++ -std=c++17 -I/opt/homebrew/include -L/opt/homebrew/lib -ltbb -o ppa_project_par ppa_project_par.cpp
-OMP_NUM_THREADS=8
-compute -c 1 --mem 64
+export OMP_NUM_THREADS=8
+export TBB_NUM_THREADS=8
 
+clang++ -std=c++17 -Xpreprocessor -fopenmp -I/opt/homebrew/opt/libomp/include \
+        -L/opt/homebrew/opt/libomp/lib -lomp \
+        -I/opt/homebrew/include -L/opt/homebrew/lib -ltbb \
+        -o ppa_project_par ppa_project_par.cpp
+
+compute -c 1 --mem 64
+./ppa_project_par
+module load intel vtune valgrind
+vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./ppa_project_par
 */
 
 static int NChildren = 2;
@@ -98,7 +108,408 @@ size_t findValidMax(std::vector<int>& path, const std::shared_ptr<Node_t>& root,
     return max;
 }
 
+size_t findValidMaxTBB_SharedPtr_actor(std::vector<int>& path,
+    const std::shared_ptr<Node_t>& root,
+    const std::vector<std::function<bool(size_t)>>& conditions) {
+
+    struct PathWithMax {
+    size_t value;
+    std::vector<int> path;
+    };
+
+    std::atomic<size_t> maxValid{0};
+    std::shared_ptr<PathWithMax> bestPathWithMax = nullptr;
+
+    struct Task {
+        std::shared_ptr<Node_t> node;
+        std::vector<int> path;
+    };
+
+    tbb::task_arena arena;
+    arena.execute([&] {
+        tbb::concurrent_queue<Task> taskQueue;
+        taskQueue.push({root, {}});
+
+        tbb::parallel_for(0, static_cast<int>(tbb::this_task_arena::max_concurrency()), [&](int) {
+            Task task;
+            while (taskQueue.try_pop(task)) {
+                auto& node = task.node;
+                auto currentPath = task.path;
+
+                if (!node) continue;
+
+                if (std::all_of(conditions.begin(), conditions.end(), [&](const auto& cond) { return cond(node->value); })) {
+                    size_t prev = maxValid.load();
+                    while (node->value > prev && !maxValid.compare_exchange_weak(prev, node->value)) {}
+
+                    if (node->value > prev) {
+                        auto newPath = std::make_shared<PathWithMax>(PathWithMax{node->value, currentPath});
+                        auto expected = std::atomic_load(&bestPathWithMax);
+                        while ((expected == nullptr || newPath->value > expected->value) &&
+                               !std::atomic_compare_exchange_weak(&bestPathWithMax, &expected, newPath)) {}
+                    }
+                }
+
+                // Batching children
+                constexpr size_t batchSize = 4;
+                for (size_t i = 0; i < node->children.size(); i += batchSize) {
+                    for (size_t j = i; j < std::min(i + batchSize, node->children.size()); ++j) {
+                        std::vector<int> nextPath = currentPath;
+                        nextPath.push_back(static_cast<int>(j));
+                        taskQueue.push({node->children[j], nextPath});
+                    }
+                }
+            }
+        });
+    });
+
+    auto finalPath = std::atomic_load(&bestPathWithMax);
+    if (finalPath) path = finalPath->path;
+    return maxValid.load();
+}
+
+
 size_t findValidMaxTBB_SharedPtr(std::vector<int>& path,
+    const std::shared_ptr<Node_t>& root,
+    const std::vector<std::function<bool(size_t)>>& conditions) {
+
+        struct PathWithMax {
+            size_t value;
+            std::vector<int> path;
+        };
+    
+        std::atomic<size_t> maxValid{0};
+        std::shared_ptr<PathWithMax> bestPathWithMax = nullptr;
+    
+        tbb::task_arena arena;
+
+        arena.execute([&] {
+            std::function<void(const std::shared_ptr<Node_t>&, std::vector<int>)> actor;
+            actor = [&](const std::shared_ptr<Node_t>& node, std::vector<int> currentPath) -> void {
+                if (!node) return;
+    
+                bool isValid = std::all_of(conditions.begin(), conditions.end(),
+                                           [&](const auto& cond) { return cond(node->value); });
+                if (isValid) {
+                    size_t prev = maxValid.load();
+                    while (node->value > prev && !maxValid.compare_exchange_weak(prev, node->value)) {}
+    
+                    if (node->value > prev) {
+                        auto newPath = std::make_shared<PathWithMax>(PathWithMax{node->value, currentPath});
+                        auto expected = std::atomic_load(&bestPathWithMax);
+                        while ((expected == nullptr || newPath->value > expected->value) &&
+                               !std::atomic_compare_exchange_weak(&bestPathWithMax, &expected, newPath)) {}
+                    }
+                }
+
+                size_t childCount = node->children.size();
+                if (childCount > 0) {
+                    // Actor-style coordination with hybrid TBB + OpenMP
+                    tbb::task_group tg;
+                    for (size_t i = 0; i < childCount; ++i) {
+                        tg.run([&, i] {
+                            std::vector<int> childPath = currentPath;
+                            childPath.push_back(static_cast<int>(i));
+    
+                            const auto& child = node->children[i];
+                            if (child && child->children.size() > 4) {
+                                // Use OpenMP inside deep or heavy subtrees
+                                #pragma omp parallel
+                                {
+                                    #pragma omp single nowait
+                                    actor(child, childPath);
+                                }
+                            } else {
+                                // Otherwise run recursively
+                                actor(child, childPath);
+                            }
+                        });
+                    }
+                    tg.wait();
+                }
+            };
+    
+            actor(root, {});
+        });       
+        
+        auto finalPath = std::atomic_load(&bestPathWithMax);
+        if (finalPath) path = finalPath->path;
+        return maxValid.load();
+
+        
+}
+
+
+size_t findValidMaxTBB_SharedPtr6(std::vector<int>& path,
+    const std::shared_ptr<Node_t>& root,
+    const std::vector<std::function<bool(size_t)>>& conditions) {
+    struct PathWithMax {
+    size_t value;
+    std::vector<int> path;
+    };
+
+    std::atomic<size_t> maxValid{0};
+    std::shared_ptr<PathWithMax> bestPathWithMax = nullptr;
+
+    tbb::task_arena arena;
+    arena.execute([&] {
+        std::function<void(const std::shared_ptr<Node_t>&, std::vector<int>)> rake;
+        rake = [&](const std::shared_ptr<Node_t>& node, std::vector<int> currentPath) -> void {
+            if (!node) return;
+
+            bool isValid = std::all_of(conditions.begin(), conditions.end(),
+                                       [&](const auto& cond) { return cond(node->value); });
+            if (isValid) {
+                size_t prev = maxValid.load();
+                while (node->value > prev && !maxValid.compare_exchange_weak(prev, node->value)) {}
+
+                if (node->value > prev) {
+                    auto newPath = std::make_shared<PathWithMax>(PathWithMax{node->value, currentPath});
+                    auto expected = std::atomic_load(&bestPathWithMax);
+                    while ((expected == nullptr || newPath->value > expected->value) &&
+                           !std::atomic_compare_exchange_weak(&bestPathWithMax, &expected, newPath)) {}
+                }
+            }
+            size_t childCount = node->children.size();
+            if (childCount > 0) {
+                size_t batchSize = std::max(size_t(1), std::min(size_t(8), childCount / std::thread::hardware_concurrency()));
+                tbb::task_group tg;
+                for (size_t i = 0; i < childCount; i += batchSize) {
+                    tg.run([&, i] {
+                        for (size_t j = i; j < std::min(i + batchSize, childCount); ++j) {
+                            std::vector<int> childPath = currentPath;
+                            childPath.push_back(static_cast<int>(j));
+                            rake(node->children[j], childPath);
+                        }
+                    });
+                }
+                tg.wait();
+            }
+        };
+
+        rake(root, {});
+    });
+
+    auto finalPath = std::atomic_load(&bestPathWithMax);
+    if (finalPath) path = finalPath->path;
+    return maxValid.load();
+}
+
+size_t findValidMaxTBB_SharedPtr5(std::vector<int>& path,
+    const std::shared_ptr<Node_t>& root,
+    const std::vector<std::function<bool(size_t)>>& conditions) {
+    
+    struct PathWithMax {
+    size_t value;
+    std::vector<int> path;
+    };
+
+    std::atomic<size_t> maxValid{0};
+    std::shared_ptr<PathWithMax> bestPathWithMax = nullptr;
+
+    tbb::task_arena arena;
+    arena.execute([&] {
+        std::function<void(const std::shared_ptr<Node_t>&, std::vector<int>)> rake;
+        rake = [&](const std::shared_ptr<Node_t>& node, std::vector<int> currentPath) -> void {
+            if (!node) return;
+
+            bool isValid = std::all_of(conditions.begin(), conditions.end(),
+                                       [&](const auto& cond) { return cond(node->value); });
+            if (isValid) {
+                size_t prev = maxValid.load();
+                while (node->value > prev && !maxValid.compare_exchange_weak(prev, node->value)) {}
+
+                if (node->value > prev) {
+                    auto newPath = std::make_shared<PathWithMax>(PathWithMax{node->value, currentPath});
+                    auto expected = std::atomic_load(&bestPathWithMax);
+                    while ((expected == nullptr || newPath->value > expected->value) &&
+                           !std::atomic_compare_exchange_weak(&bestPathWithMax, &expected, newPath)) {}
+                }
+            }
+            if (!node->children.empty()) {
+                size_t batchSize = 4;
+                tbb::parallel_for(size_t(0), node->children.size(), [&](size_t i) {
+                    if (i % batchSize == 0) {
+                        for (size_t j = i; j < std::min(i + batchSize, node->children.size()); ++j) {
+                            std::vector<int> childPath = currentPath;
+                            childPath.push_back(static_cast<int>(j));
+                            rake(node->children[j], childPath);
+                        }
+                    }
+                });
+            }
+        };
+
+        rake(root, {});
+    });
+    
+    auto finalPath = std::atomic_load(&bestPathWithMax);
+    if (finalPath) path = finalPath->path;
+    return maxValid.load();
+}
+
+
+size_t findValidMaxTBB_SharedPtr4(std::vector<int>& path,
+    const std::shared_ptr<Node_t>& root,
+    const std::vector<std::function<bool(size_t)>>& conditions) {
+
+    struct PathWithMax {
+    size_t value;
+    std::vector<int> path;
+    };
+
+    std::atomic<size_t> maxValid{0};
+    std::shared_ptr<PathWithMax> bestPathWithMax = nullptr;
+
+    std::function<void(const std::shared_ptr<Node_t>&, std::vector<int>)> rake;
+    rake = [&](const std::shared_ptr<Node_t>& node, std::vector<int> currentPath) -> void {
+        if (!node) return;
+
+        bool isValid = std::all_of(conditions.begin(), conditions.end(),
+            [&](const auto& cond) { return cond(node->value); });
+        if (isValid) {
+            size_t prev = maxValid.load();
+            while (node->value > prev && !maxValid.compare_exchange_weak(prev, node->value)) {}
+
+            if (node->value > prev) {
+                auto newPath = std::make_shared<PathWithMax>(PathWithMax{node->value, currentPath});
+                auto expected = std::atomic_load(&bestPathWithMax);
+                while ((expected == nullptr || newPath->value > expected->value) &&
+                !std::atomic_compare_exchange_weak(&bestPathWithMax, &expected, newPath)) {}
+            }
+        }
+
+        if (!node->children.empty()) {
+            tbb::parallel_for(size_t(0), node->children.size(), [&](size_t i) {
+                std::vector<int> childPath = currentPath;
+                childPath.push_back(static_cast<int>(i));
+                rake(node->children[i], childPath);
+            });
+        }
+    };
+
+    rake(root, {});
+
+    auto finalPath = std::atomic_load(&bestPathWithMax);
+    if (finalPath) path = finalPath->path;
+    return maxValid.load();
+}
+
+size_t findValidMaxTBB_SharedPtr3(std::vector<int> &path,
+                                 const std::shared_ptr<Node_t> &root,
+                                 const std::vector<std::function<bool(size_t)>> &conditions,
+                                 size_t depth_cutoff = 3)
+{
+    struct PathWithMax
+    {
+        size_t value;
+        std::vector<int> path;
+    };
+
+    std::atomic<size_t> maxValid{0};
+    std::shared_ptr<PathWithMax> bestPathWithMax = nullptr;
+
+    tbb::task_arena arena;
+    arena.execute([&]{
+            std::function<void(const std::shared_ptr<Node_t>&, size_t, std::shared_ptr<std::vector<int>>)> visit;
+            visit = [&](const std::shared_ptr<Node_t>& node, size_t depth, std::shared_ptr<std::vector<int>> local_path) {
+                if (!node) return;
+
+                if (std::all_of(conditions.begin(), conditions.end(),
+                [&](const auto& cond) { return cond(node->value); })) {
+                    size_t curr = node->value;
+                    size_t prev = maxValid.load();
+                    while (curr > prev && !maxValid.compare_exchange_weak(prev, curr)) {}
+
+                    if (curr > prev) {
+                        auto newPath = std::make_shared<PathWithMax>(PathWithMax{curr, *local_path});
+                        auto expected = std::atomic_load(&bestPathWithMax);
+                        while ((expected == nullptr || newPath->value > expected->value) &&
+                        !std::atomic_compare_exchange_weak(&bestPathWithMax, &expected, newPath)) {}
+                    }
+                }
+
+                if (depth < depth_cutoff && node->children.size() > 1) {
+                tbb::task_group tg;
+                for (size_t i = 0; i < node->children.size(); ++i) {
+                tg.run([&, i] {
+                auto next_path = std::make_shared<std::vector<int>>(*local_path);
+                next_path->push_back(static_cast<int>(i));
+                visit(node->children[i], depth + 1, next_path);
+                });
+                }
+                tg.wait();
+                } else {
+                for (size_t i = 0; i < node->children.size(); ++i) {
+                auto next_path = std::make_shared<std::vector<int>>(*local_path);
+                next_path->push_back(static_cast<int>(i));
+                visit(node->children[i], depth + 1, next_path);
+                }
+                }
+                };
+
+                visit(root, 0, std::make_shared<std::vector<int>>()); });
+
+    auto finalPath = std::atomic_load(&bestPathWithMax);
+    if (finalPath)
+        path = finalPath->path;
+    return maxValid.load();
+}
+
+size_t findValidMaxTBB_SharedPtr2(std::vector<int>& path,const std::shared_ptr<Node_t>& root,const std::vector<std::function<bool(size_t)>>& conditions,size_t depth_cutoff = 3) {
+    
+    struct PathWithMax {
+    size_t value;
+    std::vector<int> path;
+    };
+
+    std::atomic<size_t> maxValid{0};
+    std::shared_ptr<PathWithMax> bestPathWithMax = nullptr;
+
+
+    std::function<void(const std::shared_ptr<Node_t>&, size_t, std::shared_ptr<std::vector<int>>)> visit;
+    visit = [&](const std::shared_ptr<Node_t>& node, size_t depth, std::shared_ptr<std::vector<int>> local_path) {
+        if (!node) return;
+
+        if (std::all_of(conditions.begin(), conditions.end(),
+        [&](const auto& cond) { return cond(node->value); })) {
+            size_t curr = node->value;
+            size_t prev = maxValid.load();
+            while (curr > prev && !maxValid.compare_exchange_weak(prev, curr)) {}
+
+            if (curr > prev) {
+                auto newPath = std::make_shared<PathWithMax>(PathWithMax{curr, *local_path});
+                auto expected = std::atomic_load(&bestPathWithMax);
+                while ((expected == nullptr || newPath->value > expected->value) &&
+                       !std::atomic_compare_exchange_weak(&bestPathWithMax, &expected, newPath)) {}
+            }
+        }
+
+        if (depth < depth_cutoff && node->children.size() > 1) {
+            tbb::task_group tg;
+            for (size_t i = 0; i < node->children.size(); ++i) {
+                tg.run([&, i] {
+                auto next_path = std::make_shared<std::vector<int>>(*local_path);
+                next_path->push_back(static_cast<int>(i));
+                visit(node->children[i], depth + 1, next_path);
+            });
+            }
+            tg.wait();
+        } else {
+            for (size_t i = 0; i < node->children.size(); ++i) {
+            auto next_path = std::make_shared<std::vector<int>>(*local_path);
+            next_path->push_back(static_cast<int>(i));
+            visit(node->children[i], depth + 1, next_path);}
+        }
+    };
+
+    visit(root, 0, std::make_shared<std::vector<int>>());
+    auto finalPath = std::atomic_load(&bestPathWithMax);
+    if (finalPath) path = finalPath->path;
+    return maxValid.load();
+}
+
+size_t findValidMaxTBB_SharedPtr1(std::vector<int>& path,
                                  const std::shared_ptr<Node_t>& root,
                                  const std::vector<std::function<bool(size_t)>>& conditions,
                                  size_t depth_cutoff = 3) {

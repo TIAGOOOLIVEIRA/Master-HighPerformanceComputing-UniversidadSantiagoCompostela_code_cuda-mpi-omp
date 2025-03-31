@@ -27,7 +27,7 @@ Inorder traversal prints values in sorted order, regardless of tree shape.
 
 /*
 std::shared_ptr ensures safe memory access during concurrent traversals, even if a node is being visited in parallel by multiple threads.
-std::async and std::thread copy arguments, and std::unique_ptr is non-copyable → you'd need to pass raw pointers or references.
+
 */
 
 struct Node_t {

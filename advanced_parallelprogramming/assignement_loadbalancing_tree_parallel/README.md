@@ -9,15 +9,24 @@ The file http://gac.udc.es/~basilio/ppa_project.cpp contains a sequential progra
  You must provide: - Your parallel application. It should receive the number of parallel threads to use by means of the environment variable OMP_NUM_THREADS; as if it had been written using OpenMP. You must only parallelize findValidMax, but you can add new functions, types and/or global variables. - A short explanation of the code / parallelization strategy in English (max 2 pages)
  Please provide both files in a single tar or zip file by the deadline set.
 
+## Setup
+
+## Unbalanced tree assessment
+
+## Parallelism strategies
+
+## Load Balancing strategies
+
+## Performance fine-tunning
+
 ## Profiling 
 
 - Profiling (to spot optimization made on the code by the compiler):
-  - Likwid
   - Valgrind
   - VTune
   - Perf
 
-
+## Conclusion
 
 ## References
     3. Flow Graphs _ Pro TBB_ C++ Parallel Programming with Threading Building Blocks.pdf
