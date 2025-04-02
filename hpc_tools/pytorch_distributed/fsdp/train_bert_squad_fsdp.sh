@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=bert_squad_fsdp
 #SBATCH --gres=gpu:a100:4           # Request 2 a100 GPUs; for Tesla --gres=gpu:t4:2
-#SBATCH -c 32                       # 32 CPU cores
-#SBATCH --mem=64G                   # Memory allocation
+#SBATCH --cpus-per-task=48 
+#SBATCH --mem=128G                   # Memory allocation
 #SBATCH --time=02:00:00             # Job time limit (2 hours)
 #SBATCH --output=training_output_fsdp.log
 #SBATCH --error=training_error_fsdp.log
