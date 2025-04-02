@@ -1,15 +1,25 @@
 #!/bin/bash
 #SBATCH --job-name=bert_squad_fsdp
-#SBATCH --gres=gpu:2              # Request 2 GPUs
-#SBATCH -c 32                     # 32 CPU cores
-#SBATCH --mem=64G                # Memory allocation
-#SBATCH --time=02:00:00           # Job time limit (2 hours)
+#SBATCH --gres=gpu:a100:4           # Request 2 a100 GPUs; for Tesla --gres=gpu:t4:2
+#SBATCH -c 32                       # 32 CPU cores
+#SBATCH --mem=64G                   # Memory allocation
+#SBATCH --time=02:00:00             # Job time limit (2 hours)
 #SBATCH --output=training_output_fsdp.log
 #SBATCH --error=training_error_fsdp.log
 
-echo "Loading Environment Modules"
+echo "SLURM Job launched on $(hostname)"
+echo "Loading modules and activating environment"
+
+# Load CUDA and other necessary modules (adjust as needed for your cluster)
 module load cuda/11.8 nccl
-source activate mypython_env
+
+#Ensure setup_env.py is run (will create and install if needed)
+echo "Running setup_env.py to prepare Python environment"
+python setup_env.py
+
+#Activate virtual environment
+source lightning_env/bin/activate
+echo "Environment 'lightning_env' activated"
 
 #Start TensorBoard
 tensorboard --logdir=lightning_logs --bind_all &> tensorboard.log &
