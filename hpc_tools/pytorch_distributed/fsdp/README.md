@@ -1,4 +1,4 @@
-# PyTorch Single GPU Example
+# PyTorch Distributed GPU training with Lightning (FSDP)
 
 
 
