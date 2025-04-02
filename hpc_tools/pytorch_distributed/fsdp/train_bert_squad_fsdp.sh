@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=bert_squad_fsdp
-#SBATCH --gres=gpu:a100:4           # Request 2 a100 GPUs; for Tesla --gres=gpu:t4:2
-#SBATCH --cpus-per-task=48 
-#SBATCH --mem=128G                   # Memory allocation
+#SBATCH --gres=gpu:a100:2           # Request 2 a100 GPUs; for Tesla --gres=gpu:t4:2
+#SBATCH --cpus-per-task=64 
+#SBATCH --mem=64G                   # Memory allocation
 #SBATCH --time=02:00:00             # Job time limit (2 hours)
 #SBATCH --output=training_output_fsdp.log
 #SBATCH --error=training_error_fsdp.log
@@ -29,7 +29,7 @@ nvidia-smi --query-gpu=timestamp,name,utilization.gpu,utilization.memory,memory.
 
 #Run Training
 echo "Starting BERT SQuAD Training Job with FSDP"
-torchrun --nnodes=1 --nproc_per_node=4 train_bert_squad_fsdp.py
+torchrun --nnodes=1 --nproc_per_node=2 train_bert_squad_fsdp.py
 
 echo "Training Job Completed"
 
