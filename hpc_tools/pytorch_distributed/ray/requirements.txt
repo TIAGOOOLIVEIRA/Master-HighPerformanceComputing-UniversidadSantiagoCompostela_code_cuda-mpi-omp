@@ -1,0 +1,6 @@
+ray[default]           # Ray with all basic dependencies
+torch                  # PyTorch core
+transformers           # Hugging Face Transformers
+datasets               # Hugging Face Datasets
+tensorboard            # For training logs and monitoring
+tqdm                   # Optional: nice CLI progress bars
