@@ -1,6 +1,12 @@
-ray[default]           # Ray with all basic dependencies
-torch                  # PyTorch core
-transformers           # Hugging Face Transformers
-datasets               # Hugging Face Datasets
-tensorboard            # For training logs and monitoring
-tqdm                   # Optional: nice CLI progress bars
+ray[default]
+torch==2.6.0
+tokenizers==0.21.1
+pytorch-lightning==1.9.5
+transformers==4.30.2
+datasets==3.5.0
+tensorboard==2.19.0
+tensorboard-data-server==0.7.2
+torchmetrics==1.7.0
+tqdm==4.67.14
+numpy==2.2.4
+mpi4py
