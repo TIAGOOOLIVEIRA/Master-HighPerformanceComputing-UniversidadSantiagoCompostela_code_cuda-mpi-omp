@@ -21,7 +21,7 @@ class Trainer:
         self.optimizer = AdamW(self.model.parameters(), lr=3e-5)
         self.scaler = GradScaler()
         self.writer = SummaryWriter(f"runs/ray_gpu_{rank}")
-        print(f"✅ Trainer initialized on GPU {rank}")
+        print(f"rainer initialized on GPU {rank}")
 
     def preprocess(self, examples):
         questions = [q.strip() for q in examples["question"]]
