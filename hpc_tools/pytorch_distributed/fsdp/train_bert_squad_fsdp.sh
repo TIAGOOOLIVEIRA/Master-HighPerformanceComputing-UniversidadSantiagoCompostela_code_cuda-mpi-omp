@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=bert_squad_fsdp
+#SBATCH -J bert_squad_fsdp       # Job name
+#SBATCH -o bert_squad_fsdp.o%j   # Name of stdout output file(%j expands to jobId)
+#SBATCH -e bert_squad_fsdp.o%j   # Name of stderr output file(%j expands to jobId)
 #SBATCH --gres=gpu:a100:2           # Request 2 a100 GPUs; for Tesla --gres=gpu:t4:2
 #SBATCH --cpus-per-task=64 
 #SBATCH --mem=64G                   # Memory allocation
 #SBATCH --time=02:00:00             # Job time limit (2 hours)
-#SBATCH --output=training_output_fsdp.log
-#SBATCH --error=training_error_fsdp.log
 
 echo "SLURM Job launched on $(hostname)"
 echo "Loading modules and activating environment"
