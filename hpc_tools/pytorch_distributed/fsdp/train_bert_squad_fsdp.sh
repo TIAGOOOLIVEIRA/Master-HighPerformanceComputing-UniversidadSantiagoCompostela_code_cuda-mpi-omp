@@ -12,10 +12,12 @@ echo "Loading modules and activating environment"
 
 # Load CUDA and other necessary modules (adjust as needed for your cluster)
 module load cuda/11.8 nccl
+module load cesga/system 
+module load python/3.10.8
 
 #Ensure setup_env.py is run (will create and install if needed)
 echo "Running setup_env.py to prepare Python environment"
-python setup_env.py
+python3 setup_env.py
 
 #Activate virtual environment
 source lightning_env/bin/activate

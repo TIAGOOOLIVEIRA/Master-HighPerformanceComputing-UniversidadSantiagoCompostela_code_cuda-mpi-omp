@@ -5,7 +5,10 @@ import torch.nn as nn
 import torch.optim as optim
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
-from transformers import BertForQuestionAnswering, BertTokenizer, AdamW
+
+from transformers import BertForQuestionAnswering, BertTokenizer
+from transformers.optimization import AdamW
+
 from datasets import load_dataset
 from transformers import default_data_collator
 from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
