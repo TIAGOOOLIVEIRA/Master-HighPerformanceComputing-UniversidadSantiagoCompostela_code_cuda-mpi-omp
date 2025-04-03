@@ -5,7 +5,8 @@ import torch
 import torch.nn as nn
 from datasets import load_dataset
 from torch.utils.data import DataLoader
-from transformers import BertTokenizer, BertForQuestionAnswering, AdamW, default_data_collator
+from transformers import BertTokenizer, BertForQuestionAnswering, default_data_collator
+from torch.optim import AdamW
 from torch.cuda.amp import GradScaler, autocast
 from torch.utils.tensorboard import SummaryWriter
 
@@ -67,9 +68,9 @@ class Trainer:
                 total_loss += loss.item()
 
                 if step % 10 == 0:
+                    alloc = torch.cuda.memory_allocated(self.device) / 1024**3
+                    reserved = torch.cuda.memory_reserved(self.device) / 1024**3
                     avg_loss = total_loss / (step + 1)
-                    alloc = torch.cuda.memory_allocated(self.device) / 1024 ** 3
-                    reserved = torch.cuda.memory_reserved(self.device) / 1024 ** 3
                     print(f"[GPU {self.rank}] Epoch {epoch+1} | Step {step} | Loss: {avg_loss:.4f} | Mem: {alloc:.2f}/{reserved:.2f} GB")
                     self.writer.add_scalar("train_loss", avg_loss, epoch * len(dataloader) + step)
                     self.writer.add_scalar("gpu/memory_allocated_gb", alloc, epoch * len(dataloader) + step)
@@ -80,6 +81,15 @@ class Trainer:
         elapsed = time.time() - start_time
         print(f"GPU {self.rank} training complete in {elapsed:.2f} seconds")
         self.writer.close()
+
+        #Save model and tokenizer for each GPU
+        output_dir = f"bert_squad_trained_ray/gpu_{self.rank}"
+        os.makedirs(output_dir, exist_ok=True)
+        print(f"[GPU {self.rank}] Saving model and tokenizer to {output_dir}")
+        self.model.save_pretrained(output_dir)
+        self.tokenizer.save_pretrained(output_dir)
+        print(f"[GPU {self.rank}] Model saved.")
+
 
 
 if __name__ == "__main__":

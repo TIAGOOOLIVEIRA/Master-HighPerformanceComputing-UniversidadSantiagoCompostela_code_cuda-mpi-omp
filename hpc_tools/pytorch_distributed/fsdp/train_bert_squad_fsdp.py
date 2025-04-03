@@ -7,7 +7,7 @@ import pytorch_lightning as pl
 from torch.utils.data import DataLoader
 
 from transformers import BertForQuestionAnswering, BertTokenizer
-from transformers.optimization import AdamW
+from torch.optim import AdamW
 
 from datasets import load_dataset
 from transformers import default_data_collator
@@ -101,3 +101,10 @@ trainer = pl.Trainer(
 #Run Training
 model = BertLightningModel()
 trainer.fit(model, train_dataloader)
+
+#Save Model and Tokenizer on Global Rank 0 only
+if trainer.is_global_zero:
+    print("Saving model and tokenizer")
+    model.model.save_pretrained("bert_squad_trained")
+    tokenizer.save_pretrained("bert_squad_trained")
+    print("Model saved to ./bert_squad_trained")
