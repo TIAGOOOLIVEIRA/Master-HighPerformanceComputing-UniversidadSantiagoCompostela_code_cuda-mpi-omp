@@ -103,6 +103,12 @@ What can be seen in the following folder
 | **Accelerate (HF)**      | High-level           | DDP, FSDP, DeepSpeed       | Simplifying training config and CLI launching | HuggingFace training loop manager                     |
 
 
+## References
+- [FSDP in Lightning](https://lightning.ai/docs/pytorch/stable/advanced/model_parallel.html#fully-sharded-data-parallel-fsdp)
+- [FSDPStrategy Source Code](https://github.com/Lightning-AI/lightning/blob/master/src/pytorch_lightning/strategies/fsdp.py)
+- [PyTorch – Fully Sharded Data Parallel (FSDP)](https://pytorch.org/docs/stable/fsdp.html)
+- [PyTorch Lightning Blog](https://lightning.ai/pages/blog/fsdp/)
+
 ## Acknowledgements
 
 This project is part of the Master in High Performance Computing at Universidad de Santiago de Compostela.

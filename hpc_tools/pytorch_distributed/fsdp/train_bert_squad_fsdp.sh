@@ -31,7 +31,14 @@ module load python/3.9.9
 #pip3 install --upgrade pip3
 #pip3 install --no-deps -r requirements.txt
 #pip3 install -r requirements.txt 
+#to test pytorch_lightning
+#python -c "import pytorch_lightning as pl; print(pl.__version__)"
+#python -c "from pytorch_lightning.strategies import FSDPStrategy"
 
+#Memory of common Errors:
+#  Disk quota exceeded:
+#  install with --no-deps
+#  ImportError: cannot import name 'FSDPStrategy' from 'pytorch_lightning.strategies'
 
 #Ensure setup_env.py is run (will create and install if needed)
 echo "Running setup_env.py to prepare Python environment"
