@@ -27,8 +27,8 @@ subprocess.run([pip_path, "install", "--upgrade", "pip", "setuptools", "wheel"],
 
 #Install from requirements.txt
 if os.path.exists("requirements.txt"):
-    print("Installing dependencies from requirements.txt...")
-    subprocess.run([pip_path, "install", "-r", "requirements.txt"], check=True)
+    print("Installing dependencies from requirements.txt  with --no-deps")
+    subprocess.run([pip_path, "install --no-deps ", "-r", "requirements.txt"], check=True)
     print("Installation complete.")
 else:
     print("Error: requirements.txt not found in the current directory.")

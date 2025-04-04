@@ -41,7 +41,7 @@ torchrun --nnodes=1 --nproc_per_node=2 train_bert_squad_fsdp.py
 echo "Training Job Completed"
 
 #Stop GPU Monitoring
-pkill -f "nvidia-smi"
+pkill -f "nvidia-smi --query-gpu"
 
 #Display GPU Metrics Summary
 echo "GPU Usage Summary:"
