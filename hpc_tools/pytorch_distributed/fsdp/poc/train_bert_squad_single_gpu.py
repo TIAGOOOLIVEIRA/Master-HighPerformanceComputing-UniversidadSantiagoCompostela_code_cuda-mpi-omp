@@ -32,6 +32,8 @@ from pytorch_lightning.loggers import TensorBoardLogger
 #logs
 #tensorboard --logdir lightning_logs
 
+#export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:true
+
 
 
 #GPU Availability
@@ -62,7 +64,8 @@ def preprocess_function(examples):
 
 #Apply Preprocessing
 train_data = dataset["train"].map(preprocess_function, batched=True, remove_columns=dataset["train"].column_names)
-train_dataloader = DataLoader(train_data, batch_size=16, shuffle=True, collate_fn=default_data_collator)
+#to reduce batch size from 16 to 4; so it fit into the GPU memory (GTX 1050Ti)
+train_dataloader = DataLoader(train_data, batch_size=4, shuffle=True, collate_fn=default_data_collator)
 
 print("Dataset Loaded & Preprocessed")
 
