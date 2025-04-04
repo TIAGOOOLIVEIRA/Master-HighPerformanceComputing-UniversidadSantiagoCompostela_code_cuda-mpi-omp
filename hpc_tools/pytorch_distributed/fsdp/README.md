@@ -1,10 +1,10 @@
 # PyTorch Distributed GPU training with Lightning (FSDP)
-
+This project demonstrates scalable distributed training of a BERT model using PyTorch Lightning with Fully Sharded Data Parallel (FSDP), optimized for multi-GPU HPC environments.
 
 
 ## Prerequisites
 
-- Python 3.x
+- Python 3.10.8
 - PyTorch, Lightning
 - CUDA Toolkit (for GPU support)
 - NVIDIA GPU with CUDA support
@@ -72,9 +72,36 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 - tail -n 100 training_error_fsdp.log
 - tail -n 100 training_output_fsdp.log
 
-- $ ls -la bert_squad_trained
+- $ ls -la bert_squad_trained/
 ```...
 ```
+
+## Future work
+There some distributed training strategies available in PyTorch. 
+
+In this work, the Lightning with FSDP is used to understand its main capabilities.
+
+Nevertheless, several other notable frameworks and libraries for Distributed Training Strategies can be used for PyTorch.
+
+Next step is to run similar workload here in Lightning with FSDP, but leveraging Ray.
+What can be seen in the following folder
+```bash
+   ../ray
+```
+
+
+| Framework / Strategy     | Level of Abstraction | Parallelism Supported     | Best For                                     | Notes                                                 |
+|--------------------------|----------------------|----------------------------|-----------------------------------------------|--------------------------------------------------------|
+| **PyTorch DDP**          | Low-level            | Data Parallel              | Fine-grained control                          | Native, efficient, but requires boilerplate            |
+| **FSDP (FairScale / Torch)** | Mid-level           | Fully Sharded Data Parallel | Large models that don't fit in memory         | Available via PyTorch & Lightning                     |
+| **PyTorch Lightning**    | High-level           | DDP, FSDP, DeepSpeed       | Fast prototyping with scaling                 | Strategy plugin system makes it very flexible          |
+| **Ray Train**            | Mid-level            | DDP, Horovod, TorchElastic | Distributed on multi-node, multi-cloud        | Great for scheduling, multi-node flexibility           |
+| **TorchElastic / TorchRun** | Mid-level          | DDP                        | Fault-tolerant multi-node training            | Replaces `torch.distributed.launch`                   |
+| **Horovod**              | Mid-level            | Data Parallel              | MPI-style multi-framework training            | Developed by Uber, works across TF, PyTorch, etc.      |
+| **DeepSpeed**            | High-level           | ZeRO, Pipeline, Tensor     | Very large models (e.g., GPT-like)            | Highly optimized, used for billion+ param models       |
+| **Colossal-AI**          | Mid-level            | ZeRO, 3D Parallelism       | Training huge models with minimal effort      | Great memory efficiency, growing ecosystem             |
+| **Accelerate (HF)**      | High-level           | DDP, FSDP, DeepSpeed       | Simplifying training config and CLI launching | HuggingFace training loop manager                     |
+
 
 ## Acknowledgements
 
