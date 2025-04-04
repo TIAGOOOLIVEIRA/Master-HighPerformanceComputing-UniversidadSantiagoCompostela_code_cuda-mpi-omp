@@ -1,10 +1,14 @@
 torch==2.6.0
 pytorch-lightning==1.9.5
-datasets==3.5.0
+torchmetrics==1.1.2
 transformers==4.30.2
-tokenizers==0.21.1
-torchmetrics==1.7.0
+datasets==3.5.0
+tokenizers==0.13.3
 tensorboard==2.19.0
 tqdm==4.67.1
+numpy<2.0.0
 typing_extensions==4.13.1
 packaging
+lightning-utilities
+huggingface_hub
+Pillow

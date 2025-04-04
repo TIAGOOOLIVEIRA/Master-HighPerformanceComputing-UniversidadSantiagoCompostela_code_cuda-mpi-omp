@@ -16,9 +16,22 @@ echo "SLURM Job launched on $(hostname)"
 echo "Loading modules and activating environment"
 
 # Load CUDA and other necessary modules (adjust as needed for your cluster)
-module load cuda/11.8 nccl
-module load cesga/system 
-module load python/3.10.8
+#module load cesga/2020 cuda-samples/11.2
+module load cudnn/9.7.1.26-CUDA-12.8.0
+
+export LD_LIBRARY_PATH=/opt/cesga/cudnn/9.7.1.26-CUDA-12.8.0/lib64:$LD_LIBRARY_PATH
+
+#module load python/3.10.8
+module load python/3.9.9
+
+
+
+#python3 -m venv lightning_env
+#source lightning_env/bin/activate
+#pip3 install --upgrade pip3
+#pip3 install --no-deps -r requirements.txt
+#pip3 install -r requirements.txt 
+
 
 #Ensure setup_env.py is run (will create and install if needed)
 echo "Running setup_env.py to prepare Python environment"
@@ -46,3 +59,5 @@ pkill -f "nvidia-smi --query-gpu"
 #Display GPU Metrics Summary
 echo "GPU Usage Summary:"
 tail -n 20 gpu_usage.log
+
+#watch -n 1 squeue
