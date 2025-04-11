@@ -1,0 +1,105 @@
+[curso370@c206-5 heterog]$ cat row_sum-11733563.out
+Fri Apr 11 23:49:41 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.86.15              Driver Version: 570.86.15      CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-PCIE-40GB          On  |   00000000:98:00.0 Off |                    0 |
+| N/A   44C    P0             61W /  250W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Compiling with -g -G for profiling support...
+GPU time: 17.1175 ms
+CPU time: 194.2610 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Generating '/scratch/11733563/nsys-report-e466.qdstrm'
+[1/1] [========================100%] row_sum_nsys.nsys-rep
+Generated:
+    /mnt/netapp2/Home_FT2/home/ulc/cursos/curso370/heterog/row_sum_nsys.nsys-rep
+==PROF== Connected to process 1519075 (/mnt/netapp2/Home_FT2/home/ulc/cursos/curso370/heterog/row_sum)
+==PROF== Profiling "row_sum_kernel" - 0: 0%....50%....100% - 44 passes
+==PROF== Disconnected from process 1519075
+GPU time: 13526.9189 ms
+CPU time: 203.8630 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+==PROF== Report: /mnt/netapp2/Home_FT2/home/ulc/cursos/curso370/heterog/row_sum_ncu.ncu-rep
+=== Executing on GPU: a100 ===
+Fri Apr 11 23:50:07 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.86.15              Driver Version: 570.86.15      CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-PCIE-40GB          On  |   00000000:98:00.0 Off |                    0 |
+| N/A   43C    P0             63W /  250W |       1MiB /  40960MiB |     23%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Running: ./row_sum 5376 32 on GPU a100
+GPU time: 4.4996 ms
+CPU time: 12.4370 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Running: ./row_sum 5376 64 on GPU a100
+GPU time: 4.7641 ms
+CPU time: 9.6350 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Running: ./row_sum 5376 128 on GPU a100
+GPU time: 4.7580 ms
+CPU time: 13.9200 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Running: ./row_sum 10880 32 on GPU a100
+GPU time: 18.7215 ms
+CPU time: 50.3350 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Running: ./row_sum 10880 64 on GPU a100
+GPU time: 7.9227 ms
+CPU time: 55.6190 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Running: ./row_sum 10880 128 on GPU a100
+GPU time: 7.7418 ms
+CPU time: 55.3250 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Running: ./row_sum 20480 32 on GPU a100
+GPU time: 12.9756 ms
+CPU time: 195.2110 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Running: ./row_sum 20480 64 on GPU a100
+GPU time: 18.5411 ms
+CPU time: 191.9850 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Running: ./row_sum 20480 128 on GPU a100
+GPU time: 14.3911 ms
+CPU time: 190.3800 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+[curso370@c206-5 heterog]$ 

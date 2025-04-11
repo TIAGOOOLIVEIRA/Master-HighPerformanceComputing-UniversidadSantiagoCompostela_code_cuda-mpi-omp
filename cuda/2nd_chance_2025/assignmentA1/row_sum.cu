@@ -17,6 +17,8 @@
 // Kernel to compute the sum of each row in a matrix
 // occupancy is 4 threads per warp
 // 128 threads per block
+//Occupancy: the ratio of active warps per SM to the maximum number of warps supported
+//High occupancy can improve latency hiding and throughput, but it’s not always the bottleneck
 __global__ void __launch_bounds__(128, 4)
 row_sum_kernel(const float *__restrict__ input, float *__restrict__ output, int n) {
     int row = blockIdx.x * blockDim.x + threadIdx.x;
