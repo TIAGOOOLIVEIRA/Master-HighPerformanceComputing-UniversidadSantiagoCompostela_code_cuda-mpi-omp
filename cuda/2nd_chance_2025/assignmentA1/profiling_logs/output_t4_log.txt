@@ -1,0 +1,44 @@
+Running: ./row_sum 5376 32 on GPU t4
+GPU time: 5.2995 ms
+CPU time: 11.2690 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Running: ./row_sum 5376 64 on GPU t4
+GPU time: 5.2599 ms
+CPU time: 11.2640 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Running: ./row_sum 5376 128 on GPU t4
+GPU time: 5.1036 ms
+CPU time: 11.2860 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Running: ./row_sum 10880 32 on GPU t4
+GPU time: 8.7408 ms
+CPU time: 46.1170 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Running: ./row_sum 10880 64 on GPU t4
+GPU time: 8.8149 ms
+CPU time: 46.1060 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Running: ./row_sum 10880 128 on GPU t4
+GPU time: 11.3081 ms
+CPU time: 46.1280 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Running: ./row_sum 20480 32 on GPU t4
+GPU time: 26.5357 ms
+CPU time: 164.0430 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Running: ./row_sum 20480 64 on GPU t4
+GPU time: 23.3596 ms
+CPU time: 164.3190 ms
+CPU-GPU Validation passed.
+CUDA device reset.
+Running: ./row_sum 20480 128 on GPU t4
+GPU time: 25.3311 ms
+CPU time: 164.2960 ms
+CPU-GPU Validation passed.
