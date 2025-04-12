@@ -208,18 +208,27 @@ This table helps highlight not only how both GPUs outperform the CPU, but also h
 ---
 
 
-## References
-```text
-https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#function-qualifiers
-https://github.com/drkennetz/cuda_examples/
-https://github.com/a-hamdi/GPU/tree/main
-https://github.com/openhackathons-org/gpubootcamp.git
-https://developer.nvidia.com/blog/cooperative-groups/
-https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#tiled-partitions-cg
-Hardware Compute Partitioning on NVIDIA GPUs* https://www.cs.unc.edu/~jbakita/rtas23.pdf
-CUDA and Applications to Task-based Programming https://diglib.eg.org/server/api/core/bitstreams/3e283a2e-e6a3-4908-8d77-1741d01cc06f/content
-NVIDIA Bright Cluster Manager 9.2 https://support.brightcomputing.com/manuals/9.2/admin-manual.pdf
-COOPERATIVE GROUPS https://leimao.github.io/downloads/blog/2024-08-06-CUDA-Cooperative-Groups/s7622-Kyrylo-perelygin-robust-and-scalable-cuda.pdf
-https://leimao.github.io/downloads/blog/2024-08-06-CUDA-Cooperative-Groups/s7622-Kyrylo-perelygin-robust-and-scalable-cuda.pdf
-https://codingthematrix.com/
-```
+## CUDA & HPC Reference Materials
+
+### CUDA Programming Guides & Core Concepts
+- [CUDA C++ Programming Guide – Function Qualifiers](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#function-qualifiers)
+- [CUDA C++ Programming Guide – Tiled Partitions & Cooperative Groups](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#tiled-partitions-cg)
+- [Cooperative Groups – NVIDIA Developer Blog](https://developer.nvidia.com/blog/cooperative-groups/)
+- [Robust and Scalable CUDA with Cooperative Groups (PDF)](https://leimao.github.io/downloads/blog/2024-08-06-CUDA-Cooperative-Groups/s7622-Kyrylo-perelygin-robust-and-scalable-cuda.pdf)
+
+### CUDA Code Examples & Bootcamps
+- [CUDA Examples by Dr. Ken Netz](https://github.com/drkennetz/cuda_examples/)
+- [CUDA Practice by A. Hamdi](https://github.com/a-hamdi/GPU/tree/main)
+- [GPU Bootcamp Resources – OpenHackathons](https://github.com/openhackathons-org/gpubootcamp.git)
+
+### Research Papers & Technical Reports
+- **Hardware Compute Partitioning on NVIDIA GPUs**  
+  [UNC RTAS '23](https://www.cs.unc.edu/~jbakita/rtas23.pdf)
+- **CUDA and Applications to Task-Based Programming**  
+  [Eurographics Digital Library](https://diglib.eg.org/server/api/core/bitstreams/3e283a2e-e6a3-4908-8d77-1741d01cc06f/content)
+
+### Cluster & System Management
+- [NVIDIA Bright Cluster Manager 9.2 – Admin Manual (PDF)](https://support.brightcomputing.com/manuals/9.2/admin-manual.pdf)
+
+### Educational Resource
+- [Coding the Matrix – Linear Algebra for Computer Science](https://codingthematrix.com/)
