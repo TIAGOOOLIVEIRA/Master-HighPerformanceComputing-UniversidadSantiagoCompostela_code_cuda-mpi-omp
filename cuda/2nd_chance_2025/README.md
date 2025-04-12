@@ -1,7 +1,57 @@
 # Second Chance - 2025
 
+This project implements a high-performance row-wise summation of large 2D matrices using CUDA and OpenMP. It is designed for two purposes:
+
+- **Academic exploration** of GPU parallelization, occupancy tuning, and heterogeneous memory management.
+- **Internal benchmarking** of GPU performance across different NVIDIA architectures using real-world profiling workflows.
+
+## Key Capabilities
+
+- ✅ CUDA kernel for parallel row-wise summation with tunable thread/block parameters
+- ✅ Optimized CPU baseline using OpenMP parallelism (not serial loops)
+- ✅ Memory-efficient design leveraging `__restrict__`, `__launch_bounds__`, and coalesced access
+- ✅ Detailed performance comparison between **NVIDIA T4** and **NVIDIA A100**
+- ✅ Integration with **Nsight Systems** for profiling memory usage, kernel efficiency, and SM occupancy
+- ✅ Modular benchmarking via SLURM and command-line parameters
+
+---
+
+## Architecture Overview
+
+```text
+           +------------------------+
+           |    Matrix Generator    |   <-- Dynamic size (e.g., 20480 x 20480)
+           +------------------------+
+                     |
+                     v
+       +----------------------------+
+       |  Memory Allocation (Host)  |   <-- OpenMP parallel init
+       +----------------------------+
+                     |
+       +----------------------------+
+       |   Host-to-Device Transfer  |   <-- cudaMemcpy or Unified Memory
+       +----------------------------+
+                     |
+       v                             v
++----------------+         +------------------+
+| CUDA Row-Sum   |         | OpenMP Row-Sum   |   <-- Executed independently
+| Kernel (GPU)   |         | Function (CPU)   |
++----------------+         +------------------+
+       |                             |
+       +-------------+---------------+
+                     |
+       +----------------------------+
+       |  Device-to-Host Transfer   |
+       +----------------------------+
+                     |
+       +----------------------------+
+       |     Validation & Timing    |   <-- Output speedup, accuracy
+       +----------------------------+
+```
 
 ## Assignment 1 - Row summatory of a matrix on a GPU
+
+Add the elements of each row in the matrix
 
 | 1 | 2 | 3 | 4 | 5 |
 |---|---|---|---|---|
@@ -13,7 +63,13 @@
                 
               [ 15 | 20 | 25 | 30 | 35 ]
 
-
+- **Requirements**:
+  - Implement a CUDA version of the row summatory that is executed on the GPU
+  - As input only one matrix of size "nxn" is created (floats)
+  - As output you should provide a vector with “n” floats (element “i” is the summatory of row “i”)
+  - Each thread calculates one output element 
+  - Hint: Use as basis the Matrix Multiplication code used for the Autotest
+  - Hint: develop a C version and compare the result of both versions to check that your CUDA code provides the correct results  
 
 ## Profiling
 
@@ -24,7 +80,7 @@ A GPU-accelerated implementation of row matrix summ using CUDA and OpenMP for th
 
 ---
 
-### 📊 Nsight GPU Profiling Summary (A100)
+### Nsight GPU Profiling Summary (A100)
 
 | Component              | Time (ms)   | % Total CUDA API Time | Notes                                        |
 |------------------------|-------------|------------------------|----------------------------------------------|
@@ -148,7 +204,7 @@ This table helps highlight not only how both GPUs outperform the CPU, but also h
 
 
 ## References
-```C
+```text
 https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#function-qualifiers
 https://github.com/drkennetz/cuda_examples/
 https://github.com/a-hamdi/GPU/tree/main
