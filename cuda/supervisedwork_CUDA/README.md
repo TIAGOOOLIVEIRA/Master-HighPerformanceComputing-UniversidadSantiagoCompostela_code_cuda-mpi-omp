@@ -1,12 +1,16 @@
 # Supervised Work (2024-2025) Programming Heterogeneous Architectures - Master of High Performance Computing
 
-CUDA v11
+
+## CUDA 11 libraries to explore
+
+- [CUDA v11](https://docs.nvidia.com/cuda/archive/11.0/cuda-toolkit-release-notes/)
 nvGRAPH/RAPIDS:cuGraph
+- [cuBLAS](https://docs.nvidia.com/cuda/archive/11.0/cuda-toolkit-release-notes/#cublas-new-features)
+- [cusparse](https://docs.nvidia.com/cuda/archive/11.0/cuda-toolkit-release-notes/#cusparse-new-features)
+- nvcuvid
+- [cugraph](https://github.com/rapidsai/cugraph)
+- [nvgraph](https://github.com/rapidsai/nvgraph)
 
-https://github.com/rapidsai/nvgraph
-
-https://developer.nvidia.com/cuda-code-samples
-    https://github.com/nvidia/cuda-samples
 
 
 ```c
@@ -60,6 +64,8 @@ Nvidia Nano Jetson Orin
 ## 📚 References & Learning Resources
 
 ### CUDA Code Examples & Libraries
+- [CUDA samples](https://github.com/NVIDIA/cuda-samples/)
+- [Dev CUDA samples](https://developer.nvidia.com/cuda-code-samples)
 - [NVIDIA CUDA Library Samples](https://github.com/NVIDIA/CUDALibrarySamples)
 - [CUDA Examples by Dr. Ken Netz](https://github.com/drkennetz/cuda_examples/)
 - [CUDA Examples by A. Hamdi](https://github.com/a-hamdi/GPU/tree/main)
