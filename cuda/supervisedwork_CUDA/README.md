@@ -3,13 +3,15 @@
 
 ## CUDA 11 libraries to explore
 
+- [cuda-11-features-revealed, mixed-precision,  APIs for task graphs...](https://developer.nvidia.com/blog/cuda-11-features-revealed/)
 - [CUDA v11](https://docs.nvidia.com/cuda/archive/11.0/cuda-toolkit-release-notes/)
-nvGRAPH/RAPIDS:cuGraph
+- nvGRAPH/RAPIDS:cuGraph
 - [cuBLAS](https://docs.nvidia.com/cuda/archive/11.0/cuda-toolkit-release-notes/#cublas-new-features)
 - [cusparse](https://docs.nvidia.com/cuda/archive/11.0/cuda-toolkit-release-notes/#cusparse-new-features)
 - nvcuvid
 - [cugraph](https://github.com/rapidsai/cugraph)
 - [nvgraph](https://github.com/rapidsai/nvgraph)
+- [Graph Structures (Adjacency Matrix) vs Sparse Matrices (CSR, COO, etc.)](https://docs.rapids.ai/api/cugraph/stable/)
 
 
 
@@ -76,6 +78,7 @@ Nvidia Nano Jetson Orin
 - [CUDA c programming guide - UVA](https://docs.nvidia.com/cuda/cuda-c-programming-guide/#unified-virtual-address-space)
 - [Multi GPU programming](https://medium.com/gpgpu/multi-gpu-programming-6768eeb42e2c)
 - [NVLink P2p](https://codingbyexample.com/2020/09/14/p2p-memcpy-with-nvlink)
+- [nvgraph - deprecated after CUDA 10.x](https://docs.nvidia.com/cuda/archive/9.0/nvgraph/index.html)
 
 ### CUDA Programming Guides & Documentation
 - [CUDA C++ Programming Guide – NVIDIA Docs](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#tiled-partitions-cg)
@@ -90,7 +93,8 @@ Nvidia Nano Jetson Orin
 - **CUDA and Applications to Task-based Programming**  
   [Eurographics Digital Library](https://diglib.eg.org/server/api/core/bitstreams/3e283a2e-e6a3-4908-8d77-1741d01cc06f/content)
 - **The AI CUDA Engineer: Agentic CUDA Kernel Discovery, Optimization and Composition**  
-  [Sakana.ai](https://pub.sakana.ai/static/paper.pdf)
+ - [Sakana.ai](https://pub.sakana.ai/static/paper.pdf)
+ - [DeepSeek-V3 Technical Report](https://arxiv.org/abs/2412.19437)
 
 ### HPC Toolchains & Infrastructure
 - [NVIDIA Bright Cluster Manager 9.2 – Admin Manual (PDF)](https://support.brightcomputing.com/manuals/9.2/admin-manual.pdf)
