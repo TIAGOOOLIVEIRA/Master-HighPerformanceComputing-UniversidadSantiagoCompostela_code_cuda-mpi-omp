@@ -1,0 +1,8 @@
+tensorboard==2.14.1
+
+absl-py>=0.4
+grpcio>=1.48.2
+markdown>=2.6.8
+protobuf>=3.9.2
+werkzeug>=1.0.1
+tensorboard-data-server>=0.7.0,<0.8.0
