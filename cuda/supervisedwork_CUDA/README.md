@@ -12,6 +12,7 @@
 - [cugraph](https://github.com/rapidsai/cugraph)
 - [nvgraph](https://github.com/rapidsai/nvgraph)
 - [Graph Structures (Adjacency Matrix) vs Sparse Matrices (CSR, COO, etc.)](https://docs.rapids.ai/api/cugraph/stable/)
+- [Getting Started with CUDA Graphs](https://developer.nvidia.com/blog/cuda-graphs/)
 
 
 
@@ -66,6 +67,7 @@ Nvidia Nano Jetson Orin
 ## 📚 References & Learning Resources
 
 ### CUDA Code Examples & Libraries
+- [cuSparse: Accelerate Large Linear Programming Problems with NVIDIA cuOpt](https://developer.nvidia.com/blog/accelerate-large-linear-programming-problems-with-nvidia-cuopt)
 - [CUDA samples](https://github.com/NVIDIA/cuda-samples/)
 - [Dev CUDA samples](https://developer.nvidia.com/cuda-code-samples)
 - [NVIDIA CUDA Library Samples](https://github.com/NVIDIA/CUDALibrarySamples)
@@ -84,6 +86,7 @@ Nvidia Nano Jetson Orin
 - [CUDA C++ Programming Guide – NVIDIA Docs](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#tiled-partitions-cg)
 - [Cooperative Groups – NVIDIA Developer Blog](https://developer.nvidia.com/blog/cooperative-groups/)
 - [Robust and Scalable CUDA with Cooperative Groups (PDF)](https://leimao.github.io/downloads/blog/2024-08-06-CUDA-Cooperative-Groups/s7622-Kyrylo-perelygin-robust-and-scalable-cuda.pdf)
+- [CUDA C/C++ Streams and Concurrency](https://developer.download.nvidia.com/CUDA/training/StreamsAndConcurrencyWebinar.pdf)
 
 ### Research Papers & Technical Reports
 - **Characterizing GPU Resilience and Impact on AI/HPC Systems**  
@@ -103,7 +106,3 @@ Nvidia Nano Jetson Orin
 - [Coding the Matrix – Applied Linear Algebra Course](https://codingthematrix.com/)
 - [NVIDIA CUDA-Q Academic: Quick Start to Quantum](https://github.com/NVIDIA/cuda-q-academic/blob/main/quick-start-to-quantum/01_quick_start_to_quantum.ipynb)
 
-
-HLRS
-    VTune_Profiling.pdf
-        GPU
