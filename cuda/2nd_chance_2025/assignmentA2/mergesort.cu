@@ -64,10 +64,14 @@ void check_result_cpu(const int* __restrict__ original, const int* __restrict__ 
     int* temp = (int*)malloc(size * sizeof(int));
     for (int i = 0; i < size; ++i) reference[i] = original[i];
 
+    /*CPU timing per array
     CpuTimer cpu_timer;
     cpu_timer.start();
+    */
     merge_sort_cpu_parallel(reference, 0, size-1, temp, 3);
+    /*CPU timing per array    
     cpu_timer.stop("CPU Merge Sort");
+    */
 
     int errors = 0;
     for (int i = 0; i < size; ++i) {
@@ -156,14 +160,34 @@ int main() {
 	    CHECK_CUDA_ERROR(cudaMemcpyAsync(h_dst, d_buf, sz * sizeof(int), cudaMemcpyDeviceToHost, streams[sid]));
         }
         
-	for (int s = 0; s < num_streams; ++s) {
-            CHECK_CUDA_ERROR(cudaStreamSynchronize(streams[s]));
-        }
+        /*
+        for (int s = 0; s < num_streams; ++s) {
+                CHECK_CUDA_ERROR(cudaStreamSynchronize(streams[s]));
+            }
+        */
+    }
+
+    for (int s = 0; s < num_streams; ++s) {
+        CHECK_CUDA_ERROR(cudaStreamSynchronize(streams[s]));
     }
     timer.stop("GPU Batch Merge Sort");
 
+    /*CPU timing per array
     printf("CPU validation on first few arrays\n");
     check_result_cpu(h_input, h_output, h_sizes[0]);
+    *CPU timing per array*/
+
+    CpuTimer cpu_timer;
+    cpu_timer.start();
+    #pragma omp parallel for
+    for (int i = 0; i < total_arrays; ++i) {
+        int sz = h_sizes[i];
+        int* temp = (int*)malloc(sz * sizeof(int));
+        merge_sort_cpu_parallel(h_input + i * max_size, 0, sz - 1, temp, 3);
+        free(temp);
+    }
+    cpu_timer.stop("CPU Batch Merge Sort");
+
 
     printf("Cleanup\n");
     for (int s = 0; s < num_streams; ++s) {
