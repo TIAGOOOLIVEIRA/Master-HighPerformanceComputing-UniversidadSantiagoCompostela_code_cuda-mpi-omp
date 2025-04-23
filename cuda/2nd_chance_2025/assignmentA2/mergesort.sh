@@ -24,6 +24,8 @@ module load cuda/12.2.0
 
 echo "Compiling with profiling support"
 #nvcc -arch=sm_70 -O3 -Xcompiler="-march=native -fopenmp" mergesort.cu -o mergesort
+#to also help the bank conflicts analysis
+#ncu --set full --target-processes all -o mergesort_ncu_t4 ./mergesort
 make 
 make profile
 
@@ -32,3 +34,6 @@ export OMP_NUM_THREADS=8
 
 echo "Running: ./mergesort"
 ./mergesort
+
+echo "NCU for bank conflicts analysis"
+ncu --set full --target-processes all -o mergesort ./mergesort
