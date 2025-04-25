@@ -1,20 +1,28 @@
 CUDACXX=nvcc
-CUDACXXFLAGS=-arch=sm_70 -O3 -lineinfo -Xptxas -v -Xcudafe "--display_error_number"
+CUDACXXFLAGS=-O3 -lineinfo -Xptxas -v -Xcudafe "--display_error_number"
 CXXFLAGS=-march=native -fopenmp
+
 NSYS=nsys profile
 NSYSFLAGS=--stats=true --force-overwrite=true
+
 VTUNE=vtune
 VTUNEFLAGS_CPU=-collect hotspots
-VTUNEFLAGS=-collect gpu-hotspots
-VTUNE_RESULT_DIR_CPU=vtune-report_cpu
-VTUNE_RESULT_DIR_GPU=vtune-report_gpu
+VTUNEFLAGS_GPU=-collect gpu-hotspots
+VTUNE_RESULT_DIR_CPU=vtune-report-cpu
+VTUNE_RESULT_DIR_GPU=vtune-report-gpu
+
 NCU=ncu
-NCUFLAGS=--target-processes all --launch-count 1 -f --kernel-name "sort_kernel" --set memory-workload-analysis
+NCUFLAGS=--set speed-of-light:memory_workload_analysis --kernel-name "sort_kernel"
+NCU_OUTPUT=mergesort_ncu
+
+# Dynamically detect GPU arch
+GPU_ARCH := $(shell nvidia-smi --query-gpu=compute_cap --format=csv,noheader | head -n1 | sed 's/\.//')
+GENCODE_FLAGS := -gencode arch=compute_$(GPU_ARCH),code=sm_$(GPU_ARCH)
 
 all: mergesort
 
 mergesort: mergesort.cu
-	$(CUDACXX) $(CUDACXXFLAGS) -Xcompiler="$(CXXFLAGS)" mergesort.cu -o mergesort
+	$(CUDACXX) $(GENCODE_FLAGS) $(CUDACXXFLAGS) -Xcompiler="$(CXXFLAGS)" mergesort.cu -o mergesort
 
 profile: mergesort
 	$(NSYS) $(NSYSFLAGS) -o mergesort-report ./mergesort
@@ -27,14 +35,14 @@ vtune-gpu: mergesort
 	rm -rf $(VTUNE_RESULT_DIR_GPU)
 	@if command -v $(VTUNE) >/dev/null 2>&1; then \
 		echo "Running VTune GPU profiling..."; \
-		$(VTUNE) $(VTUNEFLAGS) -result-dir $(VTUNE_RESULT_DIR_GPU) ./mergesort; \
+		$(VTUNE) $(VTUNEFLAGS_GPU) -result-dir $(VTUNE_RESULT_DIR_GPU) ./mergesort; \
 	else \
 		echo "Warning: VTune is not installed or not in PATH. Skipping GPU profiling."; \
 	fi
 
 ncu: mergesort
-	$(NCU) $(NCUFLAGS) -o mergesort_ncu_t4 ./mergesort
+	$(NCU) $(NCUFLAGS) ./mergesort -o $(NCU_OUTPUT)
 
 clean:
 	rm -f mergesort *.qdrep *.sqlite
-	rm -rf vtune-report* mergesort-report* mergesort_ncu_t4.ncu-rep
+	rm -rf vtune-report* mergesort-report* $(NCU_OUTPUT).ncu-rep

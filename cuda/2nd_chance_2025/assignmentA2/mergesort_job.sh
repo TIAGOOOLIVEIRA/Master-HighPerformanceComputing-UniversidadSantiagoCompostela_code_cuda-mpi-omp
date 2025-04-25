@@ -64,7 +64,7 @@ done
 
 echo "Execution completed. Results saved to benchmark_results.csv."
 
-echo "Profiling with nsys and ncu"
+echo "Profiling with nsys, vtune(CPU) and ncu"
 make profile
 make vtune-cpu
-#make ncu
+make ncu
