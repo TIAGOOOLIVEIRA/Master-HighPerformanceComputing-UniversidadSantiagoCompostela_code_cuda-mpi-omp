@@ -85,6 +85,13 @@ A GPU-accelerated implementation of row matrix summ using CUDA and OpenMP for th
 - [CUDA C++ Programming Guide – Tiled Partitions & Cooperative Groups](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#tiled-partitions-cg)
 - [Cooperative Groups – NVIDIA Developer Blog](https://developer.nvidia.com/blog/cooperative-groups/)
 - [Robust and Scalable CUDA with Cooperative Groups (PDF)](https://leimao.github.io/downloads/blog/2024-08-06-CUDA-Cooperative-Groups/s7622-Kyrylo-perelygin-robust-and-scalable-cuda.pdf)
+- [CUDA Techniques to Maximize Memory Bandwidth and Hide Latency](https://www.nvidia.com/en-us/on-demand/session/gtc25-s72683/)
+- [Advanced Performance Optimization in CUDA](https://www.nvidia.com/ja-jp/on-demand/session/gtc24-s62192/?playlistId=playList-d59c3dc3-9e5a-404d-8725-4b567f4dfe77)
+- [Verification of Producer-Consumer Synchronization in GPU Programs](https://cs.stanford.edu/people/sharmar/pubs/weft.pdf)
+- [Using CUDA Warp-Level Primitives](https://developer.nvidia.com/blog/using-cuda-warp-level-primitives/)
+- [Register Cache: Caching for Warp-Centric CUDA Programs](https://developer.nvidia.com/blog/register-cache-warp-cuda/)
+- [Simplifying GPU Programming for HPC with NVIDIA Grace Hopper Superchip](https://developer.nvidia.com/blog/simplifying-gpu-programming-for-hpc-with-the-nvidia-grace-hopper-superchip/)
+- [Optimize GPU Workloads for Graphics Applications with NVIDIA Nsight Graphics](https://developer.nvidia.com/blog/optimize-gpu-workloads-for-graphics-applications-with-nvidia-nsight-graphics/)
 
 ### CUDA Code Examples & Bootcamps
 - [CUDA Examples by Dr. Ken Netz](https://github.com/drkennetz/cuda_examples/)

@@ -4,32 +4,46 @@
 #include <cuda_runtime.h>
 #include <omp.h>
 
-// Merge function for device
-__device__ void merge(int* __restrict__ data, int* __restrict__ temp, int left, int mid, int right) {
-    int i = left, j = mid + 1, k = left;
-    while (i <= mid && j <= right) {
-        temp[k++] = (data[i] <= data[j]) ? data[i++] : data[j++];
-    }
-    while (i <= mid) temp[k++] = data[i++];
-    while (j <= right) temp[k++] = data[j++];
-    for (i = left; i <= right; i++) data[i] = temp[i];
-}
 
-// Iterative merge-sort kernel per-array
 __global__ void sort_kernel(int* __restrict__ data, int size) {
-    extern __shared__ int temp[];
+    extern __shared__ int shared_memory[];
+    int* temp = shared_memory;
+    int* temp2 = &shared_memory[size];
+
+    int tid = threadIdx.x;
+    int stride = blockDim.x;
+
+    for (int i = tid; i < size; i += stride)
+        temp[i] = data[i];
+    __syncthreads();
+
     for (int width = 1; width < size; width <<= 1) {
-        for (int idx = 0; idx < size; idx += (width << 1)) {
+        for (int idx = tid * (width << 1); idx < size; idx += stride * (width << 1)) {
             int left = idx;
             int mid = min(idx + width - 1, size - 1);
             int right = min(idx + (width << 1) - 1, size - 1);
-            if (mid < right) merge(data, temp, left, mid, right);
+            if (mid < right) {
+                int l = left;
+                int r = mid + 1;
+                for (int k = left; k <= right; ++k) {
+                    if (l <= mid && (r > right || temp[l] <= temp[r]))
+                        temp2[k] = temp[l++];
+                    else
+                        temp2[k] = temp[r++];
+                }
+            }
         }
         __syncthreads();
+        int* swap = temp;
+        temp = temp2;
+        temp2 = swap;
+        __syncthreads();
     }
+
+    for (int i = tid; i < size; i += stride)
+        data[i] = temp[i];
 }
 
-// CPU-side merge and parallel merge sort for validation
 void merge_cpu(int* __restrict__ arr, int l, int m, int r, int* __restrict__ temp) {
     int i = l, j = m + 1, k = l;
     while (i <= m && j <= r) {
@@ -59,57 +73,47 @@ void merge_sort_cpu_parallel(int* __restrict__ arr, int l, int r, int* __restric
     }
 }
 
-void check_result_cpu(const int* __restrict__ original, const int* __restrict__ sorted, int size) {
+int check_result_cpu(const int* __restrict__ original, const int* __restrict__ sorted, int size) {
     int* reference = (int*)malloc(size * sizeof(int));
     int* temp = (int*)malloc(size * sizeof(int));
     for (int i = 0; i < size; ++i) reference[i] = original[i];
 
-    /*CPU timing per array
-    CpuTimer cpu_timer;
-    cpu_timer.start();
-    */
     merge_sort_cpu_parallel(reference, 0, size-1, temp, 3);
-    /*CPU timing per array    
-    cpu_timer.stop("CPU Merge Sort");
-    */
 
     int errors = 0;
     for (int i = 0; i < size; ++i) {
         if (reference[i] != sorted[i]) {
-            printf("Mismatch at index %d: CPU = %d, GPU = %d\n", i, reference[i], sorted[i]);
             errors++;
         }
     }
-    if (errors == 0)
-        printf("CPU-GPU validation passed.\n");
-    else
-        printf("CPU-GPU validation failed with %d mismatches.\n", errors);
 
     free(reference);
     free(temp);
+    return errors;
 }
 
-int main() {
+int main(int argc, char** argv) {
     print_device_info((const void*)sort_kernel, 256, 0);
 
-    printf("Parameters\n");
     const int total_arrays = 32768;
-    const int max_size = 1024;
-    const int powers = 10;
+    const int max_size = (argc > 1) ? atoi(argv[1]) : 1024;
     const int num_streams = 16;
 
-    printf("Allocate host inputoutput\n");
+    printf("Max array size: %d\n", max_size);
+    printf("Total Mem footprint (input + output): %.2f MB\n", 2 * total_arrays * max_size * sizeof(int) / (1024.0 * 1024.0));
+
+    printf("Allocate host input-output\n");
     size_t max_bytes = max_size * sizeof(int);
     int *h_input, *h_output;
     CHECK_CUDA_ERROR(cudaMallocHost(&h_input,  total_arrays * max_bytes));
     CHECK_CUDA_ERROR(cudaMallocHost(&h_output, total_arrays * max_bytes));
-    int *h_sizes  = (int*)malloc(total_arrays * sizeof(int));
 
     printf("Initialize sizes and data\n");
+    int* h_sizes = (int*)malloc(total_arrays * sizeof(int));
     for (int i = 0; i < total_arrays; ++i) {
-        int pow = 3 + (i % powers);        
+        int pow = 3 + (i % 10);
         int sz = 1 << pow;
-	if(sz > 1024) sz=1024;
+        if (sz > max_size) sz = max_size;
         h_sizes[i] = sz;
         int offset = i * max_size;
         for (int j = 0; j < sz; ++j) {
@@ -118,15 +122,17 @@ int main() {
     }
 
     printf("Allocate device buffers per stream\n");
-    int *d_buffers[num_streams];
+    int* d_buffers[num_streams];
     for (int s = 0; s < num_streams; ++s) {
         CHECK_CUDA_ERROR(cudaMalloc(&d_buffers[s], max_bytes));
     }
 
-    printf("Create streams\n");
+    printf("Create streams and events\n");
     cudaStream_t streams[num_streams];
+    cudaEvent_t events[num_streams];
     for (int s = 0; s < num_streams; ++s) {
         CHECK_CUDA_ERROR(cudaStreamCreate(&streams[s]));
+        CHECK_CUDA_ERROR(cudaEventCreate(&events[s]));
     }
 
     printf("Launch sorting across streams in batches\n");
@@ -143,63 +149,51 @@ int main() {
             int *h_src = h_input + i * max_size;
             int *h_dst = h_output + i * max_size;
 
-	    /*debug
-	    printf("i=%d, sz=%d, sid=%d\n", i, sz, sid);
-	    */
-
             CHECK_CUDA_ERROR(cudaMemcpyAsync(d_buf, h_src, sz * sizeof(int), cudaMemcpyHostToDevice, streams[sid]));
-            
-	    /*debug
-	    cudaFuncAttributes attr;
-	    cudaFuncGetAttributes(&attr, sort_kernel);
-	    printf("sharedSizeBytes=%lu, maxDynamicShared=%lu\n", (unsigned long)(sz * sizeof(int)), (unsigned long)attr.maxDynamicSharedSizeBytes);
-	    */
 
-	    sort_kernel<<<1, 256, sz * sizeof(int), streams[sid]>>>(d_buf, sz);
-            CHECK_CUDA_ERROR(cudaGetLastError());
-	    CHECK_CUDA_ERROR(cudaMemcpyAsync(h_dst, d_buf, sz * sizeof(int), cudaMemcpyDeviceToHost, streams[sid]));
+            int threads_per_block = 256;
+            size_t shared_memory_size = 2 * sz * sizeof(int);
+            sort_kernel<<<1, threads_per_block, shared_memory_size, streams[sid]>>>(d_buf, sz);
+
+            CHECK_CUDA_ERROR(cudaMemcpyAsync(h_dst, d_buf, sz * sizeof(int), cudaMemcpyDeviceToHost, streams[sid]));
+            CHECK_CUDA_ERROR(cudaEventRecord(events[sid], streams[sid]));
         }
-        
-        /*
         for (int s = 0; s < num_streams; ++s) {
-                CHECK_CUDA_ERROR(cudaStreamSynchronize(streams[s]));
-            }
-        */
-    }
-
-    for (int s = 0; s < num_streams; ++s) {
-        CHECK_CUDA_ERROR(cudaStreamSynchronize(streams[s]));
+            CHECK_CUDA_ERROR(cudaEventSynchronize(events[s]));
+        }
     }
     timer.stop("GPU Batch Merge Sort");
 
-    /*CPU timing per array
-    printf("CPU validation on first few arrays\n");
-    check_result_cpu(h_input, h_output, h_sizes[0]);
-    *CPU timing per array*/
-
-    CpuTimer cpu_timer;
+    printf("CPU validation on all arrays\n");
+    Timer cpu_timer;
     cpu_timer.start();
-    #pragma omp parallel for
+    int total_errors = 0;
+    #pragma omp parallel for reduction(+:total_errors)
     for (int i = 0; i < total_arrays; ++i) {
-        int sz = h_sizes[i];
-        int* temp = (int*)malloc(sz * sizeof(int));
-        merge_sort_cpu_parallel(h_input + i * max_size, 0, sz - 1, temp, 3);
-        free(temp);
+        total_errors += check_result_cpu(h_input + i * max_size, h_output + i * max_size, h_sizes[i]);
     }
     cpu_timer.stop("CPU Batch Merge Sort");
 
+    if (total_errors == 0)
+        printf("CPU-GPU validation passed for all arrays.\n");
+    else
+        printf("CPU-GPU validation failed. %d total mismatches.\n", total_errors);
 
     printf("Cleanup\n");
     for (int s = 0; s < num_streams; ++s) {
         cudaStreamDestroy(streams[s]);
+        cudaEventDestroy(events[s]);
         cudaFree(d_buffers[s]);
     }
     CHECK_CUDA_ERROR(cudaFreeHost(h_input));
     CHECK_CUDA_ERROR(cudaFreeHost(h_output));
     free(h_sizes);
 
+    fflush(stdout);
+    fflush(stderr);
     CHECK_CUDA_ERROR(cudaDeviceReset());
     printf("CUDA device reset.\n");
 
-    return 0;
+    omp_set_num_threads(1);
+    exit(0);
 }
