@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J row_sum
+#SBATCH -J mergesort_shared
 #SBATCH -o %x-%j.out
 #SBATCH -e %x-%j.err
 #SBATCH --time=00:25:00
@@ -46,24 +46,19 @@ sizes=(128 256 512 1024 2048 4096 8192 16384)
 runs=3
 
 #Output CSV - analysis
-echo "ArraySize,Run,GPUBatchSort(ms),CPUBatchSort(ms)" > benchmark_results.csv
-
+output_file="benchmark_results.csv"
+echo "RunDescription,ArraySize,Run,GPUBatchSort(ms),CPUBatchSort(ms)" > $output_file
 for size in "${sizes[@]}"; do
-    echo "=============================="
-    echo "Benchmarking array size: $size"
-    echo "=============================="
-
     for ((r=1; r<=runs; r++)); do
         echo "Run $r for size $size"
 
         OUTPUT=$(./mergesort $size)
 
-        GPU_TIME=$(echo "$OUTPUT" | grep "GPU TIMING \[GPU Batch Merge Sort\]" | awk '{print $6}')
-        CPU_TIME=$(echo "$OUTPUT" | grep "GPU TIMING \[CPU Batch Merge Sort\]" | awk '{print $6}')
+        echo $OUTPUT
 
+        OUTPUT_ESCAPED=$(echo "$OUTPUT" | tr '\n' ' ' | sed 's/"/""/g')
 
-        echo "$size,$r,$GPU_TIME,$CPU_TIME" >> benchmark_results.csv
-
+        echo "$size,$r,\"$OUTPUT_ESCAPED\"" >> benchmark_results.csv
     done
 done
 

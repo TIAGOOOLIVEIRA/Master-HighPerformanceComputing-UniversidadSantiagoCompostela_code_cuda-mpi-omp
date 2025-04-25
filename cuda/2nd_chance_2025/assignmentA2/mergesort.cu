@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
     const int max_size = (argc > 1) ? atoi(argv[1]) : 1024;
     const int num_streams = 16;
 
-    printf("Max array size: %d\n", max_size);
+    printf("Default array size: %d\n", max_size);
     printf("Total Mem footprint (input + output): %.2f MB\n", 2 * total_arrays * max_size * sizeof(int) / (1024.0 * 1024.0));
 
     printf("Allocate host input-output\n");
