@@ -12,10 +12,9 @@ VTUNE_RESULT_DIR_CPU=vtune-report-cpu
 VTUNE_RESULT_DIR_GPU=vtune-report-gpu
 
 NCU=ncu
-NCUFLAGS=--set speed-of-light:memory_workload_analysis --kernel-name "sort_kernel"
+NCUFLAGS=--target-processes all --metrics sm__sass_average_branch_targets_threads_per_instruction.pct,sm__pipe_shared_mem_op_stall_cycles.avg.per_cycle_active,sm__inst_executed_pipe_shared_mem.sum --kernel-name "sort_kernel"
 NCU_OUTPUT=mergesort_ncu
 
-# Dynamically detect GPU arch
 GPU_ARCH := $(shell nvidia-smi --query-gpu=compute_cap --format=csv,noheader | head -n1 | sed 's/\.//')
 GENCODE_FLAGS := -gencode arch=compute_$(GPU_ARCH),code=sm_$(GPU_ARCH)
 

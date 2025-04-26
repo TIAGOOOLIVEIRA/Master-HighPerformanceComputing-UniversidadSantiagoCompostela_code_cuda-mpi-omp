@@ -27,9 +27,10 @@ echo "Compiling with profiling support"
 #nvcc -arch=sm_70 -O3 -Xcompiler="-march=native -fopenmp" mergesort_opt.cu -o mergesort_opt
 #to also help the bank conflicts analysis
 #nsys profile --stats=true --force-overwrite=true -o mergesort-report ./mergesort
+#ncu --list-metrics
 #ncu --set=shared_memory --kernel-name "sort_kernel" ./mergesort
 #ncu --set full --target-processes all -o mergesort_ncu_t4 ./mergesort
-#ncu --target-processes all --launch-count 1 --kernel-name "sort_kernel" --set memory-workload-analysis -o mergesort_ncu_t4 ./mergesort
+#ncu --target-processes all --launch-count 1 --kernel-name "sort_kernel" --set memory-workload-analysis -o mergesort_ncu ./mergesort
 
 
 
