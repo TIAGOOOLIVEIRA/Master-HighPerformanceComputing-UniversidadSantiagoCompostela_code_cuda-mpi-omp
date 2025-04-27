@@ -31,10 +31,12 @@ echo "Compiling with profiling support"
 #ncu --set=shared_memory --kernel-name "sort_kernel" ./mergesort
 #ncu --set full --target-processes all -o mergesort_ncu_t4 ./mergesort
 #ncu --target-processes all --launch-count 1 --kernel-name "sort_kernel" --set memory-workload-analysis -o mergesort_ncu ./mergesort
+#vtune-gui vtune-report-cpu
+#vtune-cpu
+#vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./mergesort
 
 
-
-make 
+make -B 2>&1 | tee make_output.log
 
 
 echo "setting OMP_NUM_THREADS to 8"

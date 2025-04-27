@@ -92,6 +92,9 @@ A GPU-accelerated implementation of row matrix summ using CUDA and OpenMP for th
 - [Register Cache: Caching for Warp-Centric CUDA Programs](https://developer.nvidia.com/blog/register-cache-warp-cuda/)
 - [Simplifying GPU Programming for HPC with NVIDIA Grace Hopper Superchip](https://developer.nvidia.com/blog/simplifying-gpu-programming-for-hpc-with-the-nvidia-grace-hopper-superchip/)
 - [Optimize GPU Workloads for Graphics Applications with NVIDIA Nsight Graphics](https://developer.nvidia.com/blog/optimize-gpu-workloads-for-graphics-applications-with-nvidia-nsight-graphics/)
+- [CUDA Pro Tip: Increase Performance with Vectorized Memory Access Dec 04, 2013 By Justin Luitjens](https://developer.nvidia.com/blog/cuda-pro-tip-increase-performance-with-vectorized-memory-access/)
+- [Asynchronous Data Copies](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#asynchronous-data-copies)
+- [Walkthrough: Debugging a CUDA Application](https://docs.nvidia.com/nsight-visual-studio-edition/3.2/Content/Debugging_CUDA_Application.htm)
 
 ### CUDA Code Examples & Bootcamps
 - [CUDA Examples by Dr. Ken Netz](https://github.com/drkennetz/cuda_examples/)
@@ -99,6 +102,9 @@ A GPU-accelerated implementation of row matrix summ using CUDA and OpenMP for th
 - [GPU Bootcamp Resources – OpenHackathons](https://github.com/openhackathons-org/gpubootcamp.git)
 
 ### Research Papers & Technical Reports
+- [Multicore and GPU Programming, An Integrated Approach, chapter 6 "GPU Programming CUDA"](https://www.sciencedirect.com/book/9780128141205/multicore-and-gpu-programming)
+
+ - [Little's Law to explain GPU throughput vs. latency - Parallel Read Error Correction for Big Genomic Datasets](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7397660)
 - [mergeSort(): A Graphical, Recursive, C++ Explanation](https://www.youtube.com/watch?v=RZK6KVpaT3I)
 - [mergeSort(): CPU based reference](https://www.geeksforgeeks.org/merge-sort/)
 
