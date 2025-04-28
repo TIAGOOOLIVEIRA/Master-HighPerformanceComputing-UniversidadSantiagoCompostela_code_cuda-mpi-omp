@@ -102,6 +102,7 @@ A GPU-accelerated implementation of row matrix summ using CUDA and OpenMP for th
 - [GPU Bootcamp Resources – OpenHackathons](https://github.com/openhackathons-org/gpubootcamp.git)
 
 ### Research Papers & Technical Reports
+- [Sorting with GPUs- A Survey 1709.02520v1](arxiv.org/pdf/1709.02520)
 - [Multicore and GPU Programming, An Integrated Approach, chapter 6 "GPU Programming CUDA"](https://www.sciencedirect.com/book/9780128141205/multicore-and-gpu-programming)
 
  - [Little's Law to explain GPU throughput vs. latency - Parallel Read Error Correction for Big Genomic Datasets](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7397660)

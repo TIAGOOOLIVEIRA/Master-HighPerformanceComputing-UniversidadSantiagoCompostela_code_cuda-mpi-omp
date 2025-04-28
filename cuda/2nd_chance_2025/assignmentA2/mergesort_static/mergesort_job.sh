@@ -9,11 +9,11 @@
 
 #watch -n 1 squeue -u $USER
 #To automate in the interactive session, make sh executable
-#chmod +x mergesort_job.sh
 #module avail cuda
 
 #to run in interactive mode
 #compute --gpu
+#chmod +x mergesort_job.sh
 #./mergesort.sh
 ####salloc -I600  --qos=viz -p viz --gres=gpu:t4 --mem=3952M -c 1 -t 08:00:00  srun -c 1 --pty --preserve-env /bin/bash -i
 
@@ -35,7 +35,7 @@ echo "Compiling with profiling support"
 #vtune-cpu
 #vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./mergesort
 
-
+make clean
 make -B 2>&1 | tee make_output.log
 
 

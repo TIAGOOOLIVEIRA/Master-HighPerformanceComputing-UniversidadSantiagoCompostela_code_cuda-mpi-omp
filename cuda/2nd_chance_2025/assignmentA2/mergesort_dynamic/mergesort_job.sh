@@ -35,7 +35,7 @@ echo "Compiling with profiling support"
 #vtune-cpu
 #vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./mergesort
 
-
+make clean
 make -B 2>&1 | tee make_output.log
 
 
