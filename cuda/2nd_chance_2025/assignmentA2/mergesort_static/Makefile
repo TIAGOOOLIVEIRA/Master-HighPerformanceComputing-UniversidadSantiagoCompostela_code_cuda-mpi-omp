@@ -12,10 +12,10 @@ VTUNE_RESULT_DIR_CPU=vtune-report-cpu
 VTUNE_RESULT_DIR_GPU=vtune-report-gpu
 
 NCU=ncu
-NCUFLAGS=--target-processes all --launch-skip 0 --launch-count 1 --kernel-name "sort_kernel" --set full
+NCUFLAGS=--target-processes all --launch-skip 0 --launch-count 1 --kernel-name "sort_kernel_phase1" --set full
 NCU_OUTPUT=mergesort_ncu_report
 
-# Detect GPU arch dynamically (if possible), else fallback to compute_75/sm_75
+#Detect GPU arch dynamically (if possible), else fallback to compute_75/sm_75
 GPU_ARCH := $(shell if command -v nvidia-smi >/dev/null 2>&1; then \
 	nvidia-smi --query-gpu=compute_cap --format=csv,noheader | head -n1 | sed 's/\.//'; \
 	else echo 75; fi)
