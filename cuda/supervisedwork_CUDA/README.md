@@ -1,12 +1,19 @@
 # Supervised Work (2024-2025) Programming Heterogeneous Architectures - Master of High Performance Computing
 
-CUDA v11
-nvGRAPH/RAPIDS:cuGraph
 
-https://github.com/rapidsai/nvgraph
+## CUDA 11 libraries to explore
 
-https://developer.nvidia.com/cuda-code-samples
-    https://github.com/nvidia/cuda-samples
+- [cuda-11-features-revealed, mixed-precision,  APIs for task graphs...](https://developer.nvidia.com/blog/cuda-11-features-revealed/)
+- [CUDA v11](https://docs.nvidia.com/cuda/archive/11.0/cuda-toolkit-release-notes/)
+- nvGRAPH/RAPIDS:cuGraph
+- [cuBLAS](https://docs.nvidia.com/cuda/archive/11.0/cuda-toolkit-release-notes/#cublas-new-features)
+- [cusparse](https://docs.nvidia.com/cuda/archive/11.0/cuda-toolkit-release-notes/#cusparse-new-features)
+- nvcuvid
+- [cugraph](https://github.com/rapidsai/cugraph)
+- [nvgraph](https://github.com/rapidsai/nvgraph)
+- [Graph Structures (Adjacency Matrix) vs Sparse Matrices (CSR, COO, etc.)](https://docs.rapids.ai/api/cugraph/stable/)
+- [Getting Started with CUDA Graphs](https://developer.nvidia.com/blog/cuda-graphs/)
+
 
 
 ```c
@@ -52,32 +59,50 @@ least the following sections:
         bi-pointer strategy
 
 
-3.2.9.5. Peer-to-Peer Memory Copy (NVLink) https://docs.nvidia.com/cuda/cuda-c-programming-guide/ 
-https://docs.nvidia.com/cuda/volta-compatibility-guide/index.html
-https://docs.nvidia.com/cuda/cuda-c-programming-guide/#unified-virtual-address-space
-	https://medium.com/gpgpu/multi-gpu-programming-6768eeb42e2c
-	https://codingbyexample.com/2020/09/14/p2p-memcpy-with-nvlink/
-    https://codingbyexample.com/2020/09/14/p2p-memcpy-with-nvlink/
+
 
 
 Nvidia Nano Jetson Orin 
 
-References
-https://github.com/drkennetz/cuda_examples/
-https://github.com/a-hamdi/GPU/tree/main
-https://github.com/openhackathons-org/gpubootcamp.git
-https://developer.nvidia.com/blog/cooperative-groups/
-https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#tiled-partitions-cg
-Hardware Compute Partitioning on NVIDIA GPUs* https://www.cs.unc.edu/~jbakita/rtas23.pdf
-CUDA and Applications to Task-based Programming https://diglib.eg.org/server/api/core/bitstreams/3e283a2e-e6a3-4908-8d77-1741d01cc06f/content
-NVIDIA Bright Cluster Manager 9.2 https://support.brightcomputing.com/manuals/9.2/admin-manual.pdf
-COOPERATIVE GROUPS https://leimao.github.io/downloads/blog/2024-08-06-CUDA-Cooperative-Groups/s7622-Kyrylo-perelygin-robust-and-scalable-cuda.pdf
-*****
-https://leimao.github.io/downloads/blog/2024-08-06-CUDA-Cooperative-Groups/s7622-Kyrylo-perelygin-robust-and-scalable-cuda.pdf
-*****
-https://codingthematrix.com/
-The AI CUDA Engineer: Agentic CUDA Kernel Discovery, Optimization and Composition https://pub.sakana.ai/static/paper.pdf
+## 📚 References & Learning Resources
 
-HLRS
-    VTune_Profiling.pdf
-        GPU
+### CUDA Code Examples & Libraries
+- [cuSparse: Accelerate Large Linear Programming Problems with NVIDIA cuOpt](https://developer.nvidia.com/blog/accelerate-large-linear-programming-problems-with-nvidia-cuopt)
+- [CUDA samples](https://github.com/NVIDIA/cuda-samples/)
+- [Dev CUDA samples](https://developer.nvidia.com/cuda-code-samples)
+- [NVIDIA CUDA Library Samples](https://github.com/NVIDIA/CUDALibrarySamples)
+- [CUDA Examples by Dr. Ken Netz](https://github.com/drkennetz/cuda_examples/)
+- [CUDA Examples by A. Hamdi](https://github.com/a-hamdi/GPU/tree/main)
+- [OpenHackathons Multi-GPU Samples](https://github.com/openhackathons-org/nways_multi_gpu)
+- [OpenHackathons GPU Bootcamp](https://github.com/openhackathons-org/gpubootcamp)
+- [3.2.9.5. Peer-to-Peer Memory Copy NVLink](https://docs.nvidia.com/cuda/cuda-c-programming-guide) 
+- [Volta compatibility guide](https://docs.nvidia.com/cuda/volta-compatibility-guide/index.html)
+- [CUDA c programming guide - UVA](https://docs.nvidia.com/cuda/cuda-c-programming-guide/#unified-virtual-address-space)
+- [Multi GPU programming](https://medium.com/gpgpu/multi-gpu-programming-6768eeb42e2c)
+- [NVLink P2p](https://codingbyexample.com/2020/09/14/p2p-memcpy-with-nvlink)
+- [nvgraph - deprecated after CUDA 10.x](https://docs.nvidia.com/cuda/archive/9.0/nvgraph/index.html)
+
+### CUDA Programming Guides & Documentation
+- [CUDA C++ Programming Guide – NVIDIA Docs](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#tiled-partitions-cg)
+- [Cooperative Groups – NVIDIA Developer Blog](https://developer.nvidia.com/blog/cooperative-groups/)
+- [Robust and Scalable CUDA with Cooperative Groups (PDF)](https://leimao.github.io/downloads/blog/2024-08-06-CUDA-Cooperative-Groups/s7622-Kyrylo-perelygin-robust-and-scalable-cuda.pdf)
+- [CUDA C/C++ Streams and Concurrency](https://developer.download.nvidia.com/CUDA/training/StreamsAndConcurrencyWebinar.pdf)
+
+### Research Papers & Technical Reports
+- **Characterizing GPU Resilience and Impact on AI/HPC Systems**  
+  [arXiv:2503.11901](https://arxiv.org/pdf/2503.11901)
+- **Hardware Compute Partitioning on NVIDIA GPUs**  
+  [UNC RTAS '23](https://www.cs.unc.edu/~jbakita/rtas23.pdf)
+- **CUDA and Applications to Task-based Programming**  
+  [Eurographics Digital Library](https://diglib.eg.org/server/api/core/bitstreams/3e283a2e-e6a3-4908-8d77-1741d01cc06f/content)
+- **The AI CUDA Engineer: Agentic CUDA Kernel Discovery, Optimization and Composition**  
+ - [Sakana.ai](https://pub.sakana.ai/static/paper.pdf)
+ - [DeepSeek-V3 Technical Report](https://arxiv.org/abs/2412.19437)
+
+### HPC Toolchains & Infrastructure
+- [NVIDIA Bright Cluster Manager 9.2 – Admin Manual (PDF)](https://support.brightcomputing.com/manuals/9.2/admin-manual.pdf)
+
+### Educational Resources
+- [Coding the Matrix – Applied Linear Algebra Course](https://codingthematrix.com/)
+- [NVIDIA CUDA-Q Academic: Quick Start to Quantum](https://github.com/NVIDIA/cuda-q-academic/blob/main/quick-start-to-quantum/01_quick_start_to_quantum.ipynb)
+
