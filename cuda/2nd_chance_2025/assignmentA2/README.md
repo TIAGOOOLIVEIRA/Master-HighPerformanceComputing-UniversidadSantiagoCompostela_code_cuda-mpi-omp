@@ -107,6 +107,89 @@ make clean            # for cleaning up compilation and profiling output
 
 Screenshots were collected and categorized by memory type (static/dynamic) and GPU (T4/A100).
 
+  - Nsight Compute for MergeSort - Dynamic shared Memory on A100 GPU card
+
+<img src="images/ncu-mergesort-dynamic-shared-a100-memworkloadanalysis.png" alt="NCU, dynamic shared A100 mem workload" width="500">
+
+<img src="images/ncu-mergesort-dynamic-shared-a100-scheduler_divergence.png" alt="NCU, dynamic shared A100 scheduler divergence" width="500">
+
+<img src="images/ncu-mergesort-dynamic-shared-a100-scheduler.png" alt="NCU, dynamic shared A100 scheduler" width="500">
+
+<img src="images/ncu-mergesort-dynamic-shared-a100-sharedmem.png" alt="NCU, dynamic shared A100 shared mem" width="500">
+
+  
+  - Nsight Compute for MergeSort - Dynamic shared Memory on T4 GPU card
+
+<img src="images/ncu-mergesort-dynamic-shared-T4-memworkloadanalysis.png" alt="NCU, dynamic shared T4 mem workload" width="500">
+
+<img src="images/ncu-mergesort-dynamic-shared-T4-scheduler_divergence.png" alt="NCU, dynamic shared T4 scheduler divergence" width="500">
+
+<img src="images/ncu-mergesort-dynamic-shared-T4-scheduler.png" alt="NCU, dynamic shared T4 scheduler" width="500">
+
+<img src="images/ncu-mergesort-dynamic-shared-T4-sharedmem.png" alt="NCU, dynamic shared T4 shared mem" width="500">
+
+  
+  - Nsight Compute for MergeSort - Static shared Memory on A100 GPU card
+  
+<img src="images/ncu-mergesort-static-shared-a100-memworkloadanalysis.png" alt="NCU, static shared A100 mem workload" width="500">
+
+<img src="images/ncu-mergesort-static-shared-a100-scheduler_divergence.png" alt="NCU, static shared A100 scheduler divergence" width="500">
+
+<img src="images/ncu-mergesort-static-shared-a100-scheduler.png" alt="NCU, static shared A100 scheduler" width="500">
+
+<img src="images/ncu-mergesort-static-shared-a100-sharedmem.png" alt="NCU, static shared A100 shared mem" width="500">
+
+  
+  - Nsight Compute for MergeSort - Static shared Memory on T4 GPU card
+
+<img src="images/ncu-mergesort-static-shared-T4-memworkloadanalysis.png" alt="NCU, static shared T4 mem workload" width="500">
+
+<img src="images/ncu-mergesort-static-shared-T4-scheduler_divergence.png" alt="NCU, static shared T4 scheduler divergence" width="500">
+
+<img src="images/ncu-mergesort-static-shared-T4-scheduler.png" alt="NCU, static shared T4 scheduler" width="500">
+
+<img src="images/ncu-mergesort-static-shared-T4-sharedmem.png" alt="NCU, static shared T4 shared mem" width="500">
+
+  
+  - Nsight System for MergeSort - Dynamic Shared Memory on A100 GPU card
+
+<img src="images/nsys-mergesort-dynamic-shared-a100.png" alt="Nsight System, mergesort dynamic shared A100" width="500">
+
+  
+  - Nsight System for MergeSort - Dynamic Shared Memory on T4 GPU card
+
+<img src="images/nsys-mergesort-static-dynamic-T4.png" alt="Nsight System, mergesort Dynamic T4" width="500">
+
+  
+  - Nsight System for MergeSort - Static Shared Memory on A100 GPU card
+
+<img src="images/nsys-mergesort-static-shared-a100.png" alt="Nsight System, mergesort static shared A100" width="500">
+
+  
+  - Nsight System for MergeSort - Static Shared Memory on T4 GPU card
+
+<img src="images/nsys-mergesort-static-shared-T4.png" alt="Nsight System, mergesort static shared T4" width="500">
+
+
+  - VTune for MergeSort - Dynamic Shared Memory on T4 GPU card
+
+<img src="images/vtune-mergesort-dynamic-shared-T4-flame.png" alt="Vtune, mergesort dynamic shared T4 flame" width="500">
+
+<img src="images/vtune-mergesort-dynamic-shared-T4-summary.png" alt="VTune, mergesort dynamic shared T4 summary" width="500">
+
+  
+  - VTune for MergeSort - Dynamic Shared Memory on A100 GPU card
+
+<img src="images/vtune-mergesort-static-shared-a100-flame.png" alt="VTune, mergesort static shared a100 flame" width="500">
+
+<img src="images/vtune-mergesort-static-shared-a100-summary.png" alt="VTune, mergesort static shared a100 summary" width="500">
+
+  
+  - VTune for MergeSort - Dynamic Shared Memory on T4 GPU card
+
+<img src="images/vtune-mergesort-static-shared-T4-flame.png" alt="VTune, mergesort static shared T4 flame" width="500">
+
+<img src="images/vtune-mergesort-static-shared-T4-summary.png" alt="VTune, mergesort static shared T4 summary" width="500">
 
 ## 5. Environment
 ### Compilation
