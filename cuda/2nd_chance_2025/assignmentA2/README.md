@@ -21,11 +21,11 @@ A GPU-accelerated implementation of row matrix summ using CUDA and OpenMP for th
 
 - NVIDIA A100
 
-<img src="assignmentA1/profiling_logs/nsys_row_sum_a100.png" alt="NSight - Nsys row_sum rep a100" width="500">
+<img src="profiling_logs/nsys_row_sum_a100.png" alt="NSight - Nsys row_sum rep a100" width="500">
 
 - NVIDIA T4
 
-<img src="assignmentA1/profiling_logs/nsys_row_sum_tesla.png" alt="NSight - Nsys row_sum report T4" width="500">
+<img src="profiling_logs/nsys_row_sum_tesla.png" alt="NSight - Nsys row_sum report T4" width="500">
 
 ---
 

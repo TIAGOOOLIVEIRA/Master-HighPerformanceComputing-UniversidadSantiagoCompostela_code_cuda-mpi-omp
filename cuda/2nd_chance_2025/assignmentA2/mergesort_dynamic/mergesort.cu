@@ -4,111 +4,116 @@
 #include <cuda_runtime.h>
 #include <omp.h>
 
+#define NUM_STREAMS 16
+#define THREADS_PER_BLOCK 256
 
-__global__ void sort_kernel(int* __restrict__ data, int size) {
-    extern __shared__ int shared_memory[];
-    int* temp = shared_memory;
-    int* temp2 = &shared_memory[size];
+__device__ void gpu_bottomUpMerge(int* source, int* dest, int start, int middle, int end) {
+    int i = start;
+    int j = middle;
+    for (int k = start; k < end; ++k) {
+        if (i < middle && (j >= end || source[i] <= source[j])) {
+            dest[k] = source[i++];
+        } else {
+            dest[k] = source[j++];
+        }
+    }
+}
+
+__global__ void sort_kernel_phase1(int* __restrict__ data, int size) {
+    extern __shared__ int shared[];
+
+    int* temp1 = shared;
+    int* temp2 = shared + size;
 
     int tid = threadIdx.x;
     int stride = blockDim.x;
 
     for (int i = tid; i < size; i += stride)
-        temp[i] = data[i];
+        temp1[i] = data[i];
+
     __syncthreads();
 
     for (int width = 1; width < size; width <<= 1) {
         for (int idx = tid * (width << 1); idx < size; idx += stride * (width << 1)) {
             int left = idx;
-            int mid = min(idx + width - 1, size - 1);
-            int right = min(idx + (width << 1) - 1, size - 1);
-            if (mid < right) {
-                int l = left;
-                int r = mid + 1;
-                for (int k = left; k <= right; ++k) {
-                    if (l <= mid && (r > right || temp[l] <= temp[r]))
-                        temp2[k] = temp[l++];
-                    else
-                        temp2[k] = temp[r++];
-                }
-            }
+            int mid = min(idx + width, size);
+            int right = min(idx + (width << 1), size);
+            gpu_bottomUpMerge(temp1, temp2, left, mid, right);
         }
         __syncthreads();
-        int* swap = temp;
-        temp = temp2;
+        int* swap = temp1;
+        temp1 = temp2;
         temp2 = swap;
         __syncthreads();
     }
 
     for (int i = tid; i < size; i += stride)
-        data[i] = temp[i];
+        data[i] = temp1[i];
 }
 
-void merge_cpu(int* __restrict__ arr, int l, int m, int r, int* __restrict__ temp) {
+void merge_sort_cpu_parallel(int* arr, int l, int r, int* temp, int depth) {
+    if (l >= r) return;
+
+    int m = (l + r) / 2;
+    if (depth > 0) {
+#pragma omp parallel sections
+        {
+#pragma omp section
+            merge_sort_cpu_parallel(arr, l, m, temp, depth - 1);
+#pragma omp section
+            merge_sort_cpu_parallel(arr, m + 1, r, temp, depth - 1);
+        }
+    } else {
+        merge_sort_cpu_parallel(arr, l, m, temp, depth - 1);
+        merge_sort_cpu_parallel(arr, m + 1, r, temp, depth - 1);
+    }
+
     int i = l, j = m + 1, k = l;
     while (i <= m && j <= r) {
-        temp[k++] = (arr[i] <= arr[j]) ? arr[i++] : arr[j++];
+        if (arr[i] <= arr[j]) temp[k++] = arr[i++];
+        else temp[k++] = arr[j++];
     }
     while (i <= m) temp[k++] = arr[i++];
     while (j <= r) temp[k++] = arr[j++];
-    for (i = l; i <= r; ++i) arr[i] = temp[i];
+
+    for (i = l; i <= r; ++i)
+        arr[i] = temp[i];
 }
 
-void merge_sort_cpu_parallel(int* __restrict__ arr, int l, int r, int* __restrict__ temp, int depth, bool parallel=true) {
-    if (l < r) {
-        int m = (l + r) / 2;
-        if (depth <= 0) {
-            merge_sort_cpu_parallel(arr, l, m, temp, depth - 1, parallel);
-            merge_sort_cpu_parallel(arr, m + 1, r, temp, depth - 1, parallel);
-        } else {
-            #pragma omp parallel sections if(parallel)
-            {
-                #pragma omp section
-                merge_sort_cpu_parallel(arr, l, m, temp, depth - 1, parallel);
-                #pragma omp section
-                merge_sort_cpu_parallel(arr, m + 1, r, temp, depth - 1, parallel);
-            }
-        }
-        merge_cpu(arr, l, m, r, temp);
+void write_array_to_file(const char* filename, int* array, int total_arrays, int max_size, int* sizes) {
+    FILE* f = fopen(filename, "w");
+    if (!f) {
+        printf("Error opening file %s\n", filename);
+        return;
     }
-}
-
-int check_result_cpu(const int* __restrict__ original, const int* __restrict__ sorted, int size) {
-    int* reference = (int*)malloc(size * sizeof(int));
-    int* temp = (int*)malloc(size * sizeof(int));
-    for (int i = 0; i < size; ++i) reference[i] = original[i];
-
-    merge_sort_cpu_parallel(reference, 0, size-1, temp, 3);
-
-    int errors = 0;
-    for (int i = 0; i < size; ++i) {
-        if (reference[i] != sorted[i]) {
-            errors++;
+    for (int i = 0; i < total_arrays; ++i) {
+        for (int j = 0; j < sizes[i]; ++j) {
+            fprintf(f, "%d ", array[i * max_size + j]);
         }
+        fprintf(f, "\n");
     }
-
-    free(reference);
-    free(temp);
-    return errors;
+    fclose(f);
 }
 
 int main(int argc, char** argv) {
-    print_device_info((const void*)sort_kernel, 256, 0);
-
     const int total_arrays = 32768;
     const int max_size = (argc > 1) ? atoi(argv[1]) : 1024;
-    const int num_streams = 16;
+    const int dump_files = (argc > 2) ? atoi(argv[2]) : 0;
+
+    if (max_size > 16384) {
+        printf("Unsupported max_size > 16384\n");
+        return -1;
+    }
+
+    print_device_info((const void*)sort_kernel_phase1, THREADS_PER_BLOCK, 0);
 
     printf("Default array size: %d\n", max_size);
-    printf("Total Mem footprint (input + output): %.2f MB\n", 2 * total_arrays * max_size * sizeof(int) / (1024.0 * 1024.0));
 
-    printf("Allocate host input-output\n");
-    size_t max_bytes = max_size * sizeof(int);
-    int *h_input, *h_output;
-    CHECK_CUDA_ERROR(cudaMallocHost(&h_input,  total_arrays * max_bytes));
-    CHECK_CUDA_ERROR(cudaMallocHost(&h_output, total_arrays * max_bytes));
+    int* h_input;
+    int* h_output;
+    CHECK_CUDA_ERROR(cudaMallocHost(&h_input, total_arrays * max_size * sizeof(int)));
+    CHECK_CUDA_ERROR(cudaMallocHost(&h_output, total_arrays * max_size * sizeof(int)));
 
-    printf("Initialize sizes and data\n");
     int* h_sizes = (int*)malloc(total_arrays * sizeof(int));
     for (int i = 0; i < total_arrays; ++i) {
         int pow = 3 + (i % 10);
@@ -116,61 +121,69 @@ int main(int argc, char** argv) {
         if (sz > max_size) sz = max_size;
         h_sizes[i] = sz;
         int offset = i * max_size;
-        for (int j = 0; j < sz; ++j) {
+        for (int j = 0; j < sz; ++j)
             h_input[offset + j] = rand();
-        }
     }
 
-    printf("Allocate device buffers per stream\n");
-    int* d_buffers[num_streams];
-    for (int s = 0; s < num_streams; ++s) {
-        CHECK_CUDA_ERROR(cudaMalloc(&d_buffers[s], max_bytes));
+    if (dump_files) {
+        write_array_to_file("input_array.txt", h_input, total_arrays, max_size, h_sizes);
     }
 
-    printf("Create streams and events\n");
-    cudaStream_t streams[num_streams];
-    cudaEvent_t events[num_streams];
-    for (int s = 0; s < num_streams; ++s) {
+    int* d_buffers[NUM_STREAMS];
+    for (int s = 0; s < NUM_STREAMS; ++s)
+        CHECK_CUDA_ERROR(cudaMalloc(&d_buffers[s], max_size * sizeof(int)));
+
+    cudaStream_t streams[NUM_STREAMS];
+    for (int s = 0; s < NUM_STREAMS; ++s)
         CHECK_CUDA_ERROR(cudaStreamCreate(&streams[s]));
-        CHECK_CUDA_ERROR(cudaEventCreate(&events[s]));
-    }
 
-    printf("Launch sorting across streams in batches\n");
     Timer timer;
     timer.start();
 
-    const int batch_size = 128;
-    for (int base = 0; base < total_arrays; base += batch_size) {
-        int limit = (base + batch_size < total_arrays) ? base + batch_size : total_arrays;
-        for (int i = base; i < limit; ++i) {
-            int sz = h_sizes[i];
-            int sid = i % num_streams;
-            int *d_buf = d_buffers[sid];
-            int *h_src = h_input + i * max_size;
-            int *h_dst = h_output + i * max_size;
+    for (int base = 0; base < total_arrays; base += NUM_STREAMS) {
+        int batch = min(NUM_STREAMS, total_arrays - base);
 
-            CHECK_CUDA_ERROR(cudaMemcpyAsync(d_buf, h_src, sz * sizeof(int), cudaMemcpyHostToDevice, streams[sid]));
+        for (int i = 0; i < batch; ++i) {
+            int id = base + i;
+            int sz = h_sizes[id];
+            CHECK_CUDA_ERROR(cudaMemcpyAsync(d_buffers[i], h_input + id * max_size, sz * sizeof(int), cudaMemcpyHostToDevice, streams[i]));
 
-            int threads_per_block = 256;
-            size_t shared_memory_size = 2 * sz * sizeof(int);
-            sort_kernel<<<1, threads_per_block, shared_memory_size, streams[sid]>>>(d_buf, sz);
-
-            CHECK_CUDA_ERROR(cudaMemcpyAsync(h_dst, d_buf, sz * sizeof(int), cudaMemcpyDeviceToHost, streams[sid]));
-            CHECK_CUDA_ERROR(cudaEventRecord(events[sid], streams[sid]));
+            size_t shmem_size = 2 * sz * sizeof(int);
+            sort_kernel_phase1<<<1, THREADS_PER_BLOCK, shmem_size, streams[i]>>>(d_buffers[i], sz);
         }
-        for (int s = 0; s < num_streams; ++s) {
-            CHECK_CUDA_ERROR(cudaEventSynchronize(events[s]));
+
+        for (int i = 0; i < batch; ++i) {
+            int id = base + i;
+            int sz = h_sizes[id];
+            CHECK_CUDA_ERROR(cudaMemcpyAsync(h_output + id * max_size, d_buffers[i], sz * sizeof(int), cudaMemcpyDeviceToHost, streams[i]));
         }
     }
+
+    CHECK_CUDA_ERROR(cudaDeviceSynchronize());
     timer.stop("GPU Batch Merge Sort");
 
-    printf("CPU validation on all arrays\n");
-    Timer cpu_timer;
+    if (dump_files) {
+        write_array_to_file("gpu_sorted_array.txt", h_output, total_arrays, max_size, h_sizes);
+    }
+
+    CpuTimer cpu_timer;
     cpu_timer.start();
     int total_errors = 0;
-    #pragma omp parallel for reduction(+:total_errors)
+#pragma omp parallel for reduction(+:total_errors)
     for (int i = 0; i < total_arrays; ++i) {
-        total_errors += check_result_cpu(h_input + i * max_size, h_output + i * max_size, h_sizes[i]);
+        int* ref = (int*)malloc(h_sizes[i] * sizeof(int));
+        int* temp = (int*)malloc(h_sizes[i] * sizeof(int));
+        for (int j = 0; j < h_sizes[i]; ++j)
+            ref[j] = h_input[i * max_size + j];
+
+        merge_sort_cpu_parallel(ref, 0, h_sizes[i]-1, temp, 3);
+
+        for (int j = 0; j < h_sizes[i]; ++j) {
+            if (ref[j] != h_output[i * max_size + j])
+                total_errors++;
+        }
+        free(ref);
+        free(temp);
     }
     cpu_timer.stop("CPU Batch Merge Sort");
 
@@ -179,21 +192,16 @@ int main(int argc, char** argv) {
     else
         printf("CPU-GPU validation failed. %d total mismatches.\n", total_errors);
 
-    printf("Cleanup\n");
-    for (int s = 0; s < num_streams; ++s) {
-        cudaStreamDestroy(streams[s]);
-        cudaEventDestroy(events[s]);
+    for (int s = 0; s < NUM_STREAMS; ++s) {
         cudaFree(d_buffers[s]);
+        cudaStreamDestroy(streams[s]);
     }
-    CHECK_CUDA_ERROR(cudaFreeHost(h_input));
-    CHECK_CUDA_ERROR(cudaFreeHost(h_output));
+
+    cudaFreeHost(h_input);
+    cudaFreeHost(h_output);
     free(h_sizes);
 
-    fflush(stdout);
-    fflush(stderr);
     CHECK_CUDA_ERROR(cudaDeviceReset());
-    printf("CUDA device reset.\n");
 
-    omp_set_num_threads(1);
-    exit(0);
+    return 0;
 }
