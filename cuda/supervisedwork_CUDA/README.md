@@ -67,6 +67,8 @@ Nvidia Nano Jetson Orin
 ## 📚 References & Learning Resources
 
 ### CUDA Code Examples & Libraries
+- [Boosting Matrix Multiplication Speed and Flexibility with NVIDIA cuBLAS 12.9](https://developer.nvidia.com/blog/boosting-matrix-multiplication-speed-and-flexibility-with-nvidia-cublas-12-9/)
+- [cuVS: Vector Search and Clustering on the GPU](https://github.com/rapidsai/cuvs)
 - [cuSparse: Accelerate Large Linear Programming Problems with NVIDIA cuOpt](https://developer.nvidia.com/blog/accelerate-large-linear-programming-problems-with-nvidia-cuopt)
 - [CUDA samples](https://github.com/NVIDIA/cuda-samples/)
 - [Dev CUDA samples](https://developer.nvidia.com/cuda-code-samples)
