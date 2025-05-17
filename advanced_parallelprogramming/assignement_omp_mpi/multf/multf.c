@@ -1,6 +1,3 @@
-// Compile with gcc -O2 -fopenmp -fopt-info-vec
-// Compile with gcc -O2 -fopenmp -fopt-info-vec -march=native
-// gcc -O2 -fno-tree-vectorize -fopenmp -fopt-info-vec  disables vectorization 
 
 #include <stdio.h>
 #include <omp.h>
@@ -37,6 +34,7 @@ float temp;
 
    start = omp_get_wtime();
    /* Perform matrix multiply A.BT */
+   #pragma omp parallel for private(i, j, k, temp) collapse(2)
    for(i=0;i< NRA;i++)
       for(j=0;j< NCB;j++)
       {
@@ -54,6 +52,11 @@ float temp;
    printf("Execution time = %g seconds\n ", end-start);
    printf ("\n");
 }
+
+// Compile with gcc -O2 -fopenmp -fopt-info-vec
+// Compile with gcc -O2 -fopenmp -fopt-info-vec -march=native
+// gcc -O2 -fno-tree-vectorize -fopenmp -fopt-info-vec  disables vectorization 
+
 
 /* 
    To compile: gcc -O2 -fopenmp -fopt-info-vec multf.c
