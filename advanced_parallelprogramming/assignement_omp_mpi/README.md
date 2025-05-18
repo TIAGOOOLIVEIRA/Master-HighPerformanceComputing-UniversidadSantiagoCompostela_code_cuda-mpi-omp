@@ -243,6 +243,8 @@ To further improve vectorization, memory access efficiency, and profiling, the f
 
 gcc -O2 -fopenmp -fopt-info-vec -o saxpy saxpy.c
 
+
+
 gcc -O2 -fopenmp -fopt-info-vec -fopt-info-vec-optimized -march=native -o saxpy saxpy.c
 saxpy.c:108:14: optimized: loop vectorized using 64 byte vectors
 saxpy.c:16:15: optimized: loop vectorized using 64 byte vectors
@@ -292,7 +294,7 @@ Optimized (OpenMP + SIMD, 4 Threads)
 | saxpyi         | 0.209                   |
 
 
-
+### Speedup 
 | Function        | Baseline (s) | Optimized (s) | Speedup |
 |----------------|--------------|----------------|---------|
 | saxpy_no_simd  | 1.086        | 0.280          | 3.88×   |
@@ -302,7 +304,40 @@ Optimized (OpenMP + SIMD, 4 Threads)
 
 ----
 
-gcc -O3 -fopenmp -march=native -ftree-vectorize -fopt-info-vec -o saxpy saxpy.c
+- gcc -O3 -fopenmp -march=native -ftree-vectorize -fopt-info-vec -o saxpy saxpy.c
+
+| Function        | Threads | Run 1  | Run 2  | Run 3  | Avg (s) |
+|----------------|---------|--------|--------|--------|---------|
+| saxpy_no_simd  | 4       | 0.106  | 0.107  | 0.108  | 0.107   |
+| saxpy          | 4       | 0.106  | 0.107  | 0.108  | 0.107   |
+| saxpyi_no_simd | 4       | 0.106  | 0.107  | 0.108  | 0.107   |
+| saxpyi         | 4       | 0.106  | 0.107  | 0.108  | 0.107   |
+| saxpy_no_simd  | 2       | 0.211  | 0.213  | 0.210  | 0.211   |
+| saxpy          | 2       | 0.211  | 0.213  | 0.209  | 0.211   |
+| saxpyi_no_simd | 2       | 0.211  | 0.214  | 0.209  | 0.211   |
+| saxpyi         | 2       | 0.210  | 0.213  | 0.210  | 0.211   |
+| saxpy_no_simd  | 1       | 0.483  | 0.482  | 0.481  | 0.482   |
+| saxpy          | 1       | 0.483  | 0.481  | 0.480  | 0.481   |
+| saxpyi_no_simd | 1       | 0.483  | 0.482  | 0.480  | 0.482   |
+| saxpyi         | 1       | 0.483  | 0.482  | 0.480  | 0.482   |
+
+
+### Speedup with OpenMP + SIMD + Autovectorization Flags (vs. Baseline)
+
+| Function        | Threads | Baseline (s) | Optimized (s) | Speedup |
+|----------------|---------|---------------|----------------|---------|
+| saxpy_no_simd  | 4       | 1.086         | 0.107          | 10.15×  |
+| saxpy          | 4       | 0.937         | 0.107          | 8.76×   |
+| saxpyi_no_simd | 4       | 1.304         | 0.107          | 12.18×  |
+| saxpyi         | 4       | 0.938         | 0.107          | 8.77×   |
+| saxpy_no_simd  | 2       | 1.086         | 0.211          | 5.15×   |
+| saxpy          | 2       | 0.937         | 0.211          | 4.44×   |
+| saxpyi_no_simd | 2       | 1.304         | 0.211          | 6.18×   |
+| saxpyi         | 2       | 0.938         | 0.211          | 4.44×   |
+| saxpy_no_simd  | 1       | 1.086         | 0.482          | 2.25×   |
+| saxpy          | 1       | 0.937         | 0.481          | 1.95×   |
+| saxpyi_no_simd | 1       | 1.304         | 0.482          | 2.71×   |
+| saxpyi         | 1       | 0.938         | 0.482          | 1.95×   |
 
 
 HPC Tools - Compilation, profiling and optimization of HPC Software
@@ -318,6 +353,7 @@ cat saxpy.lst
   - saxpyi: 4.49×
   - saxpy: 4.48×
 - Combining OpenMP threading with SIMD vectorization is crucial for exploiting modern CPU hardware effectively
+- Autovectorization + OpenMP results in a massive boost when loops are structured well
 
 
 ## References 
