@@ -1,0 +1,158 @@
+# OpenMP and MPI Labs Assignment
+
+## Labs1, 1. The code multf.c performs the product of matrices
+
+Performance & Speedup Analysis: Matrix Multiplication (D = A × Bᵗ)
+
+compute -c 4
+
+Three versions of the matrix multiplication application were evaluated:
+
+- **Baseline**: Sequential version (OpenMP directives commented)
+- **OMP**: OpenMP parallelized version (no vectorization)
+- **OMP + SIMD**: OpenMP parallelized with compiler-enabled SIMD vectorization and SIMD for omp reduction
+
+### Compiler and flags used:
+
+- **Makefile**: Make
+  - **make**
+
+        Build default (MODE=parallel) without vectorization
+  - **make MODE=sequential**
+        
+        Build sequential version without vectorization; yet with -fopenmp flag. Assuming OpenMP declaratives are commented in the multf.c code.
+  - **make TARGET=multf_vec MODE=vector**
+        
+        Build vectorized version from multf_vec.c
+  - **make clean**
+        
+        Clean up binaries
+
+
+- **Manual compilation (Linux)**: 
+```bash
+# Baseline
+gcc -O2 -fno-tree-vectorize -fopenmp -o multf multf.c
+
+# Parallel (OpenMP)
+gcc -O2 -fopenmp -fopt-info-vec -march=native -o multf multf.c
+
+# Vectorized (OpenMP + SIMD)
+gcc -O3 -fopenmp -march=native -ftree-vectorize -fopt-info-vec -o multf_vec multf_vec.c
+multf_vec.c:45:18: optimized: loop vectorized using 64 byte vectors
+multf_vec.c:45:18: optimized: loop vectorized using 32 byte vectors
+multf_vec.c:47:24: optimized: loop vectorized using 64 byte vectors
+multf_vec.c:29:7: optimized: loop vectorized using 64 byte vectors
+multf_vec.c:26:7: optimized: loop vectorized using 64 byte vectors
+
+```
+
+### Average Execution Time (in seconds)
+The applications were executed three times to get the average value for a better statistical relevance.
+
+| Version              | Threads | Avg Time (s) |
+|----------------------|---------|--------------|
+| **Baseline**         | 1       | 12.1076      |
+| **OMP (No SIMD)**    | 1       | 12.1574      |
+|                      | 2       | 6.0719       |
+|                      | 4       | 3.0333       |
+| **OMP + SIMD**       | 1       | 1.0498       |
+|                      | 2       | 0.5931       |
+|                      | 4       | 0.3113       |
+
+
+### Speedup Relative to Baseline
+| Version              | Threads | Speedup |
+|----------------------|---------|---------|
+| **Baseline**         | 1       | 1.00×    |
+| **OMP (No SIMD)**    | 1       | 0.9967×  |
+|                      | 2       | 1.9933×  |
+|                      | 4       | 3.9906×  |
+| **OMP + SIMD**       | 1       | 11.53×   |
+|                      | 2       | 20.41×   |
+|                      | 4       | 38.89×   |
+
+
+
+ ### Vectorization Insight (Intel VTune Analysis)
+| Version       | Vectorized FP Ops | SIMD Width Used  |
+|---------------|-------------------|------------------|
+| **OMP Only**  | 0.0%              | Scalar only      |
+| **OMP + SIMD**| 94.0%             | 512-bit (AVX-512)|
+
+- **Vectorization report - VTune**: For the parallelized with OpenMP, without SIMD vectorization
+```bash
+vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./multf
+...
+Vectorization: 0.0% of Packed FP Operations
+ | This code has floating point operations and is not vectorized. Consider
+ | either recompiling the code with optimization options that allow
+ | vectorization or using Intel Advisor to vectorize the loops.
+ |
+    Instruction Mix
+        SP FLOPs: 39.9% of uOps
+            Packed: 0.0% from SP FP
+                128-bit: 0.0% from SP FP
+                256-bit: 0.0% from SP FP
+                512-bit: 0.0% from SP FP
+            Scalar: 100.0% from SP FP
+             | This code has floating point operations and is not vectorized.
+             | Consider either recompiling the code with optimization options
+             | that allow vectorization or using Intel Advisor to vectorize the
+             | loops.
+             |
+        DP FLOPs: 0.0% of uOps
+            Packed: 0.0% from DP FP
+                128-bit: 0.0% from DP FP
+                256-bit: 0.0% from DP FP
+                512-bit: 0.0% from DP FP
+            Scalar: 0.0% from DP FP
+        x87 FLOPs: 0.0% of uOps
+        Non-FP: 60.1% of uOps
+    FP Arith/Mem Rd Instr. Ratio: 0.997
+    FP Arith/Mem Wr Instr. Ratio: 4,084.218
+...
+```
+
+- **Vectorization report - VTune**: For the parallelized with OpenMP, with SIMD vectorization
+```bash
+vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./multf_vec
+...
+Vectorization: 94.0% of Packed FP Operations
+    Instruction Mix
+        SP FLOPs: 32.2% of uOps
+            Packed: 94.0% from SP FP
+                128-bit: 0.0% from SP FP
+                256-bit: 0.0% from SP FP
+                512-bit: 94.0% from SP FP
+            Scalar: 6.0% from SP FP
+        DP FLOPs: 0.0% of uOps
+            Packed: 0.0% from DP FP
+                128-bit: 0.0% from DP FP
+                256-bit: 0.0% from DP FP
+                512-bit: 0.0% from DP FP
+            Scalar: 0.0% from DP FP
+        x87 FLOPs: 0.0% of uOps
+        Non-FP: 67.8% of uOps
+    FP Arith/Mem Rd Instr. Ratio: 1.014
+    FP Arith/Mem Wr Instr. Ratio: 2.012
+...
+
+```
+
+- **Vectorization report - Likwid**: For the parallelized with OpenMP, without SIMD vectorization
+
+
+- **Vectorization report - Likwid**: For the parallelized with OpenMP, with SIMD vectorization
+
+### Conclusions
+- OpenMP-only version scales nearly linearly with threads (up to 4×).
+- Vectorized version (multf_vec) significantly outperforms others, achieving ~39× speedup.
+- VTune and Likwid confirms 94% vectorized FP instructions, leveraging AVX-512 (64-byte SIMD).
+- Combining OpenMP for multithreading with SIMD via vectorization maximizes performance in CPU-bound workload.
+
+## Labs1, 2. 
+
+
+## References 
+[Santiago de Compostela - HPC - HPC Tools - Profiling tools for SpMV](https://github.com/TIAGOOOLIVEIRA/Master-HighPerformanceComputing-UniversidadSantiagoCompostela_code_cuda-mpi-omp/tree/main/hpc_tools/spmv)
