@@ -4,26 +4,35 @@
 
 Performance & Speedup Analysis: Matrix Multiplication (D = A × Bᵗ)
 
-compute -c 4
+- compute -c 4
+- export OMP_NUM_THREADS={1,2,4}
 
-Three versions of the matrix multiplication application were evaluated:
+Four versions of the matrix multiplication application were evaluated:
 
 - **Baseline**: Sequential version (OpenMP directives commented)
 - **OMP**: OpenMP parallelized version (no vectorization)
-- **OMP + SIMD**: OpenMP parallelized with compiler-enabled SIMD vectorization and SIMD for omp reduction
+- **OMP + SIMD**: OpenMP parallelized and SIMD for omp reduction
+- **OMP + SIMD**: OpenMP parallelized, SIMD for omp reduction and agressive optimizations with compiler-enabled SIMD auto-vectorization 
 
 ### Compiler and flags used:
 
 - **Makefile**: Make
-  - **make**
-
-        Build default (MODE=parallel) without vectorization
   - **make MODE=sequential**
+
+        Baseline Sequential
         
-        Build sequential version without vectorization; yet with -fopenmp flag. Assuming OpenMP declaratives are commented in the multf.c code.
+  - **make MODE=parallel**
+        
+        OpenMP Parallel
+
+  - **make TARGET=multf_vec MODE=simd**
+        
+        SIMD Declaratives (OpenMP + SIMD code)
+
   - **make TARGET=multf_vec MODE=vector**
-        
-        Build vectorized version from multf_vec.c
+
+        SIMD + Autovectorization Flags
+
   - **make clean**
         
         Clean up binaries
@@ -37,13 +46,19 @@ gcc -O2 -fno-tree-vectorize -fopenmp -o multf multf.c
 # Parallel (OpenMP)
 gcc -O2 -fopenmp -fopt-info-vec -march=native -o multf multf.c
 
-# Vectorized (OpenMP + SIMD)
+# Parallel OpenMP with SIMD code declaratives
+gcc -O2 -fopenmp -fopt-info-vec -march=native -o multf_vec multf_vec.c
+multf_vec.c:47:24: optimized: loop vectorized using 64 byte vectors
+
+# Vectorized (OpenMP + SIMD + Autovectorizing flags)
 gcc -O3 -fopenmp -march=native -ftree-vectorize -fopt-info-vec -o multf_vec multf_vec.c
 multf_vec.c:45:18: optimized: loop vectorized using 64 byte vectors
 multf_vec.c:45:18: optimized: loop vectorized using 32 byte vectors
 multf_vec.c:47:24: optimized: loop vectorized using 64 byte vectors
 multf_vec.c:29:7: optimized: loop vectorized using 64 byte vectors
 multf_vec.c:26:7: optimized: loop vectorized using 64 byte vectors
+
+
 
 ```
 
@@ -56,7 +71,10 @@ The applications were executed three times to get the average value for a better
 | **OMP (No SIMD)**    | 1       | 12.1574      |
 |                      | 2       | 6.0719       |
 |                      | 4       | 3.0333       |
-| **OMP + SIMD**       | 1       | 1.0498       |
+| **OMP + SIMD**       | 1       | 2.4343       |
+|                      | 2       | 1.1901       |
+|                      | 4       | 0.6352       |
+| **OMP + SIMD + flags**       | 1       | 1.0498       |
 |                      | 2       | 0.5931       |
 |                      | 4       | 0.3113       |
 
@@ -68,7 +86,10 @@ The applications were executed three times to get the average value for a better
 | **OMP (No SIMD)**    | 1       | 0.9967×  |
 |                      | 2       | 1.9933×  |
 |                      | 4       | 3.9906×  |
-| **OMP + SIMD**       | 1       | 11.53×   |
+| **OMP + SIMD**       | 1       | 4.97×    |
+|                      | 2       | 10.17×   |
+|                      | 4       | 19.06×   |
+| **OMP + SIMD + flags**       | 1       | 11.53×   |
 |                      | 2       | 20.41×   |
 |                      | 4       | 38.89×   |
 
@@ -78,9 +99,10 @@ The applications were executed three times to get the average value for a better
 | Version       | Vectorized FP Ops | SIMD Width Used  |
 |---------------|-------------------|------------------|
 | **OMP Only**  | 0.0%              | Scalar only      |
-| **OMP + SIMD**| 94.0%             | 512-bit (AVX-512)|
+| **OMP + SIMD**| 94.1%             | 512-bit (AVX-512)|
+| **OMP + SIMD + flags**| 94.0%             | 512-bit (AVX-512)|
 
-- **Vectorization report - VTune**: For the parallelized with OpenMP, without SIMD vectorization
+- **Vectorization report - OMP Only - VTune**: For the parallelized with OpenMP, without SIMD vectorization
 ```bash
 vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./multf
 ...
@@ -114,7 +136,33 @@ Vectorization: 0.0% of Packed FP Operations
 ...
 ```
 
-- **Vectorization report - VTune**: For the parallelized with OpenMP, with SIMD vectorization
+- **Vectorization report - OMP + SIMD - VTune**: For the parallelized with OpenMP, with SIMD vectorization
+```bash
+vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./multf_vec
+...
+Vectorization: 94.1% of Packed FP Operations
+    Instruction Mix
+        SP FLOPs: 27.7% of uOps
+            Packed: 94.1% from SP FP
+                128-bit: 0.0% from SP FP
+                256-bit: 0.0% from SP FP
+                512-bit: 94.1% from SP FP
+            Scalar: 5.9% from SP FP
+        DP FLOPs: 0.0% of uOps
+            Packed: 0.0% from DP FP
+                128-bit: 0.0% from DP FP
+                256-bit: 0.0% from DP FP
+                512-bit: 0.0% from DP FP
+            Scalar: 0.0% from DP FP
+        x87 FLOPs: 0.0% of uOps
+        Non-FP: 72.3% of uOps
+    FP Arith/Mem Rd Instr. Ratio: 0.678
+    FP Arith/Mem Wr Instr. Ratio: 2.056
+...
+```
+
+
+- **Vectorization report - OMP + SIMD + flags - VTune**: For the parallelized with OpenMP, with SIMD vectorization and compiler flags for auto-vectorization
 ```bash
 vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./multf_vec
 ...
@@ -140,19 +188,46 @@ Vectorization: 94.0% of Packed FP Operations
 
 ```
 
-- **Vectorization report - Likwid**: For the parallelized with OpenMP, without SIMD vectorization
+- **[WiP]Vectorization report - OMP Only - Likwid**: For the parallelized with OpenMP, without SIMD vectorization
 
 
-- **Vectorization report - Likwid**: For the parallelized with OpenMP, with SIMD vectorization
+- **[WiP]Vectorization report - OMP + SIMD - Likwid**: For the parallelized with OpenMP, with SIMD vectorization
+
+- **[WiP]Vectorization report - OMP + SIMD + flags - Likwid**: For the parallelized with OpenMP, with SIMD vectorization
+
+### Future work
+
+To further improve vectorization, memory access efficiency, and profiling, the following GCC flags are commonly used:
+
+| Flag                          | Purpose                                                                 |
+|-------------------------------|-------------------------------------------------------------------------|
+| `-fstrict-aliasing`           | Enables optimizations based on strict aliasing rules. Ensures that pointers to different types do not alias, allowing better vectorization and memory optimizations. |
+| `-mtune=native`               | Tunes the code generation for the host CPU, improving instruction scheduling and microarchitecture-specific optimizations. |
+| `-mprefer-vector-width=512`  | Instructs the compiler to prefer 512-bit wide SIMD instructions (AVX-512). Helps maximize SIMD throughput on capable CPUs. |
+| `-fno-math-errno`             | Allows the compiler to optimize mathematical expressions without needing to preserve errno semantics. This enables more aggressive vectorization of math-heavy loops. |
+
+---
+
+- **The `restrict` keyword**: tells the compiler that a given pointer is the **only** reference to that memory region during its scope. This guarantees **no aliasing**, which allows:
+
+  - Better **vectorization** because the compiler can confidently reorder or combine memory loads/stores.
+  - More aggressive optimizations because pointer aliasing checks are unnecessary.
+
 
 ### Conclusions
-- OpenMP-only version scales nearly linearly with threads (up to 4×).
-- Vectorized version (multf_vec) significantly outperforms others, achieving ~39× speedup.
+- OpenMP-only version scales nearly linearly with threads (up to 4×), but misses deeper compiler optimizations.
+- Adding compiler vectorization flags unlocks full hardware performance as per the aggressive compiler optimizations and loop transformations (-O3, -ftree-vectorize, -march=native): 
+  - significantly outperforms others, achieving ~39× speedup;
+  - Maximizes SIMD utilization (as seen in VTune reports); 
+  - Reduces scalar overhead through inlining, unrolling, and optimized memory access.
 - VTune and Likwid confirms 94% vectorized FP instructions, leveraging AVX-512 (64-byte SIMD).
 - Combining OpenMP for multithreading with SIMD via vectorization maximizes performance in CPU-bound workload.
 
 ## Labs1, 2. 
 
+
+gcc -O2 -fopenmp -fopt-info-vec -march=native -o saxpy saxpy.c
+gcc -O3 -fopenmp -march=native -ftree-vectorize -fopt-info-vec -o saxpy saxpy.c
 
 ## References 
 [Santiago de Compostela - HPC - HPC Tools - Profiling tools for SpMV](https://github.com/TIAGOOOLIVEIRA/Master-HighPerformanceComputing-UniversidadSantiagoCompostela_code_cuda-mpi-omp/tree/main/hpc_tools/spmv)
