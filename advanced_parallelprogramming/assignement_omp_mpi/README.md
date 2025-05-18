@@ -348,6 +348,73 @@ as -alhnd saxpy.s > saxpy.lst
 cat saxpy.lst
 
 
+### Vectorization Insight (Intel VTune Analysis)
+
+- **Vectorization report - OMP + SIMD - VTune**: For the parallelized with OpenMP, with SIMD vectorization
+```bash
+vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./saxpy
+...
+Vectorization: 19.9% of Packed FP Operations
+ | A significant fraction of floating point arithmetic instructions are scalar.
+ | This indicates that the code was not fully vectorized. Use Intel Advisor to
+ | see possible reasons why the code was not vectorized.
+ |
+    Instruction Mix
+        SP FLOPs: 27.6% of uOps
+            Packed: 19.9% from SP FP
+                128-bit: 19.9% from SP FP
+                 | Using the latest vector instruction set can improve
+                 | parallelism for this code. Consider either recompiling the
+                 | code with the latest instruction set or using Intel Advisor
+                 | to get vectorization help.
+                 |
+                256-bit: 0.0% from SP FP
+                512-bit: 0.0% from SP FP
+            Scalar: 80.1% from SP FP
+             | A significant fraction of floating point arithmetic instructions
+             | are scalar. This indicates that the code was not fully
+             | vectorized. Use Intel Advisor to see possible reasons why the
+             | code was not vectorized.
+             |
+        DP FLOPs: 0.0% of uOps
+            Packed: 0.0% from DP FP
+                128-bit: 0.0% from DP FP
+                256-bit: 0.0% from DP FP
+                512-bit: 0.0% from DP FP
+            Scalar: 0.0% from DP FP
+        x87 FLOPs: 0.0% of uOps
+        Non-FP: 72.4% of uOps
+    FP Arith/Mem Rd Instr. Ratio: 0.981
+    FP Arith/Mem Wr Instr. Ratio: 1.999
+...
+```
+
+
+- **Vectorization report - OMP + SIMD + flags - VTune**: For the parallelized with OpenMP, with SIMD vectorization and compiler flags for auto-vectorization
+```bash
+vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./saxpy
+...
+Vectorization: 87.2% of Packed FP Operations
+    Instruction Mix
+        SP FLOPs: 51.6% of uOps
+            Packed: 87.2% from SP FP
+                128-bit: 0.0% from SP FP
+                256-bit: 0.0% from SP FP
+                512-bit: 87.2% from SP FP
+            Scalar: 12.8% from SP FP
+        DP FLOPs: 0.0% of uOps
+            Packed: 0.0% from DP FP
+                128-bit: 0.0% from DP FP
+                256-bit: 0.0% from DP FP
+                512-bit: 0.0% from DP FP
+            Scalar: 0.0% from DP FP
+        x87 FLOPs: 0.0% of uOps
+        Non-FP: 48.4% of uOps
+    FP Arith/Mem Rd Instr. Ratio: 1.444
+    FP Arith/Mem Wr Instr. Ratio: 4.046
+...
+```
+
 ### Conclusions
 - All four function variants experienced 3.6× to 4.5× speedup when parallelism and vectorization were enabled. Having best observed speedup:
   - saxpyi: 4.49×
