@@ -1,39 +1,87 @@
+# OpenMP and MPI Labs Assignment
 
+## Labs1, 1. The code multf.c performs the product of matrices
 
-multf 
+Performance & Speedup Analysis: Matrix Multiplication (D = A × Bᵗ)
+
 compute -c 4
 
-gcc -O2 -fno-tree-vectorize -fopenmp -fopt-info-vec -o multf multf.c
-single thread execution - Commented OpenMP declaratives
-./multf 
- Execution time = 12.0903 seconds
- Execution time = 12.1125 seconds
- Execution time = 12.12 seconds
+Three versions of the matrix multiplication application were evaluated:
+
+- **Baseline**: Sequential version (OpenMP directives commented)
+- **OMP**: OpenMP parallelized version (no vectorization)
+- **OMP + SIMD**: OpenMP parallelized with compiler-enabled SIMD vectorization and SIMD for omp reduction
+
+### Compiler and flags used:
+
+- **Makefile**: Make
+  - **make**
+
+        Build default (MODE=parallel) without vectorization
+  - **make MODE=sequential**
+        
+        Build sequential version without vectorization; yet with -fopenmp flag. Assuming OpenMP declaratives are commented in the multf.c code.
+  - **make TARGET=multf_vec MODE=vector**
+        
+        Build vectorized version from multf_vec.c
+  - **make clean**
+        
+        Clean up binaries
+
+
+- **Manual compilation (Linux)**: 
+```bash
+# Baseline
+gcc -O2 -fno-tree-vectorize -fopenmp -o multf multf.c
+
+# Parallel (OpenMP)
+gcc -O2 -fopenmp -fopt-info-vec -march=native -o multf multf.c
+
+# Vectorized (OpenMP + SIMD)
+gcc -O3 -fopenmp -march=native -ftree-vectorize -fopt-info-vec -o multf_vec multf_vec.c
+multf_vec.c:45:18: optimized: loop vectorized using 64 byte vectors
+multf_vec.c:45:18: optimized: loop vectorized using 32 byte vectors
+multf_vec.c:47:24: optimized: loop vectorized using 64 byte vectors
+multf_vec.c:29:7: optimized: loop vectorized using 64 byte vectors
+multf_vec.c:26:7: optimized: loop vectorized using 64 byte vectors
+
+```
+
+### Average Execution Time (in seconds)
+The applications were executed three times to get the average value for a better statistical relevance.
+
+| Version              | Threads | Avg Time (s) |
+|----------------------|---------|--------------|
+| **Baseline**         | 1       | 12.1076      |
+| **OMP (No SIMD)**    | 1       | 12.1574      |
+|                      | 2       | 6.0719       |
+|                      | 4       | 3.0333       |
+| **OMP + SIMD**       | 1       | 1.0498       |
+|                      | 2       | 0.5931       |
+|                      | 4       | 0.3113       |
+
+
+### Speedup Relative to Baseline
+| Version              | Threads | Speedup |
+|----------------------|---------|---------|
+| **Baseline**         | 1       | 1.00×    |
+| **OMP (No SIMD)**    | 1       | 0.9967×  |
+|                      | 2       | 1.9933×  |
+|                      | 4       | 3.9906×  |
+| **OMP + SIMD**       | 1       | 11.53×   |
+|                      | 2       | 20.41×   |
+|                      | 4       | 38.89×   |
 
 
 
-***gcc -O2 -fopenmp -fopt-info-vec -march=native
-***gcc-14 -fopenmp -O3 -march=native -o multf multf.c
+ ### Vectorization Insight (Intel VTune Analysis)
+| Version       | Vectorized FP Ops | SIMD Width Used  |
+|---------------|-------------------|------------------|
+| **OMP Only**  | 0.0%              | Scalar only      |
+| **OMP + SIMD**| 94.0%             | 512-bit (AVX-512)|
 
-export OMP_NUM_THREADS=4
-gcc -O2 -fno-tree-vectorize -fopenmp -fopt-info-vec -o multf multf.c
-parallelism - enabled OpenMP declaratives, without vectorization
-./multf
- Execution time = 3.0328 seconds
- Execution time = 3.0332 seconds
- Execution time = 3.03379 seconds
-
-export OMP_NUM_THREADS=2
- Execution time = 6.07174 seconds
- Execution time = 6.07249 seconds
- Execution time = 6.07154 seconds
-
-export OMP_NUM_THREADS=1
- Execution time = 12.1577 seconds
- Execution time = 12.1587 seconds
- Execution time = 12.1558 seconds
-
-
+- **Vectorization report - VTune**: For the parallelized with OpenMP, without SIMD vectorization
+```bash
 vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./multf
 ...
 Vectorization: 0.0% of Packed FP Operations
@@ -64,30 +112,10 @@ Vectorization: 0.0% of Packed FP Operations
     FP Arith/Mem Rd Instr. Ratio: 0.997
     FP Arith/Mem Wr Instr. Ratio: 4,084.218
 ...
+```
 
-export OMP_NUM_THREADS=4
-gcc -fopenmp -O3 -march=native -ftree-vectorize -fopt-info-vec -o multf_vec multf_vec.c
-multf_vec.c:45:18: optimized: loop vectorized using 64 byte vectors
-multf_vec.c:45:18: optimized: loop vectorized using 32 byte vectors
-multf_vec.c:47:24: optimized: loop vectorized using 64 byte vectors
-multf_vec.c:29:7: optimized: loop vectorized using 64 byte vectors
-multf_vec.c:26:7: optimized: loop vectorized using 64 byte vectors
-./multf_vec
- Execution time = 0.311219 seconds
- Execution time = 0.311368 seconds
- Execution time = 0.311328 seconds
-
-export OMP_NUM_THREADS=2
- Execution time = 0.583954 seconds
- Execution time = 0.586333 seconds
- Execution time = 0.609152 seconds
-
-export OMP_NUM_THREADS=1
- Execution time = 1.04943 seconds
- Execution time = 1.05038 seconds
- Execution time = 1.0497 seconds
-
-
+- **Vectorization report - VTune**: For the parallelized with OpenMP, with SIMD vectorization
+```bash
 vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./multf_vec
 ...
 Vectorization: 94.0% of Packed FP Operations
@@ -110,4 +138,21 @@ Vectorization: 94.0% of Packed FP Operations
     FP Arith/Mem Wr Instr. Ratio: 2.012
 ...
 
-likwid
+```
+
+- **Vectorization report - Likwid**: For the parallelized with OpenMP, without SIMD vectorization
+
+
+- **Vectorization report - Likwid**: For the parallelized with OpenMP, with SIMD vectorization
+
+### Conclusions
+- OpenMP-only version scales nearly linearly with threads (up to 4×).
+- Vectorized version (multf_vec) significantly outperforms others, achieving ~39× speedup.
+- VTune and Likwid confirms 94% vectorized FP instructions, leveraging AVX-512 (64-byte SIMD).
+- Combining OpenMP for multithreading with SIMD via vectorization maximizes performance in CPU-bound workload.
+
+## Labs1, 2. 
+
+
+## References 
+[Santiago de Compostela - HPC - HPC Tools - Profiling tools for SpMV](https://github.com/TIAGOOOLIVEIRA/Master-HighPerformanceComputing-UniversidadSantiagoCompostela_code_cuda-mpi-omp/tree/main/hpc_tools/spmv)

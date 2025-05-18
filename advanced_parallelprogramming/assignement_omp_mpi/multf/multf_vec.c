@@ -52,25 +52,3 @@ float temp;
    printf("Execution time = %g seconds\n ", end-start);
    printf ("\n");
 }
-
-
-// Compile with gcc -O2 -fopenmp -fopt-info-vec
-// Compile with gcc -O2 -fopenmp -fopt-info-vec -march=native
-// gcc -O2 -fno-tree-vectorize -fopenmp -fopt-info-vec  disables vectorization 
-
-
-
-/* 
-   To compile: gcc -O2 -fopenmp -fopt-info-vec multf.c
-   To run: ./a.out
-   To see the vectorization report: ./a.out > report.txt
-   To see the vectorization report with optimization level 2: gcc -O2 -fopenmp -fopt-info-vec multf.c > report.txt
-   To see the vectorization report with optimization level 3: gcc -O3 -fopenmp -fopt-info-vec multf.c > report.txt
-*/
-/* 
-   To compile with march=native: gcc -O2 -fopenmp -fopt-info-vec -march=native multf.c
-   To run: ./a.out
-   To see the vectorization report: ./a.out > report.txt
-   To see the vectorization report with optimization level 2: gcc -O2 -fopenmp -fopt-info-vec -march=native multf.c > report.txt
-   To see the vectorization report with optimization level 3: gcc -O3 -fopenmp -fopt-info-vec -march=native multf.c > report.txt
-*/
