@@ -12,7 +12,7 @@ Four versions of the matrix multiplication application were evaluated:
 - **Baseline**: Sequential version (OpenMP directives commented)
 - **OMP**: OpenMP parallelized version (no vectorization)
 - **OMP + SIMD**: OpenMP parallelized and SIMD for omp reduction
-- **OMP + SIMD**: OpenMP parallelized, SIMD for omp reduction and agressive optimizations with compiler-enabled SIMD auto-vectorization 
+- **OMP + SIMD + flags**: OpenMP parallelized, SIMD for omp reduction and agressive optimizations with compiler-enabled SIMD auto-vectorization 
 
 ### Compiler and flags used:
 
@@ -95,7 +95,7 @@ The applications were executed three times to get the average value for a better
 
 
 
- ### Vectorization Insight (Intel VTune Analysis)
+ ### Vectorization Insights (Intel VTune Analysis)
 | Version       | Vectorized FP Ops | SIMD Width Used  |
 |---------------|-------------------|------------------|
 | **OMP Only**  | 0.0%              | Scalar only      |
@@ -240,10 +240,38 @@ To further improve vectorization, memory access efficiency, and profiling, the f
 
 ## Labs1, 2,3. Parallelize and vectorize saxpy.c  
 
+- compute -c 4
+- export OMP_NUM_THREADS={1,2,4}
 
+Three versions of the saxpy factor multiplication application were evaluated:
+
+- **SIMD only**: Only SIMD function declaration
+- **OMP + SIMD**: OpenMP loop parallelized and SIMD function declaration
+- **OMP + SIMD + flags**: OpenMP parallelized, SIMD function declaration and agressive optimization with compiler-enabled SIMD auto-vectorization 
+
+
+### Compiler and flags used:
+
+- **Makefile**: Make
+  - **make MODE=basic**
+
+        Basic mode
+
+  - **make MODE=report**
+
+        With vectorization reporting
+
+  - **make MODE=vectorized**
+
+        Fully optimized (O3 + vectorization)
+
+  - **make clean**
+
+        Clean build                        
+
+- **Manual compilation (Linux)**: 
+```bash
 gcc -O2 -fopenmp -fopt-info-vec -o saxpy saxpy.c
-
-
 
 gcc -O2 -fopenmp -fopt-info-vec -fopt-info-vec-optimized -march=native -o saxpy saxpy.c
 saxpy.c:108:14: optimized: loop vectorized using 64 byte vectors
@@ -253,10 +281,35 @@ saxpy.c:26:12: optimized: loop vectorized using 32 byte vectors
 saxpy.c:26:12: optimized: loop vectorized using 32 byte vectors
 saxpy.c:26:12: optimized: loop vectorized using 64 byte vectors
 
+gcc -O3 -fopenmp -march=native -ftree-vectorize -fopt-info-vec -o saxpy saxpy.c
+saxpy.c:74:5: optimized: loop vectorized using 64 byte vectors
+saxpy.c:74:5: optimized: loop vectorized using 64 byte vectors
+saxpy.c:16:15: optimized: loop vectorized using 64 byte vectors
+saxpy.c:16:15: optimized: loop vectorized using 64 byte vectors
+saxpy.c:99:5: optimized: loop vectorized using 64 byte vectors
+saxpy.c:99:5: optimized: loop vectorized using 64 byte vectors
+saxpy.c:112:14: optimized: loop vectorized using 64 byte vectors
+saxpy.c:112:14: optimized: loop vectorized using 64 byte vectors
+saxpy.c:51:3: optimized: loop vectorized using 64 byte vectors
+saxpy.c:61:3: optimized: loop vectorized using 64 byte vectors
+saxpy.c:61:3: optimized: loop vectorized using 32 byte vectors
+saxpy.c:61:3: optimized: loop vectorized using 64 byte vectors
+saxpy.c:51:3: optimized: loop vectorized using 64 byte vectors
+saxpy.c:61:3: optimized: loop vectorized using 64 byte vectors
+saxpy.c:51:3: optimized: loop vectorized using 64 byte vectors
+saxpy.c:61:3: optimized: loop vectorized using 64 byte vectors
+saxpy.c:51:3: optimized: loop vectorized using 64 byte vectors
+saxpy.c:61:3: optimized: loop vectorized using 64 byte vectors
+saxpy.c:51:3: optimized: loop vectorized using 64 byte vectors
+saxpy.c:26:12: optimized: loop vectorized using 16 byte vectors
+saxpy.c:26:12: optimized: loop vectorized using 32 byte vectors
+saxpy.c:26:12: optimized: loop vectorized using 32 byte vectors
+saxpy.c:26:12: optimized: loop vectorized using 64 byte vectors
+```
 
-### Speedup with OpenMP + SIMD (vs. Sequential Baseline)
+### SIMD only Baseline Execution
 
-Baseline execution, no parallelims with vectorizing
+The applications were executed three times to get the average value for a better statistical relevance.
 
 | Function        | Baseline Avg Time (s) |
 |----------------|------------------------|
@@ -266,7 +319,7 @@ Baseline execution, no parallelims with vectorizing
 | saxpyi         | 0.938                  |
 
 
-Loops Parallelized with vectorization
+### SIMD + OpenMP Loops Parallelized 
 
 | Function        | Threads | Run 1  | Run 2  | Run 3  | **Average Time (s)** |
 |----------------|---------|--------|--------|--------|-----------------------|
@@ -284,7 +337,7 @@ Loops Parallelized with vectorization
 | saxpyi         | 1       | 0.943  | 0.939  | 0.932  | **0.938**             |
 
 
-Optimized (OpenMP + SIMD, 4 Threads)
+### SIMD + OpenMP Loops Parallelized - Summary (OpenMP + SIMD, 4 Threads)
 
 | Function        | Optimized Avg Time (s) |
 |----------------|-------------------------|
@@ -294,7 +347,8 @@ Optimized (OpenMP + SIMD, 4 Threads)
 | saxpyi         | 0.209                   |
 
 
-### Speedup 
+### Speedup: SIMD Only vs Optimized (OpenMP + SIMD, 4 Threads)
+
 | Function        | Baseline (s) | Optimized (s) | Speedup |
 |----------------|--------------|----------------|---------|
 | saxpy_no_simd  | 1.086        | 0.280          | 3.88×   |
@@ -304,7 +358,7 @@ Optimized (OpenMP + SIMD, 4 Threads)
 
 ----
 
-- gcc -O3 -fopenmp -march=native -ftree-vectorize -fopt-info-vec -o saxpy saxpy.c
+### SIMD + OpenMP Loops Parallelized + flags for auto-vectorization
 
 | Function        | Threads | Run 1  | Run 2  | Run 3  | Avg (s) |
 |----------------|---------|--------|--------|--------|---------|
@@ -322,7 +376,7 @@ Optimized (OpenMP + SIMD, 4 Threads)
 | saxpyi         | 1       | 0.483  | 0.482  | 0.480  | 0.482   |
 
 
-### Speedup with OpenMP + SIMD + Autovectorization Flags (vs. Baseline)
+### Speedup SIMD Only vs SIMD + OpenMP Loops Parallelized + flags for auto-vectorization
 
 | Function        | Threads | Baseline (s) | Optimized (s) | Speedup |
 |----------------|---------|---------------|----------------|---------|
@@ -340,17 +394,10 @@ Optimized (OpenMP + SIMD, 4 Threads)
 | saxpyi         | 1       | 0.938         | 0.482          | 1.95×   |
 
 
-HPC Tools - Compilation, profiling and optimization of HPC Software
-3. The compiler: a key tool to exploit HPC resources
-"10 - ProfOpt03.pdf"
-cc -S -fverbose-asm -O3 -march=native -g saxpy.c -o saxpy.s
-as -alhnd saxpy.s > saxpy.lst
-cat saxpy.lst
 
+### Vectorization Insights (Intel VTune Analysis)
 
-### Vectorization Insight (Intel VTune Analysis)
-
-- **Vectorization report - OMP + SIMD - VTune**: For the parallelized with OpenMP, with SIMD vectorization
+- **Vectorization report - SIMD + OpenMP - VTune**: For the loops parallelized with OpenMP and SIMD function vectorization
 ```bash
 vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./saxpy
 ...
@@ -390,7 +437,7 @@ Vectorization: 19.9% of Packed FP Operations
 ```
 
 
-- **Vectorization report - OMP + SIMD + flags - VTune**: For the parallelized with OpenMP, with SIMD vectorization and compiler flags for auto-vectorization
+- **Vectorization report - SIMD + OpenMP + flags auto vectorizing - VTune**: For the parallelized with OpenMP, with SIMD vectorization and compiler flags for auto-vectorization
 ```bash
 vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./saxpy
 ...
@@ -415,12 +462,32 @@ Vectorization: 87.2% of Packed FP Operations
 ...
 ```
 
+### VTune comparison: SIMD + OpenMP vs SIMD + OpenMP + 03, Auto vectorozing
+
+| Aspect                 | No `-O3`, No Auto Vec      | With `-O3` and Auto Vec      |
+|------------------------|----------------------------|------------------------------|
+| Vectorization (%)      | 19.9%                      | 87.2%                        |
+| SIMD Width             | 128-bit (SSE)              | 512-bit (AVX-512)            |
+| Scalar FP              | 80.1%                      | 12.8%                        |
+| Performance Potential  | Poor (mostly scalar loops) | Excellent (wide SIMD usage)  |
+| Compiler Strategy      | Conservative               | Aggressive + intelligent     |
+
 ### Conclusions
-- All four function variants experienced 3.6× to 4.5× speedup when parallelism and vectorization were enabled. Having best observed speedup:
+- All four function variants experienced 3.6× to 4.5× speedup when parallelism and SIMD function vectorization were enabled. Having best observed speedup:
   - saxpyi: 4.49×
   - saxpy: 4.48×
 - Combining OpenMP threading with SIMD vectorization is crucial for exploiting modern CPU hardware effectively
 - Autovectorization + OpenMP results in a massive boost when loops are structured well
+- It would worth to redesign the loops for leveraging omp [colapse (2)] so the product of the iteration spaces (NREPS * N) becomes the total loop space.
+
+## Future Work
+
+HPC Tools - Compilation, profiling and optimization of HPC Software
+3. The compiler: a key tool to exploit HPC resources
+"10 - ProfOpt03.pdf"
+cc -S -fverbose-asm -O3 -march=native -g saxpy.c -o saxpy.s
+as -alhnd saxpy.s > saxpy.lst
+cat saxpy.lst
 
 
 ## References 
