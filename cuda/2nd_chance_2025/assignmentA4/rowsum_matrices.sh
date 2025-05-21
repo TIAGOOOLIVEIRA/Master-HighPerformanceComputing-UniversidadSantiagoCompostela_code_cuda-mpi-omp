@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J row_sum
+#SBATCH -J rowsum_matrices
 #SBATCH -o %x-%j.out
 #SBATCH -e %x-%j.err
 #SBATCH --time=00:25:00
@@ -9,36 +9,36 @@
 
 #watch -n 1 squeue -u $USER
 #To automate in the interactive session, make sh executable
-#chmod +x row_sum.sh
+#chmod +x rowsum_matrices.sh
 #module avail cuda
 
 #to run in interactive mode
 #compute --gpu
-#./row_sum.sh
-####salloc -I600  --qos=viz -p viz --gres=gpu:t4 --mem=3952M -c 1 -t 08:00:00  srun -c 1 --pty --preserve-env /bin/bash -i
-
+#./rowsum_matrices.sh
 
 module load cesga/2020 
 module load cuda-samples/12.2
 module load cuda/12.2.0
+module load intel vtune
 
+echo "Compiling with profiling support"
+make clean
+make
 
-echo "Compiling with -g -G for profiling support"
-nvcc -Xcompiler -fopenmp -O2 -g -G -o row_sum row_sum.cu
-
-#to collect profiling data
+echo "setting OMP_NUM_THREADS to 8"
 export OMP_NUM_THREADS=8
-nsys profile -o row_sum_nsys ./row_sum 20480 128
-ncu --set full --target-processes all -o row_sum_ncu ./row_sum 20480 128
+
+#for averaging
+runs=3
 
 if [ $? -ne 0 ]; then
-    echo "Row sum CUDA app Compilation failed!"
+    echo "Row sum matrices CUDA app Compilation failed!"
     exit 1
 fi
 
 #Matrix sizes and block sizes to test. Ideally to run over two different GPUs
-matrix_sizes=(5376 10880 20480)
-block_sizes=(32 64 128)
+matrices=(8 16 32)
+matrix_size=(128 256 512)
 #gpu_types=("t4" "a100")
 gpu_types=("t4")
 
@@ -47,10 +47,20 @@ for gpu in "${gpu_types[@]}"; do
     echo "=== Executing on GPU: $gpu ==="
     nvidia-smi
     #export SLURM_GPUS_ON_NODE=$gpu
-    for size in "${matrix_sizes[@]}"; do
-        for block in "${block_sizes[@]}"; do
-            echo "Running: ./row_sum $size $block on GPU $gpu"
-            OMP_NUM_THREADS=8 ./row_sum $size $block
+    for nmatrices in "${matrices[@]}"; do
+        for msize in "${matrix_size[@]}"; do
+            for ((r=1; r<=runs; r++)); do
+                echo "Run $r for size $nmatrices $msize"
+                echo "Running: ./rowsum_matrices $nmatrices $msize on GPU $gpu"
+                OMP_NUM_THREADS=8 ./rowsum_matrices $nmatrices $msize
+            done
         done
     done
 done
+
+echo "Execution completed. Results saved to benchmark_results.csv."
+
+echo "Profiling with nsys, vtune(CPU) and ncu"
+make profile
+make vtune-cpu
+make ncu
