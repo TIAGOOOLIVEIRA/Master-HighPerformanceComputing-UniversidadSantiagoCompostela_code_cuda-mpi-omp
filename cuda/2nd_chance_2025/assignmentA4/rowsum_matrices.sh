@@ -51,8 +51,8 @@ for gpu in "${gpu_types[@]}"; do
         for msize in "${matrix_size[@]}"; do
             for ((r=1; r<=runs; r++)); do
                 echo "Run $r for size $nmatrices $msize"
-                echo "Running: ./rowsum_matrices $nmatrices $msize on GPU $gpu"
-                OMP_NUM_THREADS=8 ./rowsum_matrices $nmatrices $msize
+                echo "Running: ./rowsum_matrices $msize $nmatrices on GPU $gpu"
+                OMP_NUM_THREADS=8 ./rowsum_matrices $msize $nmatrices
             done
         done
     done

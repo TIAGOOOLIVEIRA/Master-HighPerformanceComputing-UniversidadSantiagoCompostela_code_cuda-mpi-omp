@@ -61,14 +61,15 @@ int main(int argc, char *argv[]) {
     float **h_results_cpu = (float **)malloc(m * sizeof(float *));
 
     for (int i = 0; i < m; i++) {
-        h_inputs[i] = (float *)malloc(size * sizeof(float));
-        h_results_gpu[i] = (float *)malloc(n * sizeof(float));
+        CHECK_CUDA_ERROR(cudaMallocHost((void **)&h_inputs[i], size * sizeof(float)));
+        CHECK_CUDA_ERROR(cudaMallocHost((void **)&h_results_gpu[i], n * sizeof(float)));
         h_results_cpu[i] = (float *)malloc(n * sizeof(float));
-
+    
         for (int j = 0; j < size; j++) {
             h_inputs[i][j] = (float)((i * size + j) % 100) / 10.0f;
         }
     }
+    
 
     float *d_input[m], *d_output[m];
     cudaStream_t streams[m];
@@ -83,21 +84,22 @@ int main(int argc, char *argv[]) {
     timer.start();
 
     for (int i = 0; i < m; i++) {
-        CHECK_CUDA_ERROR(cudaMemcpyAsync(d_input[i], h_inputs[i], size * sizeof(float), cudaMemcpyHostToDevice, streams[i]));
+        int stream_id = i % m;
+        CHECK_CUDA_ERROR(cudaMemcpyAsync(d_input[i], h_inputs[i], size * sizeof(float), cudaMemcpyHostToDevice, streams[stream_id]));
         dim3 blockDim(128);
         dim3 gridDim((n + 127) / 128);
-        row_sum_kernel<<<gridDim, blockDim, 0, streams[i]>>>(d_input[i], d_output[i], n);
-        //CHECK_CUDA_ERROR(cudaMemcpyAsync(h_results_gpu[i], d_output[i], n * sizeof(float), cudaMemcpyDeviceToHost, streams[i]));
+        row_sum_kernel<<<gridDim, blockDim, 0, streams[stream_id]>>>(d_input[i], d_output[i], n);
+        CHECK_CUDA_ERROR(cudaMemcpyAsync(h_results_gpu[i], d_output[i], n * sizeof(float), cudaMemcpyDeviceToHost, streams[i]));
     }
 
     for (int i = 0; i < m; i++) {
-        CHECK_CUDA_ERROR(cudaMemcpyAsync(h_results_gpu[i], d_output[i], n * sizeof(float), cudaMemcpyDeviceToHost, streams[i]));
-        //CHECK_CUDA_ERROR(cudaStreamSynchronize(streams[i]));
+        //CHECK_CUDA_ERROR(cudaMemcpyAsync(h_results_gpu[i], d_output[i], n * sizeof(float), cudaMemcpyDeviceToHost, streams[i]));
+        CHECK_CUDA_ERROR(cudaStreamSynchronize(streams[i]));
     }
 
-    CHECK_CUDA_ERROR(cudaDeviceSynchronize());
+    //CHECK_CUDA_ERROR(cudaDeviceSynchronize());
 
-    timer.stop("GPU time for %d matrices");
+    timer.stop("GPU time for matrices");
 
     CpuTimer cpu_timer;
     cpu_timer.start();
@@ -112,10 +114,10 @@ int main(int argc, char *argv[]) {
         CHECK_CUDA_ERROR(cudaFree(d_input[i]));
         CHECK_CUDA_ERROR(cudaFree(d_output[i]));
         CHECK_CUDA_ERROR(cudaStreamDestroy(streams[i]));
-        free(h_inputs[i]);
-        free(h_results_gpu[i]);
+        CHECK_CUDA_ERROR(cudaFreeHost(h_inputs[i]));
+        CHECK_CUDA_ERROR(cudaFreeHost(h_results_gpu[i]));
         free(h_results_cpu[i]);
-    }
+    }    
 
     CHECK_CUDA_ERROR(cudaDeviceReset());
     printf("CUDA device reset.\n");

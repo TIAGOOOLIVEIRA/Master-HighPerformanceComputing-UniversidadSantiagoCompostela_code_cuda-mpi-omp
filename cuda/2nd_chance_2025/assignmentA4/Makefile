@@ -28,24 +28,24 @@ rowsum_matrices: rowsum_matrices.cu
 	$(CUDACXX) $(GENCODE_FLAGS) $(CUDACXXFLAGS) -Xcompiler="$(CXXFLAGS)" rowsum_matrices.cu -o rowsum_matrices
 
 profile: rowsum_matrices
-	$(NSYS) $(NSYSFLAGS) -o rowsum_matrices-report ./rowsum_matrices 16 512
+	$(NSYS) $(NSYSFLAGS) -o rowsum_matrices-report ./rowsum_matrices 512 16
 
 vtune-cpu: rowsum_matrices
 	rm -rf $(VTUNE_RESULT_DIR_CPU)
-	$(VTUNE) $(VTUNEFLAGS_CPU) -result-dir $(VTUNE_RESULT_DIR_CPU) ./rowsum_matrices 16 512
-	$(VTUNE) -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./rowsum_matrices 16 512
+	$(VTUNE) $(VTUNEFLAGS_CPU) -result-dir $(VTUNE_RESULT_DIR_CPU) ./rowsum_matrices 512 16
+	$(VTUNE) -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./rowsum_matrices 512 16
 
 vtune-gpu: rowsum_matrices
 	rm -rf $(VTUNE_RESULT_DIR_GPU)
 	@if command -v $(VTUNE) >/dev/null 2>&1; then \
 		echo "Running VTune GPU profiling"; \
-		$(VTUNE) $(VTUNEFLAGS_GPU) -result-dir $(VTUNE_RESULT_DIR_GPU) ./rowsum_matrices 16 512; \
+		$(VTUNE) $(VTUNEFLAGS_GPU) -result-dir $(VTUNE_RESULT_DIR_GPU) ./rowsum_matrices 512 16; \
 	else \
 		echo "Warning: VTune is not installed or not in PATH. Skipping GPU profiling."; \
 	fi
 
 ncu: rowsum_matrices
-	$(NCU) $(NCUFLAGS) -o $(NCU_OUTPUT) ./rowsum_matrices 16 512
+	$(NCU) $(NCUFLAGS) -o $(NCU_OUTPUT) ./rowsum_matrices 512 16
 
 clean:
 	rm -f rowsum_matrices *.qdrep *.sqlite
