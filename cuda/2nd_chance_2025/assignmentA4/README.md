@@ -40,6 +40,8 @@ A GPU-accelerated implementation of row matrix summ using CUDA and OpenMP for th
 - NVIDIA A100
 
 
+<img src="images/nsy-rowsum_matrices-a100-nsyght.png" alt="NSY, Nsight" width="500">
+
 
 - NVIDIA T4
 
