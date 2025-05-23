@@ -15,7 +15,7 @@ NCU=ncu
 NCUFLAGS=--target-processes all --launch-skip 0 --launch-count 1 --kernel-name "row_sum_kernel" --set full
 NCU_OUTPUT=rowsum_matrices_ncu_report
 
-# Detect GPU arch dynamically (if possible), else fallback to compute_75/sm_75
+#Detect GPU arch dynamically (if possible), otherwise fallback to compute_75/sm_75
 GPU_ARCH := $(shell if command -v nvidia-smi >/dev/null 2>&1; then \
 	nvidia-smi --query-gpu=compute_cap --format=csv,noheader | head -n1 | sed 's/\.//'; \
 	else echo 75; fi)
