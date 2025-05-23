@@ -34,6 +34,14 @@ As GPU architectures evolve, improving memory bandwidth utilization and reducing
 | L2 Cache [%]           | 22.13%           | 24.42%         |
 | DRAM Throughput [%]    | 85.52%           | 80.36%         |
 
+- Piipeline
+
+<img src="images/gpuspeed_pipeline.png" alt="NCU - gpuspeed_pipeline" width="500">
+
+- Manual
+
+<img src="images/gpuspeed_manual.png" alt="NCU - gpuspeed_manual" width="500">
+
 ### 2. Memory Workload Analysis
 
 | Metric                  | `copy_pipeline`   | `copy_manual`    |
@@ -44,6 +52,16 @@ As GPU architectures evolve, improving memory bandwidth utilization and reducing
 | Global Load Requests    | 50M               | 12.5M            |
 | Shared Load/Store       | 12.5M / 12.5M     | 12.5M / 12.5M    |
 
+- Piipeline
+
+<img src="images/memanallysis_pipeline.png" alt="NCU - memanallysis_pipeline" width="500">
+<img src="images/dataworkload_pipeline.png" alt="NCU - dataworkload_pipeline" width="500">
+
+- Manual
+
+<img src="images/memanalysis_manual.png" alt="NCU - memanalysis_manual" width="500">
+<img src="images/dataworkload_manual.png" alt="NCU - dataworkload_manual" width="500">
+
 ### 3. Warp State Statistics
 
 | Metric                      | `copy_pipeline` | `copy_manual` |
@@ -52,6 +70,14 @@ As GPU architectures evolve, improving memory bandwidth utilization and reducing
 | Long Scoreboard Stalls [%]  | 81.1%            | 78.4%          |
 | Barrier/Wait Stalls         | Low              | High           |
 | Local Speedup Est.          | 67.28%           | 78.42%         |
+
+- Piipeline
+
+<img src="images/warp_pipeline.png" alt="NCU - warp_pipeline" width="500">
+
+- Manual
+
+<img src="images/warp_manual.png" alt="NCU - warp_manual" width="500">
 
 ## Conclusion
 
