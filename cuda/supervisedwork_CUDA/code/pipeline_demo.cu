@@ -24,7 +24,6 @@ __global__ void copy_pipeline(const float* __restrict__ input, float* __restrict
     bool ping = 0;
 
     for (int j = tid; j < cols; j += blockDim.x) {
-        // Async copy from global to shared
         cuda::memcpy_async(&staging[ping][tid], &input[row * cols + j],
                            cuda::aligned_size_t<8>(sizeof(float)), pipe);
 
@@ -32,11 +31,10 @@ __global__ void copy_pipeline(const float* __restrict__ input, float* __restrict
         __pipeline_wait_prior(0);
         //pipe.consumer_release();
 
-        // Do nothing with staging, just toggle
+        //Do nothing with staging
         ping = !ping;
     }
 
-    // Prevent optimization: touch output
     if (tid == 0) {
         output[row] = staging[ping][0];
     }
@@ -50,7 +48,7 @@ __global__ void copy_manual(const float* __restrict__ input, float* __restrict__
 
     for (int j = tid; j < cols; j += blockDim.x) {
         staging[tid] = input[row * cols + j];
-        __syncthreads();  // simulate pipeline delay
+        __syncthreads();
     }
 
     if (tid == 0) {

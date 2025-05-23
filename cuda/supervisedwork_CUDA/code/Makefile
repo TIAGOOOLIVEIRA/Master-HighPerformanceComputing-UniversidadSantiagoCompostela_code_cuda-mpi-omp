@@ -1,20 +1,19 @@
-CUDACXX=nvcc
-CUDACXXFLAGS=-O3 -lineinfo -Xptxas -v -Xcudafe "--display_error_number"
-CXXFLAGS=-march=native
+CUDACXX = nvcc
+CUDACXXFLAGS = -O3 -lineinfo -Xptxas -v -Xcudafe "--display_error_number"
+CXXFLAGS = -march=native
 
-NSYS=nsys profile
-NSYSFLAGS=--stats=true --force-overwrite=true
+NSYS = nsys profile
+NSYSFLAGS = --stats=true --force-overwrite=true
 
-VTUNE=vtune
-VTUNEFLAGS_CPU=-collect hotspots
-VTUNEFLAGS_GPU=-collect gpu-hotspots
-VTUNE_RESULT_DIR_CPU=vtune-report-cpu
-VTUNE_RESULT_DIR_GPU=vtune-report-gpu
+VTUNE = vtune
+VTUNEFLAGS_CPU = -collect hotspots
+VTUNEFLAGS_GPU = -collect gpu-hotspots
+VTUNE_RESULT_DIR_CPU = vtune-report-cpu
+VTUNE_RESULT_DIR_GPU = vtune-report-gpu
 
-NCU=ncu
-NCUFLAGS=--target-processes all --launch-skip 0 --launch-count 1 \
-         --kernel-name "copy_(pipeline|manual)" --set full
-NCU_OUTPUT=pipeline_demo_ncu_report
+NCU = ncu
+NCUFLAGS = --set full --replay-mode kernel --apply-rules yes
+NCU_OUTPUT_PREFIX = pipeline_demo_ncu_report
 
 # Detect GPU arch dynamically (fallback to sm_75)
 GPU_ARCH := $(shell if command -v nvidia-smi >/dev/null 2>&1; then \
@@ -45,10 +44,18 @@ vtune-gpu: pipeline_demo
 		echo "Warning: VTune is not installed or not in PATH. Skipping GPU profiling."; \
 	fi
 
+
 ncu: pipeline_demo
-	$(NCU) $(NCUFLAGS) -o $(NCU_OUTPUT) ./pipeline_demo
+ifeq ($(shell [ $(GPU_ARCH) -ge 80 ] && echo true),true)
+	@echo "Detected A100 or newer (sm_$(GPU_ARCH)), profiling each kernel separately"
+else
+	@echo "Detected T4 or older (sm_$(GPU_ARCH)), profiling each kernel separately"
+endif
+	$(NCU) $(NCUFLAGS) --kernel-name "copy_pipeline" -o $(NCU_OUTPUT_PREFIX)_pipeline ./pipeline_demo
+	$(NCU) $(NCUFLAGS) --kernel-name "copy_manual" -o $(NCU_OUTPUT_PREFIX)_manual ./pipeline_demo
+
 
 clean:
 	rm -f pipeline_demo *.qdrep *.sqlite
-	rm -rf vtune-report* pipeline_demo-report* $(NCU_OUTPUT).ncu-rep
+	rm -rf vtune-report* pipeline_demo-report* $(NCU_OUTPUT_PREFIX)*.ncu-rep
 	rm -rf r000ps

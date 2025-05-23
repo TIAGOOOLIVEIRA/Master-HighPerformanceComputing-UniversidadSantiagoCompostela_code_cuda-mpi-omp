@@ -1,79 +1,76 @@
-# Supervised Work (2024-2025) Programming Heterogeneous Architectures - Master of High Performance Computing
+# Exploring the Impact of `cuda::pipeline` for Asynchronous Memory Staging and Overlap in CUDA
 
-### async-copy with multi-stage pipelining (C++ API)
+## Introduction
 
-### nvJPEG library for JPEG decoding
+As GPU architectures evolve, improving memory bandwidth utilization and reducing data movement latency remain central to advancing performance in high-throughput workloads. The launch of NVIDIA CUDA 11 introduced a set of C++ primitives, including `cuda::pipeline`, designed to offer fine-grained control over asynchronous memory staging and to simplify compute/data transfer overlap in GPU kernels. This repository explores the hypothesis that `cuda::pipeline` provides measurable benefits in terms of throughput, latency, and efficiency compared to more traditional CUDA techniques such as manual memory staging with `__syncthreads()`.
 
-### Jetson Orin Nano
+## CUDA Pipeline Overview
 
+### Key Concepts
 
-## CUDA 11 libraries interest to explore
+- **Weak Memory Model:** CUDA requires explicit synchronization. `cuda::pipeline` enforces scoped memory ordering.
+- **Thread Scopes:** Scopes include `thread`, `block`, and `device`.
+- **Async Copy Primitives:** Includes `memcpy_async()`, `producer_commit()`, and `consumer_wait_prior()`.
+- **Avoid Warp Entanglement:** Encourages converged control flow.
 
-- [GPU-accelerated JPEG decoder, encoder and transcoder](https://developer.nvidia.com/nvjpeg)
-- [Fast Data Preprocessing (Image, Video, Audio and Signal) with DALI, NPP and nvJPEG](www.nvidia.com/en-us/on-demand/session/gtcspring21-cwes1081/?playlistId=playList-fb6f50b5-b75f-48c0-8007-3d5ccee46d34)
-- [Getting Started with CUDA Graphs](https://developer.nvidia.com/blog/cuda-graphs/)
-- [cugraph](https://github.com/rapidsai/cugraph)
-- [cuda-11-features-revealed, mixed-precision,  APIs for task graphs...](https://developer.nvidia.com/blog/cuda-11-features-revealed/)
-- [CUDA v11](https://docs.nvidia.com/cuda/archive/11.0/cuda-toolkit-release-notes/)
-- nvGRAPH/RAPIDS:cuGraph
-- [cuBLAS](https://docs.nvidia.com/cuda/archive/11.0/cuda-toolkit-release-notes/#cublas-new-features)
-- [cusparse](https://docs.nvidia.com/cuda/archive/11.0/cuda-toolkit-release-notes/#cusparse-new-features)
-- nvcuvid
-- [nvgraph](https://github.com/rapidsai/nvgraph)
-- [Graph Structures (Adjacency Matrix) vs Sparse Matrices (CSR, COO, etc.)](https://docs.rapids.ai/api/cugraph/stable/)
+### Comparison with Other Techniques
 
-https://developer.nvidia.com/embedded/develop/roadmap
-https://developer.nvidia.com/embedded/develop/software
-https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-nano/product-development/
+| Technique             | Memory Overlap | Granularity | Sync Model       | Ease of Use |
+|----------------------|----------------|-------------|------------------|-------------|
+| `__syncthreads()`     | ❌             | Block       | Barrier (coarse) | ✅          |
+| Streams + Events     | Host           | Stream      | Events           | ⚠️          |
+| CUDA Graphs          | Host           | Node        | Auto DAG         | ⚠️          |
+| `cuda::pipeline`     | ✅             | Tile/Thread | Producer/Consumer| ✅✅         |
 
+## Results and Comparison
 
-```c
-Supervised Work
-2024-2025
-Programming Heterogeneous Architectures
-Master of High Performance Computing
+### 1. GPU Speed of Light Throughput (Tesla T4)
 
-In this supervised work each student must study one update provided by NVIDIA
-in one of the last CUDA updates (8.0 or higher) and write a report about it. This
-work will be performed individually and consists of the following steps:
+| Metric                  | `copy_pipeline` | `copy_manual` |
+|------------------------|------------------|----------------|
+| Compute (SM) [%]       | 64.87%           | 28.78%         |
+| Memory [%]             | 85.52%           | 80.36%         |
+| L1 Cache [%]           | 74.99%           | 8.36%          |
+| L2 Cache [%]           | 22.13%           | 24.42%         |
+| DRAM Throughput [%]    | 85.52%           | 80.36%         |
 
-Choose the target CUDA update for your work. You can use one of the updates
-introduced in Theme 5 or other update that you know. The new update
-must be a novelty in CUDA 8.0 or higher. The analysis of the performance
-improvement in some CUDA libraries is also valid, but the students should
-explain how this improvement is achieved and not limit the report to show
-graphs about the performance increase.
+### 2. Memory Workload Analysis
 
-Write a report that technically explains the update and also includes results
-about its performance impact. The page limit for this report is 10 pages in
-single column and letter size 10pt. The deadline to submit the report to
-AulaCESGA is December 22nd 2024. This report is expected to have at
-least the following sections:
+| Metric                  | `copy_pipeline`   | `copy_manual`    |
+|------------------------|-------------------|------------------|
+| Memory Throughput [GB/s]| 273.29            | 256.89           |
+| L1 Hit Rate             | 74.99%            | 8.36%            |
+| L2 Hit Rate             | 0.05%             | 0.05%            |
+| Global Load Requests    | 50M               | 12.5M            |
+| Shared Load/Store       | 12.5M / 12.5M     | 12.5M / 12.5M    |
 
+### 3. Warp State Statistics
 
--Introduction, where the benefit and need of the CUDA update is contextualized.
--Description, where the CUDA update is technically explained. 
--Results and conclusions, which can be either obtained by you (executing some benchmarks on the Finis Terrae 3 supercomputer) or can be taken from websites or other reports.
--Bibliograph
-```
+| Metric                      | `copy_pipeline` | `copy_manual` |
+|-----------------------------|------------------|----------------|
+| Warp Cycles per Inst.       | 23.92            | 43.44          |
+| Long Scoreboard Stalls [%]  | 81.1%            | 78.4%          |
+| Barrier/Wait Stalls         | Low              | High           |
+| Local Speedup Est.          | 67.28%           | 78.42%         |
 
-## Proof of concept
+## Conclusion
 
-### ABC
+- `cuda::pipeline` leads to **higher occupancy** and **SM throughput**.
+- Dramatically increases **L1 cache effectiveness**.
+- Minimizes warp latency and execution stalls.
+- Suits memory-bound workloads demanding compute/data overlap.
 
-### BCA
+## Supplementary Concepts
 
-## Profiling
+- **Bytes-in-flight**: `latency × bandwidth`. If insufficient, prefetch strategies are recommended.
+- **LDGSTS and TMA**:
+  - Use LDGSTS for 4/8/16-byte aligned tiles < 2 KiB.
+  - Use TMA for bulk async transfer (especially for tiles > 2 KiB).
+- **Producer-Consumer Model**: Enables warp-scope overlapped execution.
 
-## C++ 20 for CUDA
-    How the old C used nowadays in NVIDIA GPUs can be transformed into a lethal Weapon with C++ 20 LinkedIn.pdf 
-        bi-pointer strategy
-
-
-
+### Decision Tree Summary
 
 
-Nvidia Nano Jetson Orin 
 
 ## 📚 References & Learning Resources
 
@@ -97,6 +94,7 @@ Nvidia Nano Jetson Orin
 
 ### CUDA Programming Guides & Documentation
 - [CUDA C++ Programming Guide – NVIDIA Docs](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#tiled-partitions-cg)
+
 - [Cooperative Groups – NVIDIA Developer Blog](https://developer.nvidia.com/blog/cooperative-groups/)
 - [Robust and Scalable CUDA with Cooperative Groups (PDF)](https://leimao.github.io/downloads/blog/2024-08-06-CUDA-Cooperative-Groups/s7622-Kyrylo-perelygin-robust-and-scalable-cuda.pdf)
 - [CUDA C/C++ Streams and Concurrency](https://developer.download.nvidia.com/CUDA/training/StreamsAndConcurrencyWebinar.pdf)
