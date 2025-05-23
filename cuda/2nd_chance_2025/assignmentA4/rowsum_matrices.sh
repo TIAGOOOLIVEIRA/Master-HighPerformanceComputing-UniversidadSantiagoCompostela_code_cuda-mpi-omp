@@ -58,7 +58,7 @@ for gpu in "${gpu_types[@]}"; do
     done
 done
 
-echo "Execution completed. Results saved to benchmark_results.csv."
+echo "Execution completed."
 
 echo "Profiling with nsys, vtune(CPU) and ncu"
 make profile
