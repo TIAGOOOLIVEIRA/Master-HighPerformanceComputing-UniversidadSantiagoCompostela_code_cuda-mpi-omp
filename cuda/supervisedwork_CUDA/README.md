@@ -1,19 +1,30 @@
 # Supervised Work (2024-2025) Programming Heterogeneous Architectures - Master of High Performance Computing
 
+### async-copy with multi-stage pipelining (C++ API)
 
-## CUDA 11 libraries to explore
+### nvJPEG library for JPEG decoding
 
+### Jetson Orin Nano
+
+
+## CUDA 11 libraries interest to explore
+
+- [GPU-accelerated JPEG decoder, encoder and transcoder](https://developer.nvidia.com/nvjpeg)
+- [Fast Data Preprocessing (Image, Video, Audio and Signal) with DALI, NPP and nvJPEG](www.nvidia.com/en-us/on-demand/session/gtcspring21-cwes1081/?playlistId=playList-fb6f50b5-b75f-48c0-8007-3d5ccee46d34)
+- [Getting Started with CUDA Graphs](https://developer.nvidia.com/blog/cuda-graphs/)
+- [cugraph](https://github.com/rapidsai/cugraph)
 - [cuda-11-features-revealed, mixed-precision,  APIs for task graphs...](https://developer.nvidia.com/blog/cuda-11-features-revealed/)
 - [CUDA v11](https://docs.nvidia.com/cuda/archive/11.0/cuda-toolkit-release-notes/)
 - nvGRAPH/RAPIDS:cuGraph
 - [cuBLAS](https://docs.nvidia.com/cuda/archive/11.0/cuda-toolkit-release-notes/#cublas-new-features)
 - [cusparse](https://docs.nvidia.com/cuda/archive/11.0/cuda-toolkit-release-notes/#cusparse-new-features)
 - nvcuvid
-- [cugraph](https://github.com/rapidsai/cugraph)
 - [nvgraph](https://github.com/rapidsai/nvgraph)
 - [Graph Structures (Adjacency Matrix) vs Sparse Matrices (CSR, COO, etc.)](https://docs.rapids.ai/api/cugraph/stable/)
-- [Getting Started with CUDA Graphs](https://developer.nvidia.com/blog/cuda-graphs/)
 
+https://developer.nvidia.com/embedded/develop/roadmap
+https://developer.nvidia.com/embedded/develop/software
+https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-nano/product-development/
 
 
 ```c
@@ -67,6 +78,8 @@ Nvidia Nano Jetson Orin
 ## 📚 References & Learning Resources
 
 ### CUDA Code Examples & Libraries
+- [Boosting Matrix Multiplication Speed and Flexibility with NVIDIA cuBLAS 12.9](https://developer.nvidia.com/blog/boosting-matrix-multiplication-speed-and-flexibility-with-nvidia-cublas-12-9/)
+- [cuVS: Vector Search and Clustering on the GPU](https://github.com/rapidsai/cuvs)
 - [cuSparse: Accelerate Large Linear Programming Problems with NVIDIA cuOpt](https://developer.nvidia.com/blog/accelerate-large-linear-programming-problems-with-nvidia-cuopt)
 - [CUDA samples](https://github.com/NVIDIA/cuda-samples/)
 - [Dev CUDA samples](https://developer.nvidia.com/cuda-code-samples)
