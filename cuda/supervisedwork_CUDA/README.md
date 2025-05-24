@@ -34,7 +34,7 @@ As GPU architectures evolve, improving memory bandwidth utilization and reducing
 | L2 Cache [%]           | 22.13%           | 24.42%         |
 | DRAM Throughput [%]    | 85.52%           | 80.36%         |
 
-- Piipeline
+- Pipeline
 
 <img src="images/gpuspeed_pipeline.png" alt="NCU - gpuspeed_pipeline" width="500">
 
@@ -52,7 +52,7 @@ As GPU architectures evolve, improving memory bandwidth utilization and reducing
 | Global Load Requests    | 50M               | 12.5M            |
 | Shared Load/Store       | 12.5M / 12.5M     | 12.5M / 12.5M    |
 
-- Piipeline
+- Pipeline
 
 <img src="images/memanallysis_pipeline.png" alt="NCU - memanallysis_pipeline" width="500">
 <img src="images/dataworkload_pipeline.png" alt="NCU - dataworkload_pipeline" width="500">
@@ -94,9 +94,6 @@ As GPU architectures evolve, improving memory bandwidth utilization and reducing
   - Use TMA for bulk async transfer (especially for tiles > 2 KiB).
 - **Producer-Consumer Model**: Enables warp-scope overlapped execution.
 
-### Decision Tree Summary
-
-
 
 ## 📚 References & Learning Resources
 
@@ -120,7 +117,6 @@ As GPU architectures evolve, improving memory bandwidth utilization and reducing
 
 ### CUDA Programming Guides & Documentation
 - [CUDA C++ Programming Guide – NVIDIA Docs](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#tiled-partitions-cg)
-
 - [Cooperative Groups – NVIDIA Developer Blog](https://developer.nvidia.com/blog/cooperative-groups/)
 - [Robust and Scalable CUDA with Cooperative Groups (PDF)](https://leimao.github.io/downloads/blog/2024-08-06-CUDA-Cooperative-Groups/s7622-Kyrylo-perelygin-robust-and-scalable-cuda.pdf)
 - [CUDA C/C++ Streams and Concurrency](https://developer.download.nvidia.com/CUDA/training/StreamsAndConcurrencyWebinar.pdf)
