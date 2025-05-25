@@ -7,7 +7,8 @@
 
 ### Docker
 
-data directory for the course with the following command in the Jetson Nano terminal you've logged into:
+Data directory and docker command to pull the image and login
+
 ```bash
 
 
@@ -26,3 +27,9 @@ chmod +x docker_dli_run.sh
 ./docker_dli_run.sh
 
 ```
+
+***Logging into the JupyterLab server***
+
+    Open the following link address : 192.168.55.1:8888
+    The JupyterLab server running on the Jetson Nano will open up with a login prompt the first time.
+    Enter the password: dlinano
