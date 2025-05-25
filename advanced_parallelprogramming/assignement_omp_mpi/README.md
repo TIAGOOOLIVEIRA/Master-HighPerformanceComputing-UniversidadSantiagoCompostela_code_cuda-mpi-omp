@@ -480,6 +480,10 @@ Vectorization: 87.2% of Packed FP Operations
 - Autovectorization + OpenMP results in a massive boost when loops are structured well
 - It would worth to redesign the loops for leveraging omp [colapse (2)] so the product of the iteration spaces (NREPS * N) becomes the total loop space.
 
+
+## Labs1, 4. Vectorize & parallelize the code jacobi.c
+
+
 ## Future Work
 
 HPC Tools - Compilation, profiling and optimization of HPC Software
