@@ -25,6 +25,7 @@ C     The execution time is determined by these values and the
 C     variable ITMAX (number of iterations) read from the input file.
 C     Execution time is linear in ITMAX.*/
 
+#include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -54,7 +55,7 @@ int main(){
     printf("SPEC benchmark 171.swim\n");
     printf("\n");
     
-    if ((fp=fopen("SWIM7","w"))==NULL){
+    if ((fp=fopen("data/swim.in.ref","w"))==NULL){
         printf("No se puede abrir el archivo\n");
         exit(1);}
     
@@ -229,8 +230,10 @@ void calc1(void){
     FSDX = 4.0/DX;
     FSDY = 4.0/DY;
 
+    #pragma omp parallel for
     for (I=0;I<M;I++)
-        for(J=0;J<N;J++){
+        #pragma omp simd
+	for(J=0;J<N;J++){
             CU[I+1][J] = .5*(P[I+1][J]+P[I][J])*U[I+1][J];
             CV[I][J+1] = .5*(P[I][J+1]+P[I][J])*V[I][J+1];
             Z[I+1][J+1] = (FSDX*(V[I+1][J+1]-V[I][J+1])-FSDY*(U[I+1][J+1]-U[I+1][J]))/(P[I][J]+P[I+1][J]+P[I+1][J+1]+P[I][J+1]);
@@ -266,8 +269,10 @@ void calc2(void){
     TDTSDX = TDT/DX;
     TDTSDY = TDT/DY;
 
+    #pragma omp parallel for
     for(I=0;I<M;I++)
-        for(J=0;J<N;J++){
+        #pragma omp simd
+	for(J=0;J<N;J++){
             UNEW[I+1][J] = UOLD[I+1][J]+TDTS8*(Z[I+1][J+1]+Z[I+1][J])*(CV[I+1][J+1]+CV[I][J+1]+CV[I][J]+CV[I+1][J])-TDTSDX*(H[I+1][J]-H[I][J]);
             VNEW[I][J+1] = VOLD[I][J+1]-TDTS8*(Z[I+1][J+1]+Z[I][J+1])*(CU[I+1][J+1]+CU[I][J+1]+CU[I][J]+CU[I+1][J])-TDTSDY*(H[I][J+1]-H[I][J]);
             PNEW[I][J] = POLD[I][J]-TDTSDX*(CU[I+1][J]-CU[I][J])-TDTSDY*(CV[I][J+1]-CV[I][J]);}
@@ -312,8 +317,10 @@ void calc3(void){
 /*C        TIME SMOOTHING AND UPDATE FOR NEXT CYCLE*/
     int I,J;
     
+    #pragma omp parallel for
     for(I=0;I<M;I++)
-        for(J=0;J<N;J++){
+        #pragma omp simd
+	for(J=0;J<N;J++){
             UOLD[I][J] = U[I][J]+ALPHA*(UNEW[I][J]-2.*U[I][J]+UOLD[I][J]);
             VOLD[I][J] = V[I][J]+ALPHA*(VNEW[I][J]-2.*V[I][J]+VOLD[I][J]);
             POLD[I][J] = P[I][J]+ALPHA*(PNEW[I][J]-2.*P[I][J]+POLD[I][J]);

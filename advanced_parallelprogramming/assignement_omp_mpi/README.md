@@ -923,23 +923,34 @@ Vectorization: 0.0% of Packed FP Operations
 
 ### Statistics & Analysis
 
-Execution time
 
-Setup with no optimization
-time ./swim
-real	0m0.861s
-user	0m0.842s
-sys	0m0.009s
+This table summarizes the average real time over 3 runs per optimization setup and the corresponding speedup compared to the baseline (no optimization).
 
-time ./swim
-real	0m0.856s
-user	0m0.843s
-sys	0m0.009s
+| Setup                                      | Threads | Avg Real Time (s) | Speedup vs Baseline |
+|-------------------------------------------|---------|-------------------|---------------------|
+| No optimization (baseline)                |    1    | 0.857             | 1.00×               |
+| OpenMP + SIMD                             |    4    | 0.215             | 3.99×               |
+| OpenMP + SIMD                             |    8    | 0.329             | 2.61×               |
+| OpenMP + SIMD + auto vectorization        |    4    | 0.114             | 7.52×               |
+| OpenMP + SIMD + auto vectorization        |    8    | 0.152             | 5.64×               |
 
-time ./swim
-real	0m0.854s
-user	0m0.840s
-sys	0m0.008s
+#todo: add summary from profiling tools for optimized version
+
+### Conclusions
+
+#todo: add ohter suggestions from the profiling tools for optimized version
+
+
+Best speedup achieved with OpenMP + SIMD + auto vectorization using 4 threads.
+
+8 threads had slightly worse performance, likely due to:
+
+    Thread contention or oversubscription
+
+    NUMA/memory bandwidth saturation
+
+Auto vectorization combined with hand-annotated OpenMP provided the highest overall performance.
+
 
 
 ## Overall Future Work
