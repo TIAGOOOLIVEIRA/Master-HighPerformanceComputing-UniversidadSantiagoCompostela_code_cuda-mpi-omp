@@ -20,7 +20,7 @@
 *       : u(n,m) - Dependent variable (solutions)
 *       : f(n,m) - Right hand side function 
 *************************************************************/
-
+#include <omp.h>
 #include <stdio.h>
 #include <math.h>
 
@@ -128,14 +128,15 @@ void jacobi(int l, int t, double dx, double dy, double al, double omega, double 
         error = (double)0.0  ;
 
 /* Copy new solution into old*/
-        
+        #pragma omp parallel for private(j) collapse(2)
         for(i=0;i<l;i++)
             for(j=0;j<t;j++)
                 uold[i][j] = u[i][j];
 
 /* Compute stencil, residual, & update*/
-
+	#pragma omp parallel for private(j, resid) reduction(+:error)
         for(i=1;i<l-1;i++)
+	    #pragma omp simd reduction(+:error)
             for(j=1;j<t-1;j++){
          
 /*     Evaluate residual */

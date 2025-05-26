@@ -38,19 +38,20 @@ $(TARGET): $(SRC)
 	@echo "Compiling $(SRC) as $(TARGET) with mode: $(MODE)"
 	$(CC) $(CFLAGS) -o $(TARGET) $(SRC) $(LDFLAGS)
 
-#Run appl, generate gmon.out
+# Run the application to generate gmon.out (only meaningful in 'profile' mode)
 .PHONY: run-profile
 run-profile: $(TARGET)
 	@echo "Running $(TARGET) to generate gmon.out..."
 	./$(TARGET)
 
-#Generate GProf report
+# Generate GProf report
 .PHONY: gprof-report
 gprof-report: gmon.out
 	@echo "Generating gprof report..."
 	gprof $(TARGET) gmon.out > gprof-report.txt
 	@echo "Report saved to gprof-report.txt"
 
+# Clean rule
 .PHONY: clean
 clean:
 	rm -f $(TARGET) gmon.out gprof-report.txt
