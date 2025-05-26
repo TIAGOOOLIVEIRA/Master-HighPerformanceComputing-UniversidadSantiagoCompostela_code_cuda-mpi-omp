@@ -483,15 +483,42 @@ Vectorization: 87.2% of Packed FP Operations
 
 ## Labs1, 4. Vectorize & parallelize the code jacobi.c
 
+### Compiler and flags used:
+
+       #
+      #
+
+
+- **Makefile**: Make
+  - **make MODE=profile**
+
+        Basic mode
+
+  - **make run-profile**
+
+        Runs program to generate gmon.out
+
+  - **make gprof-report**
+
+        Analyzes and dumps result
+
+  - **cat gprof-report.txt**
+
+        Iinspect report
+
+  - **make clean**
+
+        Clean build                        
+
 
 ## Future Work
 
-HPC Tools - Compilation, profiling and optimization of HPC Software
-3. The compiler: a key tool to exploit HPC resources
-"10 - ProfOpt03.pdf"
-cc -S -fverbose-asm -O3 -march=native -g saxpy.c -o saxpy.s
-as -alhnd saxpy.s > saxpy.lst
-cat saxpy.lst
+### HPC Tools - Compilation, profiling and optimization of HPC Software
+  - "3. The compiler: a key tool to exploit HPC resources"
+  - "10 - ProfOpt03.pdf"
+  - cc -S -fverbose-asm -O3 -march=native -g saxpy.c -o saxpy.s
+  - as -alhnd saxpy.s > saxpy.lst
+  - cat saxpy.lst
 
 
 ## References 
