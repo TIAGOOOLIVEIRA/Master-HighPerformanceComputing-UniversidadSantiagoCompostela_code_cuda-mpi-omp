@@ -484,14 +484,311 @@ Vectorization: 87.2% of Packed FP Operations
 ## Labs1, 4. Vectorize & parallelize the code jacobi.c
 
 
-## Future Work
 
-HPC Tools - Compilation, profiling and optimization of HPC Software
-3. The compiler: a key tool to exploit HPC resources
-"10 - ProfOpt03.pdf"
-cc -S -fverbose-asm -O3 -march=native -g saxpy.c -o saxpy.s
-as -alhnd saxpy.s > saxpy.lst
-cat saxpy.lst
+- compute -c 4
+- module load intel vtune
+- export OMP_NUM_THREADS={1,4,8}
+
+### Compiler and flags used:
+
+
+- **Makefile**: Make/Gprof
+  - **make MODE=profile**
+
+        Basic mode
+
+  - **make MODE=vectorized**
+
+        To add auto-vectorizing flag to compiler
+
+  - **make run-profile**
+
+        Runs program to generate gmon.out
+
+  - **make gprof-report**
+
+        Analyzes and dumps result
+
+  - **cat gprof-report.txt**
+
+        Iinspect report
+
+  - **make clean**
+
+        Clean build                        
+
+**First run without optimization**: 
+
+  Gprof
+
+```c
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  Ts/call  Ts/call  name    
+ 97.63      5.66     5.66                             jacobi
+  2.25      5.79     0.13                             initialize
+  0.35      5.81     0.02                             error_check
+
+```
+  Perf
+
+```c
+
+    $ perf record -e cycles,instructions,cache-misses,cache-references,branch-misses,branch-instructions,mem-loads,mem-stores -g -- ./jacobi
+
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+[ perf record: Woken up 76 times to write data ]
+[ perf record: Captured and wrote 16.736 MB perf.data (182615 samples) ]
+
+    $perf report
+
+
+Samples: 27K of event 'cycles:u', Event count (approx.): 20227583458
+  Children      Self  Command  Shared Object     Symbol
++   99.91%     0.00%  jacobi   [unknown]         [.] 0x5541d68949564100
++   99.91%     0.00%  jacobi   libc-2.31.so      [.] __libc_start_main
++   99.91%     0.00%  jacobi   jacobi            [.] main
++   98.55%    98.11%  jacobi   jacobi            [.] jacobi
++    1.01%     0.96%  jacobi   jacobi            [.] initialize
+     0.47%     0.47%  jacobi   [unknown]         [k] 0xffffffffac6010e0
+     0.42%     0.42%  jacobi   jacobi            [.] error_check
+     0.04%     0.04%  jacobi   [unknown]         [k] 0xffffffffac601c60
+...
+```
+
+  Vtune
+
+```c
+...
+Vectorization: 0.0% of Packed FP Operations
+ | This code has floating point operations and is not vectorized. Consider
+ | either recompiling the code with optimization options that allow
+ | vectorization or using Intel Advisor to vectorize the loops.
+ |
+    Instruction Mix
+        SP FLOPs: 0.0% of uOps
+            Packed: 0.0% from SP FP
+                128-bit: 0.0% from SP FP
+                256-bit: 0.0% from SP FP
+                512-bit: 0.0% from SP FP
+            Scalar: 0.0% from SP FP
+        DP FLOPs: 47.9% of uOps
+            Packed: 0.0% from DP FP
+                128-bit: 0.0% from DP FP
+                256-bit: 0.0% from DP FP
+                512-bit: 0.0% from DP FP
+            Scalar: 100.0% from DP FP
+             | This code has floating point operations and is not vectorized.
+             | Consider either recompiling the code with optimization options
+             | that allow vectorization or using Intel Advisor to vectorize the
+             | loops.
+             |
+        x87 FLOPs: 0.0% of uOps
+        Non-FP: 52.1% of uOps
+    FP Arith/Mem Rd Instr. Ratio: 1.871
+    FP Arith/Mem Wr Instr. Ratio: 6.544
+...
+```
+
+
+**Second run with optimization - No Vectorization**: 
+
+  Gprof
+
+```c
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  Ts/call  Ts/call  name    
+ 98.56      6.83     6.83                             __gmon_start__
+  1.30      6.92     0.09                             initialize
+  0.29      6.94     0.02                             error_check
+
+```
+  Perf
+
+```c
+
+    $ perf record -e cycles,instructions,cache-misses,cache-references,branch-misses,branch-instructions,mem-loads,mem-stores -g -- ./jacobi
+
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+[ perf record: Woken up 68 times to write data ]
+[ perf record: Captured and wrote 16.732 MB perf.data (197165 samples) ]
+
+    $perf report
+
+Samples: 30K of event 'cycles:u', Event count (approx.): 19759324578
+  Children      Self  Command  Shared Object     Symbol
++   82.75%     0.00%  jacobi   [unknown]         [.] 0000000000000000
++   72.39%     0.00%  jacobi   libgomp.so.1.0.0  [.] 0x0000148f4f1bc986
++   54.81%    54.76%  jacobi   jacobi            [.] jacobi._omp_fn.1
++   41.04%    41.02%  jacobi   jacobi            [.] jacobi._omp_fn.0
++   23.47%     0.00%  jacobi   libgomp.so.1.0.0  [.] GOMP_parallel
++   13.33%     0.00%  jacobi   [unknown]         [.] 0x000055735a9950a0
++   10.14%     0.00%  jacobi   [unknown]         [.] 0x000055734b5710a0
++    1.91%     1.91%  jacobi   libgomp.so.1.0.0  [.] 0x000000000001e43a
++    1.91%     0.00%  jacobi   libgomp.so.1.0.0  [.] 0x0000148f4f1bf43a
++    1.37%     0.00%  jacobi   [unknown]         [.] 0x5541d68949564100
++    1.37%     0.00%  jacobi   libc-2.31.so      [.] __libc_start_main
++    1.37%     0.00%  jacobi   jacobi            [.] main
++    0.96%     0.96%  jacobi   jacobi            [.] initialize
+     0.41%     0.41%  jacobi   jacobi            [.] error_check
+     0.36%     0.36%  jacobi   libgomp.so.1.0.0  [.] 0x000000000001e43e
+...
+```
+
+VTune
+
+```c
+vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./jacobi
+
+...
+Vectorization: 95.9% of Packed FP Operations
+ | Using the latest vector instruction set can improve parallelism for this
+ | code. Consider either recompiling the code with the latest instruction set or
+ | using Intel Advisor to get vectorization help.
+ |
+    Instruction Mix
+        SP FLOPs: 0.0% of uOps
+            Packed: 0.0% from SP FP
+                128-bit: 0.0% from SP FP
+                256-bit: 0.0% from SP FP
+                512-bit: 0.0% from SP FP
+            Scalar: 100.0% from SP FP
+             | This code has floating point operations and is not vectorized.
+             | Consider either recompiling the code with optimization options
+             | that allow vectorization or using Intel Advisor to vectorize the
+             | loops.
+             |
+        DP FLOPs: 27.4% of uOps
+            Packed: 95.9% from DP FP
+                128-bit: 95.9% from DP FP
+                 | Using the latest vector instruction set can improve
+                 | parallelism for this code. Consider either recompiling the
+                 | code with the latest instruction set or using Intel Advisor
+                 | to get vectorization help.
+                 |
+                256-bit: 0.0% from DP FP
+                512-bit: 0.0% from DP FP
+            Scalar: 4.1% from DP FP
+        x87 FLOPs: 0.0% of uOps
+        Non-FP: 72.6% of uOps
+    FP Arith/Mem Rd Instr. Ratio: 1.433
+    FP Arith/Mem Wr Instr. Ratio: 4.388
+...
+```
+
+**Second run with optimization - No Vectorization**: 
+
+```c
+make MODE=vectorized
+Compiling jacobi.c as jacobi with mode: vectorized
+gcc               -O3 -fopenmp -march=native -ftree-vectorize -fopt-info-vec -o jacobi jacobi.c -lm
+jacobi.c:139:14: optimized: loop vectorized using 64 byte vectors
+jacobi.c:143:39: optimized: loop vectorized using 64 byte vectors
+jacobi.c:83:9: optimized: loop vectorized using 64 byte vectors
+jacobi.c:83:9: optimized:  loop versioned for vectorization because of possible aliasing
+jacobi.c:83:9: optimized: loop vectorized using 32 byte vectors
+jacobi.c:131:17: optimized: basic block part vectorized using 64 byte vectors
+jacobi.c:137:10: optimized: basic block part vectorized using 64 byte vectors
+
+vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./jacobi
+
+...
+Vectorization: 97.3% of Packed FP Operations
+    Instruction Mix
+        SP FLOPs: 0.0% of uOps
+            Packed: 0.0% from SP FP
+                128-bit: 0.0% from SP FP
+                256-bit: 0.0% from SP FP
+                512-bit: 0.0% from SP FP
+            Scalar: 0.0% from SP FP
+        DP FLOPs: 10.5% of uOps
+            Packed: 97.3% from DP FP
+                128-bit: 0.0% from DP FP
+                256-bit: 0.0% from DP FP
+                512-bit: 97.3% from DP FP
+            Scalar: 2.7% from DP FP
+        x87 FLOPs: 0.0% of uOps
+        Non-FP: 89.5% of uOps
+    FP Arith/Mem Rd Instr. Ratio: 0.870
+    FP Arith/Mem Wr Instr. Ratio: 1.456
+...
+
+
+
+```
+
+### Statistics & Analysis
+
+
+This benchmark compares the average real execution time of the Jacobi solver under different optimization setups and OpenMP thread counts. Speedup is computed relative to the non-optimized baseline.
+
+| Setup                                     | Threads | Avg Real Time (s) | Speedup vs Baseline |
+|------------------------------------------|---------|-------------------|---------------------|
+| No optimization                          |   1     | 6.205             | 1.00× (baseline)    |
+| OpenMP + SIMD                            |   4     | 1.918             | 3.23×               |
+| OpenMP + SIMD + Auto Vectorization       |   4     | 1.752             | 3.54×               |
+| OpenMP + SIMD + Auto Vectorization       |   8     | 1.867             | 3.32×               |
+
+
+---
+
+
+VTune analysis on main optimization attributes
+
+| Setup                          | Packed DP FLOPs | Vector ISA Used | DP Scalar | FP Arith/Mem Rd Ratio | SIMD Width |
+|--------------------------------|------------------|------------------|-----------|------------------------|------------|
+| OpenMP + SIMD                  | 95.9%            | 128-bit          | 4.1%      | 1.433                  | Narrow     |
+| OpenMP + SIMD + Auto Vec       | 97.3%            | 512-bit          | 2.7%      | 0.870                  | Wide       |
+
+---
+
+Profiling tool overview
+
+ Tool     | Use Case                                | Outcome Summary                                      |
+|----------|------------------------------------------|------------------------------------------------------|
+| `gprof`  | Function-level CPU time breakdown        | Identified `jacobi()` as >97% bottleneck            |
+| `perf`   | Low-level performance counters           | Confirmed hotspot and cycles in `jacobi()` loop     |
+| `vtune`  | Vectorization, ILP, FP instruction mix   | Diagnosed scalar vs packed ops; guided SIMD tuning  |
+
+
+### Conclusions
+
+Parallelism (OpenMP) and vectorization (SIMD + AVX) combined offer a **3.5× performance improvement** for the Jacobi solver function. 
+
+
+- **Vectorization Gain**: Adding compiler auto-vectorization improved vector width from **128-bit to 512-bit** SIMD lanes.
+- **Instruction Mix Shift**:
+  - DP FLOP scalar operations decreased → more loop vectorization.
+  - **512-bit SIMD** operations dominate in the fully optimized version.
+- **FP Arithmetic/Memory Ratio** dropped slightly with AVX-512, indicating better bandwidth usage and potentially more instruction mix.
+- **Speedup from 4-thread parallelism + AVX-512** reaches **3.5×** over scalar baseline.
+- **8-thread execution** does not scale much further due to **saturation or memory bandwidth** limits.
+
+
+For future work, it would wworth it further investigation on:
+- **Memory access tuning** (cache blocking).
+- **NUMA-aware execution** for >8 threads.
+
+
+
+
+## Overall Future Work
+
+### HPC Tools - Compilation, profiling and optimization of HPC Software
+  - "3. The compiler: a key tool to exploit HPC resources"
+  - "10 - ProfOpt03.pdf"
+  - cc -S -fverbose-asm -O3 -march=native -g saxpy.c -o saxpy.s
+  - as -alhnd saxpy.s > saxpy.lst
+  - cat saxpy.lst
 
 
 ## References 
