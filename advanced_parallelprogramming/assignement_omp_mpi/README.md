@@ -487,7 +487,7 @@ Vectorization: 87.2% of Packed FP Operations
 
 - compute -c 4
 - module load intel vtune
-- export OMP_NUM_THREADS={1,2,4}
+- export OMP_NUM_THREADS={1,4,8}
 
 ### Compiler and flags used:
 
@@ -728,88 +728,60 @@ Vectorization: 97.3% of Packed FP Operations
 
 ### Statistics & Analysis
 
--- No optimization
-time ./jacobi
-Total Number of Iterations=101
-Residual=6.243228E-11
-Solution Error=1.332995E-04
 
-real	0m6.209s
-user	0m6.139s
-sys	0m0.049s
-[curso370@c206-3 jacobi]$ time ./jacobi
-Total Number of Iterations=101
-Residual=6.243228E-11
-Solution Error=1.332995E-04
+This benchmark compares the average real execution time of the Jacobi solver under different optimization setups and OpenMP thread counts. Speedup is computed relative to the non-optimized baseline.
 
-real	0m6.199s
-user	0m6.138s
-sys	0m0.043s
-[curso370@c206-3 jacobi]$ time ./jacobi
-Total Number of Iterations=101
-Residual=6.243228E-11
-Solution Error=1.332995E-04
-
-real	0m6.208s
-user	0m6.146s
-sys	0m0.045s
+| Setup                                     | Threads | Avg Real Time (s) | Speedup vs Baseline |
+|------------------------------------------|---------|-------------------|---------------------|
+| No optimization                          |   1     | 6.205             | 1.00× (baseline)    |
+| OpenMP + SIMD                            |   4     | 1.918             | 3.23×               |
+| OpenMP + SIMD + Auto Vectorization       |   4     | 1.752             | 3.54×               |
+| OpenMP + SIMD + Auto Vectorization       |   8     | 1.867             | 3.32×               |
 
 
--- omp + SIMD
-
-time ./jacobi 
-Total Number of Iterations=101
-Residual=6.243228E-11
-Solution Error=1.332995E-04
-
-real	0m1.951s
-user	0m7.346s
-sys	0m0.053s
-[curso370@c206-3 jacobi]$ time ./jacobi 
-Total Number of Iterations=101
-Residual=6.243228E-11
-Solution Error=1.332995E-04
-
-real	0m1.890s
-user	0m7.110s
-sys	0m0.053s
-[curso370@c206-3 jacobi]$ time ./jacobi 
-Total Number of Iterations=101
-Residual=6.243228E-11
-Solution Error=1.332995E-04
-
-real	0m1.914s
-user	0m7.207s
-sys	0m0.049s
+---
 
 
--- omp + SIMD + auto vectorized
-time ./jacobi 
-Total Number of Iterations=101
-Residual=6.243228E-11
-Solution Error=1.332995E-04
+VTune analysis on main optimization attributes
 
-real	0m1.767s
-user	0m6.760s
-sys	0m0.059s
-[curso370@c206-3 jacobi]$ time ./jacobi 
-Total Number of Iterations=101
-Residual=6.243228E-11
-Solution Error=1.332995E-04
+| Setup                          | Packed DP FLOPs | Vector ISA Used | DP Scalar | FP Arith/Mem Rd Ratio | SIMD Width |
+|--------------------------------|------------------|------------------|-----------|------------------------|------------|
+| OpenMP + SIMD                  | 95.9%            | 128-bit          | 4.1%      | 1.433                  | Narrow     |
+| OpenMP + SIMD + Auto Vec       | 97.3%            | 512-bit          | 2.7%      | 0.870                  | Wide       |
 
-real	0m1.746s
-user	0m6.714s
-sys	0m0.056s
-[curso370@c206-3 jacobi]$ time ./jacobi 
-Total Number of Iterations=101
-Residual=6.243228E-11
-Solution Error=1.332995E-04
+---
 
-real	0m1.743s
-user	0m6.698s
-sys	0m0.055s
+Profiling tool overview
 
-## Future Work
+ Tool     | Use Case                                | Outcome Summary                                      |
+|----------|------------------------------------------|------------------------------------------------------|
+| `gprof`  | Function-level CPU time breakdown        | Identified `jacobi()` as >97% bottleneck            |
+| `perf`   | Low-level performance counters           | Confirmed hotspot and cycles in `jacobi()` loop     |
+| `vtune`  | Vectorization, ILP, FP instruction mix   | Diagnosed scalar vs packed ops; guided SIMD tuning  |
+
+
+### Conclusions
+
+Parallelism (OpenMP) and vectorization (SIMD + AVX) combined offer a **3.5× performance improvement** for the Jacobi solver function. 
+
+
+- **Vectorization Gain**: Adding compiler auto-vectorization improved vector width from **128-bit to 512-bit** SIMD lanes.
+- **Instruction Mix Shift**:
+  - DP FLOP scalar operations decreased → more loop vectorization.
+  - **512-bit SIMD** operations dominate in the fully optimized version.
+- **FP Arithmetic/Memory Ratio** dropped slightly with AVX-512, indicating better bandwidth usage and potentially more instruction mix.
+- **Speedup from 4-thread parallelism + AVX-512** reaches **3.5×** over scalar baseline.
+- **8-thread execution** does not scale much further due to **saturation or memory bandwidth** limits.
+
+
+For future work, it would wworth it further investigation on:
+- **Memory access tuning** (cache blocking).
+- **NUMA-aware execution** for >8 threads.
+
+
+
+
+## Overall Future Work
 
 ### HPC Tools - Compilation, profiling and optimization of HPC Software
   - "3. The compiler: a key tool to exploit HPC resources"
