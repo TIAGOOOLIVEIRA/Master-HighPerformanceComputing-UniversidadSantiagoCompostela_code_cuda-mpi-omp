@@ -685,7 +685,7 @@ Vectorization: 95.9% of Packed FP Operations
 ...
 ```
 
-**Second run with optimization - No Vectorization**: 
+**Second run with optimization + Auto Vectorization**: 
 
 ```c
 make MODE=vectorized
@@ -779,6 +779,167 @@ For future work, it would wworth it further investigation on:
 - **NUMA-aware execution** for >8 threads.
 
 
+
+## Labs1, 5. Vectorize & parallelize the code swim.c
+
+
+
+- compute -c 4
+- module load intel vtune
+- export OMP_NUM_THREADS={1,4,8}
+
+### Compiler and flags used:
+
+
+- **Makefile**: Make/Gprof
+  - **make MODE=profile**
+
+        Basic mode
+
+  - **make MODE=vectorized**
+
+        To add auto-vectorizing flag to compiler
+
+  - **make run-profile**
+
+        Runs program to generate gmon.out
+
+  - **make gprof-report**
+
+        Analyzes and dumps result
+
+  - **cat gprof-report.txt**
+
+        Iinspect report
+
+  - **make clean**
+
+        Clean build                        
+
+**First run without optimization**: 
+
+  Gprof
+
+```c
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  Ts/call  Ts/call  name    
+ 40.28      0.33     0.33                             calc1
+ 31.73      0.59     0.26                             calc3
+ 28.07      0.82     0.23                             calc2
+
+```
+  Perf
+
+```c
+
+    $ perf record -e cycles,instructions,cache-misses,cache-references,branch-misses,branch-instructions,mem-loads,mem-stores -g -- ./swim
+
+NUMBER OF POINTS IN THE X DIRECTION 512
+NUMBER OF POINTS IN THE y DIRECTION 512
+GRID SPACING IN THE X DIRECTION 25000.000000
+GRID SPACING IN THE Y DIRECTION 25000.000000
+TIME STEP 20.000000
+TIME FILTER PARAMETER 0.001000
+NUMBER OF ITERATIONS 200
+
+Pcheck = 1.313569E+10
+Ucheck = 5.215097E+04
+Vcheck = 5.215168E+04
+
+Pcheck = 1.313569E+10
+Ucheck = 5.211337E+04
+Vcheck = 5.215157E+04
+
+Pcheck = 1.313569E+10
+Ucheck = 5.209151E+04
+Vcheck = 5.215175E+04
+
+Pcheck = 1.313568E+10
+Ucheck = 5.207779E+04
+Vcheck = 5.215205E+04
+[ perf record: Woken up 14 times to write data ]
+[ perf record: Captured and wrote 2.250 MB perf.data (24531 samples) ]
+
+    $perf report
+
+
+Samples: 3K of event 'cycles:u', Event count (approx.): 2366140682
+  Children      Self  Command  Shared Object     Symbol
++   99.36%     0.00%  swim     [unknown]         [.] 0x5541d68949564100
++   99.36%     0.00%  swim     libc-2.31.so      [.] __libc_start_main
++   99.36%     0.19%  swim     swim              [.] main
++   37.55%    37.55%  swim     swim              [.] calc1
++   31.23%    31.23%  swim     swim              [.] calc3
++   29.95%    29.93%  swim     swim              [.] calc2
+     0.27%     0.27%  swim     swim              [.] initial
+     0.06%     0.06%  swim     libm-2.31.so      [.] 0x000000000007d4be
+     0.06%     0.00%  swim     libm-2.31.so      [.] 0x000014f8b5ba34be
+...
+```
+  Vtune
+
+```c
+vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./swim
+
+...
+Vectorization: 0.0% of Packed FP Operations
+ | This code has floating point operations and is not vectorized. Consider
+ | either recompiling the code with optimization options that allow
+ | vectorization or using Intel Advisor to vectorize the loops.
+ |
+    Instruction Mix
+        SP FLOPs: 24.5% of uOps
+            Packed: 0.0% from SP FP
+                128-bit: 0.0% from SP FP
+                256-bit: 0.0% from SP FP
+                512-bit: 0.0% from SP FP
+            Scalar: 100.0% from SP FP
+             | This code has floating point operations and is not vectorized.
+             | Consider either recompiling the code with optimization options
+             | that allow vectorization or using Intel Advisor to vectorize the
+             | loops.
+             |
+        DP FLOPs: 12.5% of uOps
+            Packed: 0.0% from DP FP
+                128-bit: 0.0% from DP FP
+                256-bit: 0.0% from DP FP
+                512-bit: 0.0% from DP FP
+            Scalar: 100.0% from DP FP
+             | This code has floating point operations and is not vectorized.
+             | Consider either recompiling the code with optimization options
+             | that allow vectorization or using Intel Advisor to vectorize the
+             | loops.
+             |
+        x87 FLOPs: 0.0% of uOps
+        Non-FP: 63.0% of uOps
+    FP Arith/Mem Rd Instr. Ratio: 2.407
+    FP Arith/Mem Wr Instr. Ratio: 4.805
+...
+```
+
+
+### Statistics & Analysis
+
+Execution time
+
+Setup with no optimization
+time ./swim
+real	0m0.861s
+user	0m0.842s
+sys	0m0.009s
+
+time ./swim
+real	0m0.856s
+user	0m0.843s
+sys	0m0.009s
+
+time ./swim
+real	0m0.854s
+user	0m0.840s
+sys	0m0.008s
 
 
 ## Overall Future Work
