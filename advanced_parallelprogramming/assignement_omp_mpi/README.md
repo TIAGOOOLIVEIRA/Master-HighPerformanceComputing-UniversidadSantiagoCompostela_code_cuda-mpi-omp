@@ -1193,6 +1193,148 @@ heat.c:44:3: optimized: loop vectorized using 16 byte vectors
 ```
 
 
+Hardware locality CPU/NUMA layout
+```c
+lstopo --no-legend --physical 
+Machine (249GB total)
+  Package P#0 + L3 (48MB)
+    Group0
+      NUMANode P#0 (62GB)
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#0 + PU P#0
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#1 + PU P#1
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#2 + PU P#2
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#3 + PU P#3
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#4 + PU P#4
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#5 + PU P#5
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#6 + PU P#6
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#7 + PU P#7
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#8 + PU P#8
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#9 + PU P#9
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#10 + PU P#10
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#11 + PU P#11
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#12 + PU P#12
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#13 + PU P#13
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#14 + PU P#14
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#15 + PU P#15
+      HostBridge
+        PCI 00:11.5 (SATA)
+        PCI 00:17.0 (SATA)
+        PCIBridge
+          PCI 02:00.0 (Ethernet)
+            Net "eno1"
+          PCI 02:00.1 (Ethernet)
+            Net "eno2"
+        PCIBridge
+          PCIBridge
+            PCI 04:00.0 (VGA)
+      HostBridge
+        PCIBridge
+          PCI 31:00.0 (Ethernet)
+            Net "ens2f0"
+            OpenFabrics "mlx5_bond_0"
+          PCI 31:00.1 (Ethernet)
+            Net "ens2f1"
+    Group0
+      NUMANode P#1 (63GB)
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#16 + PU P#16
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#17 + PU P#17
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#18 + PU P#18
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#19 + PU P#19
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#20 + PU P#20
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#21 + PU P#21
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#22 + PU P#22
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#23 + PU P#23
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#24 + PU P#24
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#25 + PU P#25
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#26 + PU P#26
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#27 + PU P#27
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#28 + PU P#28
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#29 + PU P#29
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#30 + PU P#30
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#31 + PU P#31
+      HostBridge
+        PCIBridge
+          PCI 66:00.0 (NVMExp)
+            Block(Disk) "nvme0n1"
+  Package P#1 + L3 (48MB)
+    Group0
+      NUMANode P#2 (63GB)
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#0 + PU P#32
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#1 + PU P#33
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#2 + PU P#34
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#3 + PU P#35
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#4 + PU P#36
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#5 + PU P#37
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#6 + PU P#38
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#7 + PU P#39
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#8 + PU P#40
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#9 + PU P#41
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#10 + PU P#42
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#11 + PU P#43
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#12 + PU P#44
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#13 + PU P#45
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#14 + PU P#46
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#15 + PU P#47
+      HostBridge
+        PCIBridge
+          PCI 98:00.0 (3D)
+    Group0
+      NUMANode P#3 (60GB)
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#16 + PU P#48
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#17 + PU P#49
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#18 + PU P#50
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#19 + PU P#51
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#20 + PU P#52
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#21 + PU P#53
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#22 + PU P#54
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#23 + PU P#55
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#24 + PU P#56
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#25 + PU P#57
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#26 + PU P#58
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#27 + PU P#59
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#28 + PU P#60
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#29 + PU P#61
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#30 + PU P#62
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#31 + PU P#63
+      HostBridge
+        PCIBridge
+          PCI ca:00.0 (InfiniBand)
+            Net "ib0"
+            OpenFabrics "mlx5_2"
+
+
+lscpu
+Architecture:                    x86_64
+CPU op-mode(s):                  32-bit, 64-bit
+Byte Order:                      Little Endian
+Address sizes:                   46 bits physical, 57 bits virtual
+CPU(s):                          64
+On-line CPU(s) list:             0-63
+Thread(s) per core:              1
+Core(s) per socket:              32
+Socket(s):                       2
+NUMA node(s):                    4
+Vendor ID:                       GenuineIntel
+CPU family:                      6
+Model:                           106
+Model name:                      Intel(R) Xeon(R) Platinum 8352Y CPU @ 2.20GHz
+Stepping:                        6
+CPU MHz:                         2810.447
+CPU max MHz:                     3400.0000
+CPU min MHz:                     800.0000
+BogoMIPS:                        4400.00
+Virtualization:                  VT-x
+L1d cache:                       3 MiB
+L1i cache:                       2 MiB
+L2 cache:                        80 MiB
+L3 cache:                        96 MiB
+NUMA node0 CPU(s):               0-15
+NUMA node1 CPU(s):               16-31
+NUMA node2 CPU(s):               32-47
+NUMA node3 CPU(s):               48-63
+...            
+```
+
 
 ### Statistics & Analysis
 
@@ -1219,7 +1361,7 @@ real	0m7.521s
 user	0m7.488s
 sys	0m0.007s
 
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=2, OMP_PROC_BIND=master
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=2, OMP_PROC_BIND=master, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
 time ./heat 5000000
 Tiempo  2.438 s.
 Result = 1
@@ -1244,7 +1386,7 @@ user	0m4.916s
 sys	0m0.007s
 
 
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=4, OMP_PROC_BIND=master
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=4, OMP_PROC_BIND=master, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
 time ./heat 5000000
 Tiempo  1.619 s.
 Result = 1
@@ -1267,7 +1409,7 @@ real	0m1.579s
 user	0m6.257s
 sys	0m0.013s
 
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=8, OMP_PROC_BIND=master
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=8, OMP_PROC_BIND=master, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
 time ./heat 5000000
 Tiempo  1.090 s.
 Result = 1
@@ -1290,6 +1432,361 @@ real	0m1.064s
 user	0m8.417s
 sys	0m0.012s
 
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=2, OMP_PROC_BIND=close, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+time ./heat 5000000
+Tiempo  1.514 s.
+Result = 1
+
+real	0m1.527s
+user	0m3.022s
+sys	0m0.010s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  1.497 s.
+Result = 1
+
+real	0m1.503s
+user	0m2.992s
+sys	0m0.004s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  1.490 s.
+Result = 1
+
+real	0m1.496s
+user	0m2.977s
+sys	0m0.004s
+
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=4, OMP_PROC_BIND=close, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+time ./heat 5000000
+Tiempo  0.778 s.
+Result = 1
+
+real	0m0.783s
+user	0m3.108s
+sys	0m0.007s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  0.781 s.
+Result = 1
+
+real	0m0.785s
+user	0m3.122s
+sys	0m0.004s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  0.778 s.
+Result = 1
+
+real	0m0.782s
+user	0m3.106s
+sys	0m0.005s
+
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=8, OMP_PROC_BIND=close, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+ time ./heat 5000000
+Tiempo  0.405 s.
+Result = 1
+
+real	0m0.415s
+user	0m3.235s
+sys	0m0.017s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  0.403 s.
+Result = 1
+
+real	0m0.407s
+user	0m3.222s
+sys	0m0.005s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  0.400 s.
+Result = 1
+
+real	0m0.404s
+user	0m3.190s
+sys	0m0.013s
+
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=2, OMP_PROC_BIND=spread, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+time ./heat 5000000
+Tiempo  1.534 s.
+Result = 1
+
+real	0m1.541s
+user	0m3.064s
+sys	0m0.007s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  1.533 s.
+Result = 1
+
+real	0m1.539s
+user	0m3.061s
+sys	0m0.005s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  1.527 s.
+Result = 1
+
+real	0m1.533s
+user	0m3.050s
+sys	0m0.004s
+
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=4, OMP_PROC_BIND=spread, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+time ./heat 5000000
+Tiempo  0.786 s.
+Result = 1
+
+real	0m0.796s
+user	0m3.140s
+sys	0m0.009s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  0.796 s.
+Result = 1
+
+real	0m0.800s
+user	0m3.178s
+sys	0m0.006s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  0.792 s.
+Result = 1
+
+real	0m0.796s
+user	0m3.166s
+sys	0m0.003s
+
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=8, OMP_PROC_BIND=spread, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+time ./heat 5000000
+Tiempo  0.393 s.
+Result = 1
+
+real	0m0.397s
+user	0m3.145s
+sys	0m0.005s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  0.403 s.
+Result = 1
+
+real	0m0.407s
+user	0m3.217s
+sys	0m0.009s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  0.410 s.
+Result = 1
+
+real	0m0.414s
+user	0m3.281s
+sys	0m0.005s
+
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=2, OMP_PROC_BIND=master; OMP_PLACES=sockets
+time ./heat 5000000
+Tiempo  2.481 s.
+Result = 1
+
+real	0m2.494s
+user	0m4.953s
+sys	0m0.005s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  2.527 s.
+Result = 1
+
+real	0m2.535s
+user	0m5.041s
+sys	0m0.007s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  2.480 s.
+Result = 1
+
+real	0m2.487s
+user	0m4.945s
+sys	0m0.009s
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=4, OMP_PROC_BIND=master; OMP_PLACES=sockets
+time ./heat 5000000
+Tiempo  1.615 s.
+Result = 1
+
+real	0m1.622s
+user	0m6.435s
+sys	0m0.010s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  1.564 s.
+Result = 1
+
+real	0m1.570s
+user	0m6.225s
+sys	0m0.013s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  1.637 s.
+Result = 1
+
+real	0m1.643s
+user	0m6.521s
+sys	0m0.010s
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=8, OMP_PROC_BIND=master; OMP_PLACES=sockets
+time ./heat 5000000
+Tiempo  1.083 s.
+Result = 1
+
+real	0m1.094s
+user	0m8.613s
+sys	0m0.014s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  1.051 s.
+Result = 1
+
+real	0m1.055s
+user	0m8.353s
+sys	0m0.014s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  1.061 s.
+Result = 1
+
+real	0m1.067s
+user	0m8.437s
+sys	0m0.018s
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=2, OMP_PROC_BIND=close; OMP_PLACES=sockets
+time ./heat 5000000
+Tiempo  1.518 s.
+Result = 1
+
+real	0m1.531s
+user	0m3.027s
+sys	0m0.011s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  1.528 s.
+Result = 1
+
+real	0m1.534s
+user	0m3.048s
+sys	0m0.007s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  1.520 s.
+Result = 1
+
+real	0m1.527s
+user	0m3.037s
+sys	0m0.005s
+
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=4, OMP_PROC_BIND=close; OMP_PLACES=sockets
+time ./heat 5000000
+Tiempo  0.835 s.
+Result = 1
+
+real	0m0.840s
+user	0m3.334s
+sys	0m0.008s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  0.834 s.
+Result = 1
+
+real	0m0.839s
+user	0m3.329s
+sys	0m0.008s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  0.832 s.
+Result = 1
+
+real	0m0.837s
+user	0m3.324s
+sys	0m0.005s
+
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=8, OMP_PROC_BIND=close; OMP_PLACES=sockets
+time ./heat 5000000
+Tiempo  0.459 s.
+Result = 1
+
+real	0m0.464s
+user	0m3.665s
+sys	0m0.012s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  0.459 s.
+Result = 1
+
+real	0m0.463s
+user	0m3.663s
+sys	0m0.009s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  0.445 s.
+Result = 1
+
+real	0m0.449s
+user	0m3.556s
+sys	0m0.011s
+
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=2, OMP_PROC_BIND=spread; OMP_PLACES=sockets
+time ./heat 5000000
+Tiempo  1.525 s.
+Result = 1
+
+real	0m1.531s
+user	0m3.043s
+sys	0m0.008s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  1.519 s.
+Result = 1
+
+real	0m1.525s
+user	0m3.030s
+sys	0m0.008s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  1.515 s.
+Result = 1
+
+real	0m1.521s
+user	0m3.024s
+sys	0m0.006s
+
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=4, OMP_PROC_BIND=spread; OMP_PLACES=sockets
+time ./heat 5000000
+Tiempo  0.830 s.
+Result = 1
+
+real	0m0.836s
+user	0m3.316s
+sys	0m0.006s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  0.835 s.
+Result = 1
+
+real	0m0.839s
+user	0m3.335s
+sys	0m0.005s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  0.833 s.
+Result = 1
+
+real	0m0.838s
+user	0m3.323s
+sys	0m0.011s
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=8, OMP_PROC_BIND=spread; OMP_PLACES=sockets
+time ./heat 5000000
+Tiempo  0.460 s.
+Result = 1
+
+real	0m0.470s
+user	0m3.682s
+sys	0m0.003s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  0.459 s.
+Result = 1
+
+real	0m0.463s
+user	0m3.661s
+sys	0m0.012s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  0.445 s.
+Result = 1
+
+real	0m0.449s
+user	0m3.562s
+sys	0m0.002s
 
 
 ## Overall Future Work
