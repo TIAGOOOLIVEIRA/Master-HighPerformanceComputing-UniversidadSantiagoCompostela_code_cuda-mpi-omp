@@ -1140,7 +1140,6 @@ Baseline Observations (No Optimization)
 ## Labs1, Thread Aﬃnity; 1: heat.c
 
 
-Performance & Speedup Analysis: Matrix Multiplication (D = A × Bᵗ)
 
 - compute -c 64 --mem 246G
 - module load intel vtune
@@ -1337,456 +1336,71 @@ NUMA node3 CPU(s):               48-63
 
 
 ### Statistics & Analysis
+Analysis on the average execution time per different setup of NUMA parameters and application optimization.
 
-Setup: baseline, no optimization
-time ./heat 5000000
-Tiempo  7.455 s.
-Result = 1
-
-real	0m7.470s
-user	0m7.440s
-sys	0m0.004s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  7.491 s.
-Result = 1
-
-real	0m7.504s
-user	0m7.476s
-sys	0m0.004s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  7.505 s.
-Result = 1
-
-real	0m7.521s
-user	0m7.488s
-sys	0m0.007s
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=2, OMP_PROC_BIND=master, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
-time ./heat 5000000
-Tiempo  2.438 s.
-Result = 1
-
-real	0m2.446s
-user	0m4.861s
-sys	0m0.008s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  2.431 s.
-Result = 1
-
-real	0m2.440s
-user	0m4.848s
-sys	0m0.009s
-[curso370@c206-8 heat]$ time ./heat 5000000
-
-Tiempo  2.466 s.
-Result = 1
-
-real	0m2.472s
-user	0m4.916s
-sys	0m0.007s
-
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=4, OMP_PROC_BIND=master, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
-time ./heat 5000000
-Tiempo  1.619 s.
-Result = 1
-
-real	0m1.631s
-user	0m6.445s
-sys	0m0.007s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  1.631 s.
-Result = 1
-
-real	0m1.636s
-user	0m6.491s
-sys	0m0.010s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  1.573 s.
-Result = 1
-
-real	0m1.579s
-user	0m6.257s
-sys	0m0.013s
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=8, OMP_PROC_BIND=master, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
-time ./heat 5000000
-Tiempo  1.090 s.
-Result = 1
-
-real	0m1.095s
-user	0m8.664s
-sys	0m0.012s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  1.104 s.
-Result = 1
-
-real	0m1.110s
-user	0m8.777s
-sys	0m0.010s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  1.059 s.
-Result = 1
-
-real	0m1.064s
-user	0m8.417s
-sys	0m0.012s
-
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=2, OMP_PROC_BIND=close, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
-time ./heat 5000000
-Tiempo  1.514 s.
-Result = 1
-
-real	0m1.527s
-user	0m3.022s
-sys	0m0.010s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  1.497 s.
-Result = 1
-
-real	0m1.503s
-user	0m2.992s
-sys	0m0.004s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  1.490 s.
-Result = 1
-
-real	0m1.496s
-user	0m2.977s
-sys	0m0.004s
-
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=4, OMP_PROC_BIND=close, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
-time ./heat 5000000
-Tiempo  0.778 s.
-Result = 1
-
-real	0m0.783s
-user	0m3.108s
-sys	0m0.007s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  0.781 s.
-Result = 1
-
-real	0m0.785s
-user	0m3.122s
-sys	0m0.004s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  0.778 s.
-Result = 1
-
-real	0m0.782s
-user	0m3.106s
-sys	0m0.005s
-
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=8, OMP_PROC_BIND=close, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
- time ./heat 5000000
-Tiempo  0.405 s.
-Result = 1
-
-real	0m0.415s
-user	0m3.235s
-sys	0m0.017s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  0.403 s.
-Result = 1
-
-real	0m0.407s
-user	0m3.222s
-sys	0m0.005s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  0.400 s.
-Result = 1
-
-real	0m0.404s
-user	0m3.190s
-sys	0m0.013s
-
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=2, OMP_PROC_BIND=spread, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
-time ./heat 5000000
-Tiempo  1.534 s.
-Result = 1
-
-real	0m1.541s
-user	0m3.064s
-sys	0m0.007s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  1.533 s.
-Result = 1
-
-real	0m1.539s
-user	0m3.061s
-sys	0m0.005s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  1.527 s.
-Result = 1
-
-real	0m1.533s
-user	0m3.050s
-sys	0m0.004s
-
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=4, OMP_PROC_BIND=spread, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
-time ./heat 5000000
-Tiempo  0.786 s.
-Result = 1
-
-real	0m0.796s
-user	0m3.140s
-sys	0m0.009s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  0.796 s.
-Result = 1
-
-real	0m0.800s
-user	0m3.178s
-sys	0m0.006s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  0.792 s.
-Result = 1
-
-real	0m0.796s
-user	0m3.166s
-sys	0m0.003s
-
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=8, OMP_PROC_BIND=spread, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
-time ./heat 5000000
-Tiempo  0.393 s.
-Result = 1
-
-real	0m0.397s
-user	0m3.145s
-sys	0m0.005s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  0.403 s.
-Result = 1
-
-real	0m0.407s
-user	0m3.217s
-sys	0m0.009s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  0.410 s.
-Result = 1
-
-real	0m0.414s
-user	0m3.281s
-sys	0m0.005s
-
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=2, OMP_PROC_BIND=master; OMP_PLACES=sockets
-time ./heat 5000000
-Tiempo  2.481 s.
-Result = 1
-
-real	0m2.494s
-user	0m4.953s
-sys	0m0.005s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  2.527 s.
-Result = 1
-
-real	0m2.535s
-user	0m5.041s
-sys	0m0.007s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  2.480 s.
-Result = 1
-
-real	0m2.487s
-user	0m4.945s
-sys	0m0.009s
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=4, OMP_PROC_BIND=master; OMP_PLACES=sockets
-time ./heat 5000000
-Tiempo  1.615 s.
-Result = 1
-
-real	0m1.622s
-user	0m6.435s
-sys	0m0.010s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  1.564 s.
-Result = 1
-
-real	0m1.570s
-user	0m6.225s
-sys	0m0.013s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  1.637 s.
-Result = 1
-
-real	0m1.643s
-user	0m6.521s
-sys	0m0.010s
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=8, OMP_PROC_BIND=master; OMP_PLACES=sockets
-time ./heat 5000000
-Tiempo  1.083 s.
-Result = 1
-
-real	0m1.094s
-user	0m8.613s
-sys	0m0.014s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  1.051 s.
-Result = 1
-
-real	0m1.055s
-user	0m8.353s
-sys	0m0.014s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  1.061 s.
-Result = 1
-
-real	0m1.067s
-user	0m8.437s
-sys	0m0.018s
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=2, OMP_PROC_BIND=close; OMP_PLACES=sockets
-time ./heat 5000000
-Tiempo  1.518 s.
-Result = 1
-
-real	0m1.531s
-user	0m3.027s
-sys	0m0.011s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  1.528 s.
-Result = 1
-
-real	0m1.534s
-user	0m3.048s
-sys	0m0.007s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  1.520 s.
-Result = 1
-
-real	0m1.527s
-user	0m3.037s
-sys	0m0.005s
-
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=4, OMP_PROC_BIND=close; OMP_PLACES=sockets
-time ./heat 5000000
-Tiempo  0.835 s.
-Result = 1
-
-real	0m0.840s
-user	0m3.334s
-sys	0m0.008s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  0.834 s.
-Result = 1
-
-real	0m0.839s
-user	0m3.329s
-sys	0m0.008s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  0.832 s.
-Result = 1
-
-real	0m0.837s
-user	0m3.324s
-sys	0m0.005s
-
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=8, OMP_PROC_BIND=close; OMP_PLACES=sockets
-time ./heat 5000000
-Tiempo  0.459 s.
-Result = 1
-
-real	0m0.464s
-user	0m3.665s
-sys	0m0.012s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  0.459 s.
-Result = 1
-
-real	0m0.463s
-user	0m3.663s
-sys	0m0.009s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  0.445 s.
-Result = 1
-
-real	0m0.449s
-user	0m3.556s
-sys	0m0.011s
-
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=2, OMP_PROC_BIND=spread; OMP_PLACES=sockets
-time ./heat 5000000
-Tiempo  1.525 s.
-Result = 1
-
-real	0m1.531s
-user	0m3.043s
-sys	0m0.008s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  1.519 s.
-Result = 1
-
-real	0m1.525s
-user	0m3.030s
-sys	0m0.008s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  1.515 s.
-Result = 1
-
-real	0m1.521s
-user	0m3.024s
-sys	0m0.006s
-
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=4, OMP_PROC_BIND=spread; OMP_PLACES=sockets
-time ./heat 5000000
-Tiempo  0.830 s.
-Result = 1
-
-real	0m0.836s
-user	0m3.316s
-sys	0m0.006s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  0.835 s.
-Result = 1
-
-real	0m0.839s
-user	0m3.335s
-sys	0m0.005s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  0.833 s.
-Result = 1
-
-real	0m0.838s
-user	0m3.323s
-sys	0m0.011s
-
-Setup: OpenMP + SIMD, OMP_NUM_THREADS=8, OMP_PROC_BIND=spread; OMP_PLACES=sockets
-time ./heat 5000000
-Tiempo  0.460 s.
-Result = 1
-
-real	0m0.470s
-user	0m3.682s
-sys	0m0.003s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  0.459 s.
-Result = 1
-
-real	0m0.463s
-user	0m3.661s
-sys	0m0.012s
-[curso370@c206-8 heat]$ time ./heat 5000000
-Tiempo  0.445 s.
-Result = 1
-
-real	0m0.449s
-user	0m3.562s
-sys	0m0.002s
+---
+
+
+| OMP_NUM_THREADS | OMP_PROC_BIND | OMP_PLACES                          | Avg Time (s) | Speedup |
+|------------------|----------------|-------------------------------------|--------------|---------|
+| 1                | -              | -                                   | 7.499        | 1.00×    |
+| 2                | master         | "{0:16},{16:16},{32:16},{48:16}"    | 2.450        | 3.06×    |
+| 4                | master         | "{0:16},{16:16},{32:16},{48:16}"    | 1.611        | 4.65×    |
+| 8                | master         | "{0:16},{16:16},{32:16},{48:16}"    | 1.090        | 6.88×    |
+| 2                | close          | "{0:16},{16:16},{32:16},{48:16}"    | 1.501        | 5.00×    |
+| 4                | close          | "{0:16},{16:16},{32:16},{48:16}"    | 0.782        | 9.59×    |
+| 8                | close          | "{0:16},{16:16},{32:16},{48:16}"    | 0.409        | 18.33×   |
+| 2                | spread         | "{0:16},{16:16},{32:16},{48:16}"    | 1.534        | 4.89×    |
+| 4                | spread         | "{0:16},{16:16},{32:16},{48:16}"    | 0.795        | 9.43×    |
+| 8                | spread         | "{0:16},{16:16},{32:16},{48:16}"    | 0.406        | 18.47×   |
+| 2                | master         | sockets                             | 2.505        | 2.99×    |
+| 4                | master         | sockets                             | 1.610        | 4.66×    |
+| 8                | master         | sockets                             | 1.072        | 6.99×    |
+| 2                | close          | sockets                             | 1.523        | 4.92×    |
+| 4                | close          | sockets                             | 0.839        | 8.94×    |
+| 8                | close          | sockets                             | 0.459        | 16.34×   |
+| 2                | spread         | sockets                             | 1.523        | 4.92×    |
+| 4                | spread         | sockets                             | 0.837        | 8.96×    |
+| 8                | spread         | sockets                             | 0.461        | 16.26×   |
+
+---
+
+Affinity Control & Observed Speedup
+
+By tuning OMP_PROC_BIND and OMP_PLACES, thread placement was explicitly mapped to physical cores and NUMA nodes. The spread, close, and master policies were evaluated in combination with different thread counts and placement strategies (sockets vs. manual place lists).
+
+### Future work - Profiling
+
+While I couldn’t execute these tools:
+
+    VTune would have confirmed NUMA imbalance visually and validated thread binding over time.
+    
+    Thread-to-core affinity: Visual timeline of which threads run on which physical cores.
+
+    NUMA memory accesses: It highlights local vs. remote memory accesses, where remote accesses cause latency spikes.
+
+    Imbalance diagnostics: It reveals cores or NUMA nodes under- or over-utilized, aiding in tuning OMP_PLACES and OMP_PROC_BIND.
+
+    LIKWID would have helped validate thread-core-NUMA binding and bandwidth usage, using likwid-topology and likwid-perfctr.
+    
+    likwid-topology: Displays CPU, core, and NUMA layout (like lstopo, but CLI-friendly).
+
+    likwid-pin: Forces thread affinity without modifying the code, ideal for checking placement behavior (e.g., round-robin vs. compact).
+
+    likwid-perfctr: Monitors performance counters (e.g., FLOPS, memory bandwidth, cache misses) per NUMA domain or socket.
+
+These tools, in combination, bridge the gap between CPU architecture and software performance behavior, especially in HPC where NUMA awareness is crucial.
+
+
+### Conclusions
+This tuning confirms the importance of aligning software parallelism with hardware topology:
+
+- NUMA-aware placement avoids memory contention.
+- Binding strategies like spread promote better bandwidth usage.
+- SIMD vectorization accelerates loop-heavy code significantly with no correctness impact.
+- Highest speedup achieved leveraging setup like Wide vector lanes (SIMD), socket-aware mapping, Balanced memory access (spread)
+
+
 
 
 ## Overall Future Work
