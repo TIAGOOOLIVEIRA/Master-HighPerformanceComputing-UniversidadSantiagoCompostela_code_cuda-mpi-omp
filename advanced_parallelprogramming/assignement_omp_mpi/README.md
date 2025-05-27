@@ -1,10 +1,11 @@
 # OpenMP and MPI Labs Assignment
 
-## Labs1, 1. The code multf.c performs the product of matrices
+## Labs1, Vectorization with OpenMP; 1. The code multf.c performs the product of matrices
 
 Performance & Speedup Analysis: Matrix Multiplication (D = A × Bᵗ)
 
 - compute -c 4
+- module load intel vtune
 - export OMP_NUM_THREADS={1,2,4}
 
 Four versions of the matrix multiplication application were evaluated:
@@ -238,9 +239,10 @@ To further improve vectorization, memory access efficiency, and profiling, the f
 - Combining OpenMP for multithreading with SIMD via vectorization maximizes performance in CPU-bound workload.
 
 
-## Labs1, 2,3. Parallelize and vectorize saxpy.c  
+## Labs1, Vectorization with OpenMP; 2,3. Parallelize and vectorize saxpy.c  
 
 - compute -c 4
+- module load intel vtune
 - export OMP_NUM_THREADS={1,2,4}
 
 Three versions of the saxpy factor multiplication application were evaluated:
@@ -481,7 +483,7 @@ Vectorization: 87.2% of Packed FP Operations
 - It would worth to redesign the loops for leveraging omp [colapse (2)] so the product of the iteration spaces (NREPS * N) becomes the total loop space.
 
 
-## Labs1, 4. Vectorize & parallelize the code jacobi.c
+## Labs1, Vectorization with OpenMP; 4. Vectorize & parallelize the code jacobi.c
 
 
 
@@ -780,7 +782,7 @@ For future work, it would wworth it further investigation on:
 
 
 
-## Labs1, 5. Vectorize & parallelize the code swim.c
+## Labs1, Vectorization with OpenMP; 5. Vectorize & parallelize the code swim.c
 
 
 
@@ -961,7 +963,6 @@ Samples: 3K of event 'cycles:u', Event count (approx.): 2265911367
 
 ```
 
-```
   Vtune
 
 ```c
@@ -1132,6 +1133,162 @@ Baseline Observations (No Optimization)
 - OpenMP parallelism + loop vectorization is synergistic — vector units process data faster per thread, OpenMP scales across cores.
 
 - Profiling first is crucial — gprof, perf, and VTune consistently pointed to same hotspots and confirmed gains.
+
+
+
+
+## Labs1, Thread Aﬃnity; 1: heat.c
+
+
+Performance & Speedup Analysis: Matrix Multiplication (D = A × Bᵗ)
+
+- compute -c 64 --mem 246G
+- module load intel vtune
+- export OMP_NUM_THREADS={2,4,8}
+- export OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+- export OMP_PLACES={threads,cores,sockets}
+- export OMP_PROC_BIND={master, close, spread}
+
+
+
+### Compiler and flags used:
+
+
+- **Makefile**: Make/Gprof
+  - **make MODE=profile**
+
+        Basic mode
+
+  - **make MODE=vectorized**
+
+        To add auto-vectorizing flag to compiler
+
+  - **make run-profile**
+
+        Runs program to generate gmon.out
+
+  - **make gprof-report**
+
+        Analyzes and dumps result
+
+  - **cat gprof-report.txt**
+
+        Iinspect report
+
+  - **make clean**
+
+        Clean build                        
+
+**Run with OpenMP + SIMD**: 
+
+
+```c
+ make
+Compiling heat.c as heat with mode: basic
+gcc               -O2 -fopenmp -fopt-info-vec -o heat heat.c -lm
+heat.c:59:18: optimized: loop vectorized using 16 byte vectors
+heat.c:56:20: optimized: loop vectorized using 16 byte vectors
+heat.c:44:3: optimized: loop vectorized using 16 byte vectors
+
+```
+
+
+
+### Statistics & Analysis
+
+Setup: baseline, no optimization
+time ./heat 5000000
+Tiempo  7.455 s.
+Result = 1
+
+real	0m7.470s
+user	0m7.440s
+sys	0m0.004s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  7.491 s.
+Result = 1
+
+real	0m7.504s
+user	0m7.476s
+sys	0m0.004s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  7.505 s.
+Result = 1
+
+real	0m7.521s
+user	0m7.488s
+sys	0m0.007s
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=2, OMP_PROC_BIND=master
+time ./heat 5000000
+Tiempo  2.438 s.
+Result = 1
+
+real	0m2.446s
+user	0m4.861s
+sys	0m0.008s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  2.431 s.
+Result = 1
+
+real	0m2.440s
+user	0m4.848s
+sys	0m0.009s
+[curso370@c206-8 heat]$ time ./heat 5000000
+
+Tiempo  2.466 s.
+Result = 1
+
+real	0m2.472s
+user	0m4.916s
+sys	0m0.007s
+
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=4, OMP_PROC_BIND=master
+time ./heat 5000000
+Tiempo  1.619 s.
+Result = 1
+
+real	0m1.631s
+user	0m6.445s
+sys	0m0.007s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  1.631 s.
+Result = 1
+
+real	0m1.636s
+user	0m6.491s
+sys	0m0.010s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  1.573 s.
+Result = 1
+
+real	0m1.579s
+user	0m6.257s
+sys	0m0.013s
+
+Setup: OpenMP + SIMD, OMP_NUM_THREADS=8, OMP_PROC_BIND=master
+time ./heat 5000000
+Tiempo  1.090 s.
+Result = 1
+
+real	0m1.095s
+user	0m8.664s
+sys	0m0.012s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  1.104 s.
+Result = 1
+
+real	0m1.110s
+user	0m8.777s
+sys	0m0.010s
+[curso370@c206-8 heat]$ time ./heat 5000000
+Tiempo  1.059 s.
+Result = 1
+
+real	0m1.064s
+user	0m8.417s
+sys	0m0.012s
 
 
 
