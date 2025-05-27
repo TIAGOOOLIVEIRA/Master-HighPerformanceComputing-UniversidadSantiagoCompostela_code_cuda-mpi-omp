@@ -1476,6 +1476,43 @@ The following table  compares the best speedups obtained under NUMA-aware config
 
 ## Labs1, Hybrid Programming; 1: pi_integral.c
 
+- module load gcc openmpi/4.0.5_ft3
+- module load intel vtune
+- module load intel impi
+- compute -c 64 --mem 246G
+- export OMP_NUM_THREADS={2,4,8}
+
+
+- **Manual execution**: To get baseline time execution
+
+    - mpicc -fopenmp -O2 -o pi_integral pi_integral.c -lm
+    - export OMP_NUM_THREADS=1
+    - ./mpi_omp_pi 1000000000
+
+
+Single Process and thread execution
+time ./pi_integral 1000000000
+The obtained Pi value is: 3.1415926535899708, the error is: 0.0000000000001776
+
+real	0m1.325s
+user	0m1.319s
+sys	0m0.003s
+[curso370@login210-18 pi_integral]$ time ./pi_integral 1000000000
+The obtained Pi value is: 3.1415926535899708, the error is: 0.0000000000001776
+
+real	0m1.349s
+user	0m1.343s
+sys	0m0.002s
+[curso370@login210-18 pi_integral]$ time ./pi_integral 1000000000
+The obtained Pi value is: 3.1415926535899708, the error is: 0.0000000000001776
+
+real	0m1.325s
+user	0m1.319s
+sys	0m0.002s
+
+
+
+
 
 
 ## Overall Future Work
