@@ -1402,6 +1402,538 @@ This tuning confirms the importance of aligning software parallelism with hardwa
 
 
 
+## Labs1, Thread Aﬃnity; 2: jacobi.c
+
+- compute -c 64 --mem 246G
+- module load intel vtune
+- export OMP_NUM_THREADS={2,4,8}
+- export OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+- export OMP_PLACES={sockets}
+- export OMP_PROC_BIND={master, close, spread}
+
+
+### Statistics & Analysis
+Analysis on the average execution time per different setup of NUMA parameters and application optimization.
+
+---
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 2; OMP_PROC_BIND=master, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.627s
+user	0m5.123s
+sys	0m0.052s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.626s
+user	0m5.131s
+sys	0m0.041s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.637s
+user	0m5.146s
+sys	0m0.049s
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 4; OMP_PROC_BIND=master, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.885s
+user	0m7.270s
+sys	0m0.053s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.922s
+user	0m7.412s
+sys	0m0.056s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.916s
+user	0m7.387s
+sys	0m0.057s
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 8; OMP_PROC_BIND=master, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.542s
+user	0m11.783s
+sys	0m0.063s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.552s
+user	0m11.856s
+sys	0m0.066s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.537s
+user	0m11.701s
+sys	0m0.061s
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 2; OMP_PROC_BIND=close, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.465s
+user	0m4.809s
+sys	0m0.042s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.494s
+user	0m4.868s
+sys	0m0.041s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.475s
+user	0m4.827s
+sys	0m0.045s
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 4; OMP_PROC_BIND=close, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.618s
+user	0m6.189s
+sys	0m0.045s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.589s
+user	0m6.097s
+sys	0m0.041s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.572s
+user	0m6.029s
+sys	0m0.042s
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 8; OMP_PROC_BIND=close, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.169s
+user	0m8.814s
+sys	0m0.047s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.163s
+user	0m8.772s
+sys	0m0.044s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.182s
+user	0m8.916s
+sys	0m0.044s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.186s
+user	0m8.933s
+sys	0m0.056s
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 2; OMP_PROC_BIND=spread, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.724s
+user	0m5.315s
+sys	0m0.047s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.686s
+user	0m5.244s
+sys	0m0.045s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.669s
+user	0m5.210s
+sys	0m0.047s
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 4; OMP_PROC_BIND=spread, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.598s
+user	0m6.106s
+sys	0m0.047s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.588s
+user	0m6.089s
+sys	0m0.047s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.586s
+user	0m6.081s
+sys	0m0.044s
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 8; OMP_PROC_BIND=spread, OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.171s
+user	0m8.833s
+sys	0m0.048s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.173s
+user	0m8.848s
+sys	0m0.050s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.145s
+user	0m8.627s
+sys	0m0.046s
+
+
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 2; OMP_PROC_BIND=master, OMP_PLACES=sockets
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.747s
+user	0m5.354s
+sys	0m0.048s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.691s
+user	0m5.260s
+sys	0m0.044s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.702s
+user	0m5.275s
+sys	0m0.051s
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 4; OMP_PROC_BIND=master, OMP_PLACES=sockets
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.924s
+user	0m7.359s
+sys	0m0.047s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.909s
+user	0m7.375s
+sys	0m0.051s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.921s
+user	0m7.424s
+sys	0m0.051s
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 8; OMP_PROC_BIND=master, OMP_PLACES=sockets
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.540s
+user	0m11.771s
+sys	0m0.066s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.565s
+user	0m11.905s
+sys	0m0.079s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.527s
+user	0m11.659s
+sys	0m0.064s
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 2; OMP_PROC_BIND=close, OMP_PLACES=sockets
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.731s
+user	0m5.317s
+sys	0m0.044s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.689s
+user	0m5.253s
+sys	0m0.045s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.683s
+user	0m5.236s
+sys	0m0.050s
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 4; OMP_PROC_BIND=close, OMP_PLACES=sockets
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.666s
+user	0m6.402s
+sys	0m0.045s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.646s
+user	0m6.326s
+sys	0m0.045s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.625s
+user	0m6.231s
+sys	0m0.054s
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 8; OMP_PROC_BIND=close, OMP_PLACES=sockets
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.272s
+user	0m9.632s
+sys	0m0.056s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.293s
+user	0m9.797s
+sys	0m0.061s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.253s
+user	0m9.486s
+sys	0m0.050s
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 2; OMP_PROC_BIND=spread, OMP_PLACES=sockets
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.687s
+user	0m5.233s
+sys	0m0.049s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.675s
+user	0m5.222s
+sys	0m0.049s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m2.686s
+user	0m5.247s
+sys	0m0.045s
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 4; OMP_PROC_BIND=spread, OMP_PLACES=sockets
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.655s
+user	0m6.357s
+sys	0m0.046s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.641s
+user	0m6.289s
+sys	0m0.054s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.625s
+user	0m6.234s
+sys	0m0.052s
+
+
+
+Setup: OpenMP + SIMD + Auto-vectorization; OMP_NUM_THREADS: 8; OMP_PROC_BIND=spread, OMP_PLACES=sockets
+time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.282s
+user	0m9.690s
+sys	0m0.067s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.290s
+user	0m9.775s
+sys	0m0.052s
+[curso370@c206-8 jacobi]$ time ./jacobi 
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+
+real	0m1.271s
+user	0m9.627s
+sys	0m0.048s
+
+
+
+
+### Conclusions
+
 
 ## Overall Future Work
 
