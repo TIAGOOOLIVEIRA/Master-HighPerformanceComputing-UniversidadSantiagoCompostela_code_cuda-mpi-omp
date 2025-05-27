@@ -595,7 +595,7 @@ Vectorization: 0.0% of Packed FP Operations
 ```
 
 
-**Second run with optimization - No Vectorization**: 
+**Second run with OpenMP+SIMD - No Auto-Vectorization**: 
 
   Gprof
 
@@ -685,7 +685,7 @@ Vectorization: 95.9% of Packed FP Operations
 ...
 ```
 
-**Second run with optimization + Auto Vectorization**: 
+**Second run with OpenMP+SIMD + Auto Vectorization**: 
 
 ```c
 make MODE=vectorized
@@ -920,6 +920,156 @@ Vectorization: 0.0% of Packed FP Operations
 ...
 ```
 
+**Second run with OpenMP+SIMD - No Auto-Vectorization**:
+
+  Gprof
+
+```c
+...
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  Ts/call  Ts/call  name    
+100.06      0.71     0.71                             __gmon_start__
+
+...
+```
+
+```
+  Perf
+
+```c
+...
+Samples: 3K of event 'cycles:u', Event count (approx.): 2265911367
+  Children      Self  Command  Shared Object     Symbol
++   72.59%     0.00%  swim     [unknown]         [.] 0000000000000000
++   67.44%     0.00%  swim     libgomp.so.1.0.0  [.] 0x000014be06014986
++   39.14%    39.14%  swim     swim              [.] calc1._omp_fn.0
++   31.33%    31.33%  swim     swim              [.] calc2._omp_fn.0
++   22.57%     0.03%  swim     libgomp.so.1.0.0  [.] GOMP_parallel
++   19.43%    19.43%  swim     swim              [.] calc3._omp_fn.0
++    9.80%     0.00%  swim     [unknown]         [.] 0x4c6c520000000000
++    7.79%     0.00%  swim     [unknown]         [.] 0x000000003ad1b717
++    3.87%     3.87%  swim     libgomp.so.1.0.0  [.] 0x000000000001e282
++    3.87%     0.00%  swim     libgomp.so.1.0.0  [.] 0x000014be06017282
++    1.79%     0.00%  swim     [unknown]         [.] 0x5541d68949564100
++    1.79%     0.17%  swim     swim              [.] main
++    1.79%     0.00%  swim     libc-2.31.so      [.] __libc_start_main
++    1.77%     1.77%  swim     libgomp.so.1.0.0  [.] 0x000000000001e43a
+...
+
+```
+
+```
+  Vtune
+
+```c
+vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./swim
+
+...
+Vectorization: 13.5% of Packed FP Operations
+ | A significant fraction of floating point arithmetic instructions are scalar.
+ | This indicates that the code was not fully vectorized. Use Intel Advisor to
+ | see possible reasons why the code was not vectorized.
+ |
+    Instruction Mix
+        SP FLOPs: 29.3% of uOps
+            Packed: 0.0% from SP FP
+                128-bit: 0.0% from SP FP
+                256-bit: 0.0% from SP FP
+                512-bit: 0.0% from SP FP
+            Scalar: 100.0% from SP FP
+             | This code has floating point operations and is not vectorized.
+             | Consider either recompiling the code with optimization options
+             | that allow vectorization or using Intel Advisor to vectorize the
+             | loops.
+             |
+        DP FLOPs: 10.2% of uOps
+            Packed: 52.4% from DP FP
+                128-bit: 52.4% from DP FP
+                 | Using the latest vector instruction set can improve
+                 | parallelism for this code. Consider either recompiling the
+                 | code with the latest instruction set or using Intel Advisor
+                 | to get vectorization help.
+                 |
+                256-bit: 0.0% from DP FP
+                512-bit: 0.0% from DP FP
+            Scalar: 47.6% from DP FP
+             | A significant fraction of floating point arithmetic instructions
+             | are scalar. This indicates that the code was not fully
+             | vectorized. Use Intel Advisor to see possible reasons why the
+             | code was not vectorized.
+             |
+        x87 FLOPs: 0.0% of uOps
+        Non-FP: 60.5% of uOps
+    FP Arith/Mem Rd Instr. Ratio: 2.446
+    FP Arith/Mem Wr Instr. Ratio: 6.282
+...
+
+```
+
+**Second run with OpenMP+SIMD + Auto Vectorization**: 
+
+```c
+make MODE=vectorized
+Compiling swim.c as swim with mode: vectorized
+gcc               -O3 -fopenmp -march=native -ftree-vectorize -fopt-info-vec -o swim swim.c -lm
+swim.c: In function ‘initial’:
+swim.c:237:36: optimized: loop vectorized using 64 byte vectors
+swim.c:237:36: optimized: loop vectorized using 32 byte vectors
+swim.c:276:37: optimized: loop vectorized using 64 byte vectors
+swim.c:276:37: optimized: loop vectorized using 32 byte vectors
+swim.c:324:30: optimized: loop vectorized using 64 byte vectors
+swim.c:324:30: optimized: loop vectorized using 32 byte vectors
+swim.c:206:5: optimized: loop vectorized using 64 byte vectors
+swim.c:206:5: optimized:  loop versioned for vectorization because of possible aliasing
+swim.c:206:5: optimized: loop vectorized using 32 byte vectors
+swim.c:200:9: optimized: loop vectorized using 64 byte vectors
+swim.c:200:9: optimized: loop vectorized using 32 byte vectors
+swim.c:245:5: optimized: loop vectorized using 64 byte vectors
+swim.c:245:5: optimized:  loop versioned for vectorization because of possible aliasing
+swim.c:245:5: optimized: loop vectorized using 32 byte vectors
+swim.c:283:5: optimized: loop vectorized using 64 byte vectors
+swim.c:283:5: optimized:  loop versioned for vectorization because of possible aliasing
+swim.c:283:5: optimized: loop vectorized using 32 byte vectors
+swim.c:333:5: optimized: loop vectorized using 64 byte vectors
+swim.c:333:5: optimized:  loop versioned for vectorization because of possible aliasing
+swim.c:333:5: optimized: loop vectorized using 32 byte vectors
+swim.c:122:9: optimized: loop vectorized using 64 byte vectors
+swim.c:122:9: optimized: loop vectorized using 32 byte vectors
+
+
+vtune -collect performance-snapshot -collect memory-access -collect hotspots -collect threading -- ./swim
+
+...
+Vectorization: 79.8% of Packed FP Operations
+    Instruction Mix
+        SP FLOPs: 15.3% of uOps
+            Packed: 94.4% from SP FP
+                128-bit: 0.0% from SP FP
+                256-bit: 0.0% from SP FP
+                512-bit: 94.4% from SP FP
+            Scalar: 5.6% from SP FP
+        DP FLOPs: 20.3% of uOps
+            Packed: 68.9% from DP FP
+                128-bit: 0.0% from DP FP
+                256-bit: 0.0% from DP FP
+                512-bit: 68.9% from DP FP
+            Scalar: 31.1% from DP FP
+             | A significant fraction of floating point arithmetic instructions
+             | are scalar. This indicates that the code was not fully
+             | vectorized. Use Intel Advisor to see possible reasons why the
+             | code was not vectorized.
+             |
+        x87 FLOPs: 0.0% of uOps
+        Non-FP: 64.5% of uOps
+    FP Arith/Mem Rd Instr. Ratio: 1.496
+    FP Arith/Mem Wr Instr. Ratio: 6.847
+...
+
+```
+
 
 ### Statistics & Analysis
 
@@ -934,22 +1084,54 @@ This table summarizes the average real time over 3 runs per optimization setup a
 | OpenMP + SIMD + auto vectorization        |    4    | 0.114             | 7.52×               |
 | OpenMP + SIMD + auto vectorization        |    8    | 0.152             | 5.64×               |
 
-#todo: add summary from profiling tools for optimized version
+----
+
+
+
+VTune analysis on main optimization attributes
+
+| Setup                            | Packed FP (%) | Notable Observation |
+|----------------------------------|---------------|----------------------|
+| No Optimization                  | 0%            | Fully scalar code. |
+| OpenMP + SIMD                    | 13.5%         | Limited due to aliasing and scalar loops. |
+| OpenMP + SIMD + Auto-Vectorize  | **79.8%**     | Significant vectorization of both SP and DP ops using **512-bit SIMD**. |
+
+----
+
+
+
+Profiling tools overview
+
+Baseline Observations (No Optimization)
+
+| Tool   | Key Finding |
+|--------|-------------|
+| `gprof` | `calc1`, `calc2`, and `calc3` account for **100% of execution time**. |
+| `perf` | Confirms top CPU cycles consumed by `calc1`, `calc2`, `calc3`. |
+| `vtune` | **No vectorization detected**, 100% scalar FP operations. |
+
+
+
 
 ### Conclusions
 
-#todo: add ohter suggestions from the profiling tools for optimized version
 
+- Best speedup achieved with OpenMP + SIMD + auto vectorization using 4 threads.
 
-Best speedup achieved with OpenMP + SIMD + auto vectorization using 4 threads.
-
-8 threads had slightly worse performance, likely due to:
+- 8 threads had slightly worse performance, likely due to:
 
     Thread contention or oversubscription
 
     NUMA/memory bandwidth saturation
 
-Auto vectorization combined with hand-annotated OpenMP provided the highest overall performance.
+- Auto vectorization combined with hand-annotated OpenMP provided the highest overall performance. Reducing runtime by ~86%.
+- Manual SIMD alone is insufficient — aliasing and loop dependencies can block vectorization.
+
+- Auto-vectorization with aggressive compiler flags (-O3 -march=native -fopt-info-vec) is essential to unlock full hardware potential.
+
+- OpenMP parallelism + loop vectorization is synergistic — vector units process data faster per thread, OpenMP scales across cores.
+
+- Profiling first is crucial — gprof, perf, and VTune consistently pointed to same hotspots and confirmed gains.
 
 
 
