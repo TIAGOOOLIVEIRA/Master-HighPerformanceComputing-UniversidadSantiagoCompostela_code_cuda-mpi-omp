@@ -1,10 +1,11 @@
 # OpenMP and MPI Labs Assignment
 
-## Labs1, 1. The code multf.c performs the product of matrices
+## Labs1, Vectorization with OpenMP; 1. The code multf.c performs the product of matrices
 
 Performance & Speedup Analysis: Matrix Multiplication (D = A × Bᵗ)
 
 - compute -c 4
+- module load intel vtune
 - export OMP_NUM_THREADS={1,2,4}
 
 Four versions of the matrix multiplication application were evaluated:
@@ -238,9 +239,10 @@ To further improve vectorization, memory access efficiency, and profiling, the f
 - Combining OpenMP for multithreading with SIMD via vectorization maximizes performance in CPU-bound workload.
 
 
-## Labs1, 2,3. Parallelize and vectorize saxpy.c  
+## Labs1, Vectorization with OpenMP; 2,3. Parallelize and vectorize saxpy.c  
 
 - compute -c 4
+- module load intel vtune
 - export OMP_NUM_THREADS={1,2,4}
 
 Three versions of the saxpy factor multiplication application were evaluated:
@@ -481,7 +483,7 @@ Vectorization: 87.2% of Packed FP Operations
 - It would worth to redesign the loops for leveraging omp [colapse (2)] so the product of the iteration spaces (NREPS * N) becomes the total loop space.
 
 
-## Labs1, 4. Vectorize & parallelize the code jacobi.c
+## Labs1, Vectorization with OpenMP; 4. Vectorize & parallelize the code jacobi.c
 
 
 
@@ -780,7 +782,7 @@ For future work, it would wworth it further investigation on:
 
 
 
-## Labs1, 5. Vectorize & parallelize the code swim.c
+## Labs1, Vectorization with OpenMP; 5. Vectorize & parallelize the code swim.c
 
 
 
@@ -961,7 +963,6 @@ Samples: 3K of event 'cycles:u', Event count (approx.): 2265911367
 
 ```
 
-```
   Vtune
 
 ```c
@@ -1132,6 +1133,273 @@ Baseline Observations (No Optimization)
 - OpenMP parallelism + loop vectorization is synergistic — vector units process data faster per thread, OpenMP scales across cores.
 
 - Profiling first is crucial — gprof, perf, and VTune consistently pointed to same hotspots and confirmed gains.
+
+
+
+
+## Labs1, Thread Aﬃnity; 1: heat.c
+
+
+
+- compute -c 64 --mem 246G
+- module load intel vtune
+- export OMP_NUM_THREADS={2,4,8}
+- export OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+- export OMP_PLACES={threads,cores,sockets}
+- export OMP_PROC_BIND={master, close, spread}
+
+
+
+### Compiler and flags used:
+
+
+- **Makefile**: Make/Gprof
+  - **make MODE=profile**
+
+        Basic mode
+
+  - **make MODE=vectorized**
+
+        To add auto-vectorizing flag to compiler
+
+  - **make run-profile**
+
+        Runs program to generate gmon.out
+
+  - **make gprof-report**
+
+        Analyzes and dumps result
+
+  - **cat gprof-report.txt**
+
+        Iinspect report
+
+  - **make clean**
+
+        Clean build                        
+
+**Run with OpenMP + SIMD**: 
+
+
+```c
+ make
+Compiling heat.c as heat with mode: basic
+gcc               -O2 -fopenmp -fopt-info-vec -o heat heat.c -lm
+heat.c:59:18: optimized: loop vectorized using 16 byte vectors
+heat.c:56:20: optimized: loop vectorized using 16 byte vectors
+heat.c:44:3: optimized: loop vectorized using 16 byte vectors
+
+```
+
+
+Hardware locality CPU/NUMA layout
+```c
+lstopo --no-legend --physical 
+Machine (249GB total)
+  Package P#0 + L3 (48MB)
+    Group0
+      NUMANode P#0 (62GB)
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#0 + PU P#0
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#1 + PU P#1
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#2 + PU P#2
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#3 + PU P#3
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#4 + PU P#4
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#5 + PU P#5
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#6 + PU P#6
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#7 + PU P#7
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#8 + PU P#8
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#9 + PU P#9
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#10 + PU P#10
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#11 + PU P#11
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#12 + PU P#12
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#13 + PU P#13
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#14 + PU P#14
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#15 + PU P#15
+      HostBridge
+        PCI 00:11.5 (SATA)
+        PCI 00:17.0 (SATA)
+        PCIBridge
+          PCI 02:00.0 (Ethernet)
+            Net "eno1"
+          PCI 02:00.1 (Ethernet)
+            Net "eno2"
+        PCIBridge
+          PCIBridge
+            PCI 04:00.0 (VGA)
+      HostBridge
+        PCIBridge
+          PCI 31:00.0 (Ethernet)
+            Net "ens2f0"
+            OpenFabrics "mlx5_bond_0"
+          PCI 31:00.1 (Ethernet)
+            Net "ens2f1"
+    Group0
+      NUMANode P#1 (63GB)
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#16 + PU P#16
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#17 + PU P#17
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#18 + PU P#18
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#19 + PU P#19
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#20 + PU P#20
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#21 + PU P#21
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#22 + PU P#22
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#23 + PU P#23
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#24 + PU P#24
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#25 + PU P#25
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#26 + PU P#26
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#27 + PU P#27
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#28 + PU P#28
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#29 + PU P#29
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#30 + PU P#30
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#31 + PU P#31
+      HostBridge
+        PCIBridge
+          PCI 66:00.0 (NVMExp)
+            Block(Disk) "nvme0n1"
+  Package P#1 + L3 (48MB)
+    Group0
+      NUMANode P#2 (63GB)
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#0 + PU P#32
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#1 + PU P#33
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#2 + PU P#34
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#3 + PU P#35
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#4 + PU P#36
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#5 + PU P#37
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#6 + PU P#38
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#7 + PU P#39
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#8 + PU P#40
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#9 + PU P#41
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#10 + PU P#42
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#11 + PU P#43
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#12 + PU P#44
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#13 + PU P#45
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#14 + PU P#46
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#15 + PU P#47
+      HostBridge
+        PCIBridge
+          PCI 98:00.0 (3D)
+    Group0
+      NUMANode P#3 (60GB)
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#16 + PU P#48
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#17 + PU P#49
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#18 + PU P#50
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#19 + PU P#51
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#20 + PU P#52
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#21 + PU P#53
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#22 + PU P#54
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#23 + PU P#55
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#24 + PU P#56
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#25 + PU P#57
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#26 + PU P#58
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#27 + PU P#59
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#28 + PU P#60
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#29 + PU P#61
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#30 + PU P#62
+      L2 (1280KB) + L1d (48KB) + L1i (32KB) + Core P#31 + PU P#63
+      HostBridge
+        PCIBridge
+          PCI ca:00.0 (InfiniBand)
+            Net "ib0"
+            OpenFabrics "mlx5_2"
+
+
+lscpu
+Architecture:                    x86_64
+CPU op-mode(s):                  32-bit, 64-bit
+Byte Order:                      Little Endian
+Address sizes:                   46 bits physical, 57 bits virtual
+CPU(s):                          64
+On-line CPU(s) list:             0-63
+Thread(s) per core:              1
+Core(s) per socket:              32
+Socket(s):                       2
+NUMA node(s):                    4
+Vendor ID:                       GenuineIntel
+CPU family:                      6
+Model:                           106
+Model name:                      Intel(R) Xeon(R) Platinum 8352Y CPU @ 2.20GHz
+Stepping:                        6
+CPU MHz:                         2810.447
+CPU max MHz:                     3400.0000
+CPU min MHz:                     800.0000
+BogoMIPS:                        4400.00
+Virtualization:                  VT-x
+L1d cache:                       3 MiB
+L1i cache:                       2 MiB
+L2 cache:                        80 MiB
+L3 cache:                        96 MiB
+NUMA node0 CPU(s):               0-15
+NUMA node1 CPU(s):               16-31
+NUMA node2 CPU(s):               32-47
+NUMA node3 CPU(s):               48-63
+...            
+```
+
+
+### Statistics & Analysis
+Analysis on the average execution time per different setup of NUMA parameters and application optimization.
+
+---
+
+
+| OMP_NUM_THREADS | OMP_PROC_BIND | OMP_PLACES                          | Avg Time (s) | Speedup |
+|------------------|----------------|-------------------------------------|--------------|---------|
+| 1                | -              | -                                   | 7.499        | 1.00×    |
+| 2                | master         | "{0:16},{16:16},{32:16},{48:16}"    | 2.450        | 3.06×    |
+| 4                | master         | "{0:16},{16:16},{32:16},{48:16}"    | 1.611        | 4.65×    |
+| 8                | master         | "{0:16},{16:16},{32:16},{48:16}"    | 1.090        | 6.88×    |
+| 2                | close          | "{0:16},{16:16},{32:16},{48:16}"    | 1.501        | 5.00×    |
+| 4                | close          | "{0:16},{16:16},{32:16},{48:16}"    | 0.782        | 9.59×    |
+| 8                | close          | "{0:16},{16:16},{32:16},{48:16}"    | 0.409        | 18.33×   |
+| 2                | spread         | "{0:16},{16:16},{32:16},{48:16}"    | 1.534        | 4.89×    |
+| 4                | spread         | "{0:16},{16:16},{32:16},{48:16}"    | 0.795        | 9.43×    |
+| 8                | spread         | "{0:16},{16:16},{32:16},{48:16}"    | 0.406        | 18.47×   |
+| 2                | master         | sockets                             | 2.505        | 2.99×    |
+| 4                | master         | sockets                             | 1.610        | 4.66×    |
+| 8                | master         | sockets                             | 1.072        | 6.99×    |
+| 2                | close          | sockets                             | 1.523        | 4.92×    |
+| 4                | close          | sockets                             | 0.839        | 8.94×    |
+| 8                | close          | sockets                             | 0.459        | 16.34×   |
+| 2                | spread         | sockets                             | 1.523        | 4.92×    |
+| 4                | spread         | sockets                             | 0.837        | 8.96×    |
+| 8                | spread         | sockets                             | 0.461        | 16.26×   |
+
+---
+
+Affinity Control & Observed Speedup
+
+By tuning OMP_PROC_BIND and OMP_PLACES, thread placement was explicitly mapped to physical cores and NUMA nodes. The spread, close, and master policies were evaluated in combination with different thread counts and placement strategies (sockets vs. manual place lists).
+
+### Future work - Profiling
+
+While I couldn’t execute these tools:
+
+    VTune would have confirmed NUMA imbalance visually and validated thread binding over time.
+    
+    Thread-to-core affinity: Visual timeline of which threads run on which physical cores.
+
+    NUMA memory accesses: It highlights local vs. remote memory accesses, where remote accesses cause latency spikes.
+
+    Imbalance diagnostics: It reveals cores or NUMA nodes under- or over-utilized, aiding in tuning OMP_PLACES and OMP_PROC_BIND.
+
+    LIKWID would have helped validate thread-core-NUMA binding and bandwidth usage, using likwid-topology and likwid-perfctr.
+    
+    likwid-topology: Displays CPU, core, and NUMA layout (like lstopo, but CLI-friendly).
+
+    likwid-pin: Forces thread affinity without modifying the code, ideal for checking placement behavior (e.g., round-robin vs. compact).
+
+    likwid-perfctr: Monitors performance counters (e.g., FLOPS, memory bandwidth, cache misses) per NUMA domain or socket.
+
+These tools, in combination, bridge the gap between CPU architecture and software performance behavior, especially in HPC where NUMA awareness is crucial.
+
+
+### Conclusions
+This tuning confirms the importance of aligning software parallelism with hardware topology:
+
+- NUMA-aware placement avoids memory contention.
+- Binding strategies like spread promote better bandwidth usage.
+- SIMD vectorization accelerates loop-heavy code significantly with no correctness impact.
+- Highest speedup achieved leveraging setup like Wide vector lanes (SIMD), socket-aware mapping, Balanced memory access (spread)
+
 
 
 
