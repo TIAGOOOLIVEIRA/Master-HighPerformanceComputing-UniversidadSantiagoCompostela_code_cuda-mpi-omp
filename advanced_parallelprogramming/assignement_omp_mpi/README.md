@@ -1402,6 +1402,81 @@ This tuning confirms the importance of aligning software parallelism with hardwa
 
 
 
+## Labs1, Thread Aﬃnity; 2: jacobi.c
+
+Aims to run NUMA optimizations over the previous jacobi.c optimized for OpenMP, SIMD and Auto-Vectorizing.
+
+- compute -c 64 --mem 246G
+- module load intel vtune
+- export OMP_NUM_THREADS={2,4,8}
+- export OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+- export OMP_PLACES={sockets}
+- export OMP_PROC_BIND={master, close, spread}
+
+
+### Statistics & Analysis
+Analysis on the average execution time per different setup of NUMA parameters and application optimization.
+
+---
+
+| OMP_PLACES  | OMP_PROC_BIND | OMP_NUM_THREADS | Avg Time (s) | Speedup |
+|-------------|----------------|------------------|---------------|----------|
+| {0:16,...}  | master         | 2                | 2.630         | 1.03     |
+| {0:16,...}  | master         | 4                | 1.910         | 1.42     |
+| {0:16,...}  | master         | 8                | 1.540         | 1.76     |
+| {0:16,...}  | close          | 2                | 2.480         | 1.09     |
+| {0:16,...}  | close          | 4                | 1.590         | 1.70     |
+| {0:16,...}  | close          | 8                | 1.170         | 2.32     |
+| {0:16,...}  | spread         | 2                | 2.690         | 1.01     |
+| {0:16,...}  | spread         | 4                | 1.590         | 1.70     |
+| {0:16,...}  | spread         | 8                | 1.160         | 2.34     |
+| sockets     | master         | 2                | 2.710         | 1.00     |
+| sockets     | master         | 4                | 1.920         | 1.41     |
+| sockets     | master         | 8                | 1.540         | 1.76     |
+| sockets     | close          | 2                | 2.700         | 1.00     |
+| sockets     | close          | 4                | 1.650         | 1.64     |
+| sockets     | close          | 8                | 1.270         | 2.13     |
+| sockets     | spread         | 2                | 2.680         | 1.01     |
+| sockets     | spread         | 4                | 1.640         | 1.65     |
+| sockets     | spread         | 8                | 1.280         | 2.12     |
+
+
+---
+
+The following table  compares the best speedups obtained under NUMA-aware configurations against the previous optimized baseline setups where no explicit NUMA layout or thread binding was defined.
+
+| Setup Description                          | Threads | Avg Time (s) | Speedup vs Baseline |
+|-------------------------------------------|---------|--------------|---------------------|
+| No optimization                            |   1     | 6.205        | 1.00× (baseline)    |
+| OpenMP + SIMD                              |   4     | 1.918        | 3.23×               |
+| OpenMP + SIMD + Auto Vectorization         |   4     | 1.752        | 3.54×               |
+| OpenMP + SIMD + Auto Vectorization         |   8     | 1.867        | 3.32×               |
+| NUMA-Aware + Bind=spread + Threads=8       |   8     | 1.160        | 5.35× ✅             |
+| NUMA-Aware + Bind=close + Threads=8        |   8     | 1.170        | 5.30× ✅             |
+| NUMA-Aware + Bind=spread + Threads=4       |   4     | 1.590        | 3.90×               |
+| NUMA-Aware + Bind=close + Threads=4        |   4     | 1.590        | 3.90×               |
+| NUMA-Aware + Bind=master + Threads=4       |   4     | 1.910        | 3.25×               |
+
+
+
+### Conclusions
+
+- NUMA-aware configurations with spread or close bindings at 8 threads deliver the best speedup (~5.3–5.4×), significantly outperforming both the baseline and the NUMA-unaware optimizations.
+
+- Using OMP_PLACES="{0:16},{16:16},{32:16},{48:16}" ensures thread spread across distinct NUMA nodes, improving memory locality and reducing contention.
+
+- spread and close policies outperform master, suggesting that distributing threads across NUMA nodes (with smart binding) leads to better cache utilization and memory access patterns.
+
+- The speedup stagnates or slightly regresses with master binding, especially with increasing thread count, due to oversaturation of a single NUMA node.
+
+- NUMA-aware execution adds a critical optimization layer beyond vectorization and OpenMP, proving especially important as the number of threads scales.
+
+
+
+
+## Labs1, Hybrid Programming; 1: pi_integral.c
+
+
 
 ## Overall Future Work
 
