@@ -23,6 +23,8 @@
 #include <omp.h>
 #include <stdio.h>
 #include <math.h>
+#include "../shared/place_report_omp.h"
+
 
 #define m 4000
 #define n 4000
@@ -48,6 +50,8 @@ int main()
     double dx,dy;
     static double uold[n][m];
 
+    place_report_omp();
+    
 /* Initialize data*/
 
     initialize (n,m,alpha,&dx,&dy,u,f);
