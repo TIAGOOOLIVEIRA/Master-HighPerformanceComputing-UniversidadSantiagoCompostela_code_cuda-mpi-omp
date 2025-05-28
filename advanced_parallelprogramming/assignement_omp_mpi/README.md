@@ -1589,7 +1589,6 @@ Also the optimizations for NUMA were added to get additional level of optimizati
 
 
 
-
 ### Statistics & Analysis
 
 
@@ -1631,6 +1630,66 @@ Speed analysis
     - Less cache and memory sharing benefit.
 
 - The affinity output confirmed tha-t OpenMP threads were well-packed inside sockets. The benefit of the explicit environment variables.
+
+
+
+## Labs1, Hybrid Programming; 2: dotprod.c 
+
+
+- module load gcc openmpi/4.0.5_ft3
+- module load intel vtune
+- module load intel impi
+
+
+
+- **Manual execution**: To get baseline time execution (0,0)
+
+Before implementing MPI, OpenMP/SIMD
+    - make
+    - export OMP_NUM_THREADS=1
+    - ./dotprod 1000000000
+
+
+
+- **Slurm job**
+
+Also the optimizations for NUMA were added to get additional level of optimization
+
+
+- export OMP_PROC_BIND=close
+- export OMP_PLACES=sockets
+
+
+    - sbatch dotprod.sh
+    - ./dotprod.sh
+
+
+
+
+
+### Statistics & Analysis
+
+---
+
+Speed analysis
+
+| Configuration (MPI × OMP) | Avg Time (s) | Speedup vs Baseline |
+|---------------------------|--------------|----------------------|
+| 1 × 1 (unopt)             | 0.34300      | 1.00× (baseline)     |
+| 2 × 8                     | 0.20877      | 1.64×                |
+| 4 × 4                     | 0.11792      | 2.91×                |
+| 8 × 2                     | 0.09237      | 3.71×                |
+| 16 × 1                    | 0.08577      | 4.00×                |
+
+
+
+### Conclusions
+
+- With proper baseline, the best speedup is ~4×, using 16 MPI processes with 1 thread each.
+
+- This result aligns with improved memory locality and load balancing, especially with OMP_PROC_BIND=close and OMP_PLACES=cores.
+
+- There are rooms for improvements, given the application is not hitting linear speedup (~16×), which is expected due to memory bandwidth limits and lack of further SIMD optimization in the baseline run.
 
 ## Overall Future Work
 
