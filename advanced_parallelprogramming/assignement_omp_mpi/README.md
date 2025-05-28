@@ -1451,15 +1451,98 @@ The following table  compares the best speedups obtained under NUMA-aware config
 | OpenMP + SIMD                              |   4     | 1.918        | 3.23×               |
 | OpenMP + SIMD + Auto Vectorization         |   4     | 1.752        | 3.54×               |
 | OpenMP + SIMD + Auto Vectorization         |   8     | 1.867        | 3.32×               |
-| NUMA-Aware + Bind=spread + Threads=8       |   8     | 1.160        | 5.35× ✅             |
-| NUMA-Aware + Bind=close + Threads=8        |   8     | 1.170        | 5.30× ✅             |
+| NUMA-Aware + Bind=spread + Threads=8       |   8     | 1.160        | 5.35×              |
+| NUMA-Aware + Bind=close + Threads=8        |   8     | 1.170        | 5.30×              |
 | NUMA-Aware + Bind=spread + Threads=4       |   4     | 1.590        | 3.90×               |
 | NUMA-Aware + Bind=close + Threads=4        |   4     | 1.590        | 3.90×               |
 | NUMA-Aware + Bind=master + Threads=4       |   4     | 1.910        | 3.25×               |
 
+---
+
+
+
+**Following an additional reporting for the PLACES and BIND** 
+
+Code reused from [Essentials Of Parallel Computing](https://github.com/essentialsofparallelcomputing/Chapter14/tree/master/OpenMP)
+
+```c
+[curso370@login210-18 jacobi]$ make
+Compiling jacobi.c as jacobi with mode: basic
+gcc               -O2 -fopenmp -fopt-info-vec place_report_omp.o -lm -o jacobi jacobi.c -lm
+jacobi.c:146:39: optimized: loop vectorized using 16 byte vectors
+[curso370@login210-18 jacobi]$ export OMP_PLACES="{0:16},{16:16},{32:16},{48:16}"
+[curso370@login210-18 jacobi]$ export OMP_PLACES=sockets
+[curso370@login210-18 jacobi]$ export OMP_PROC_BIND=spread
+[curso370@login210-18 jacobi]$ export OMP_NUM_THREADS=8
+[curso370@login210-18 jacobi]$ ./jacobi 
+Running with 8 thread(s)
+  proc_bind is spread
+  proc_num_places is 2
+Hello from thread  0: (core affinity = 0-31,64-95) OpenMP socket is  0
+Hello from thread  1: (core affinity = 0-31,64-95) OpenMP socket is  0
+Hello from thread  2: (core affinity = 0-31,64-95) OpenMP socket is  0
+Hello from thread  3: (core affinity = 0-31,64-95) OpenMP socket is  0
+Hello from thread  4: (core affinity = 32-63,96-127) OpenMP socket is  1
+Hello from thread  5: (core affinity = 32-63,96-127) OpenMP socket is  1
+Hello from thread  6: (core affinity = 32-63,96-127) OpenMP socket is  1
+Hello from thread  7: (core affinity = 32-63,96-127) OpenMP socket is  1
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+[curso370@login210-18 jacobi]$ export OMP_PROC_BIND=master
+[curso370@login210-18 jacobi]$ ./jacobi 
+Running with 8 thread(s)
+  proc_bind is master
+  proc_num_places is 2
+Hello from thread  0: (core affinity = 0-31,64-95) OpenMP socket is  0
+Hello from thread  1: (core affinity = 0-31,64-95) OpenMP socket is  0
+Hello from thread  2: (core affinity = 0-31,64-95) OpenMP socket is  0
+Hello from thread  3: (core affinity = 0-31,64-95) OpenMP socket is  0
+Hello from thread  4: (core affinity = 0-31,64-95) OpenMP socket is  0
+Hello from thread  5: (core affinity = 0-31,64-95) OpenMP socket is  0
+Hello from thread  6: (core affinity = 0-31,64-95) OpenMP socket is  0
+Hello from thread  7: (core affinity = 0-31,64-95) OpenMP socket is  0
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+[curso370@login210-18 jacobi]$ export OMP_PROC_BIND=close
+[curso370@login210-18 jacobi]$ ./jacobi 
+Running with 8 thread(s)
+  proc_bind is close
+  proc_num_places is 2
+Hello from thread  0: (core affinity = 0-31,64-95) OpenMP socket is  0
+Hello from thread  1: (core affinity = 0-31,64-95) OpenMP socket is  0
+Hello from thread  2: (core affinity = 0-31,64-95) OpenMP socket is  0
+Hello from thread  3: (core affinity = 0-31,64-95) OpenMP socket is  0
+Hello from thread  4: (core affinity = 32-63,96-127) OpenMP socket is  1
+Hello from thread  5: (core affinity = 32-63,96-127) OpenMP socket is  1
+Hello from thread  6: (core affinity = 32-63,96-127) OpenMP socket is  1
+Hello from thread  7: (core affinity = 32-63,96-127) OpenMP socket is  1
+Total Number of Iterations=101
+Residual=6.243228E-11
+Solution Error=1.332995E-04
+```
+---
+
+Summary
+
+| `OMP_PROC_BIND` | Thread Placement                 | Memory Access | Cache Reuse | Potential Issue                        |
+|------------------|----------------------------------|----------------|-------------|-----------------------------------------|
+| `spread`         | Evenly across both sockets       | High BW        | Less reuse  | Inter-socket communication              |
+| `master`         | All on socket 0                  | Saturated      | High        | Bandwidth bottleneck on socket 0        |
+| `close`          | First fill socket 0, then socket 1 | Balanced     | Balanced    | Best compromise between reuse and spread|
 
 
 ### Conclusions
+
+- OMP_PLACES=sockets: The threads are allowed to bind to sockets/NUMA. Which resolves to:
+    - Socket 0 → cores 0–31, 64–95
+    - Socket 1 → cores 32–63, 96–127
+
+- When using OMP_PLACES=sockets, changing the OMP_PROC_BIND value significantly affects how threads are bound to hardware resources. For a **memory-intensive workload like Jacobi, using spread or close is generally preferable to master**, since these avoid overloading a single NUMA node.
+    - Spread for full bandwidth and don't have tight data sharing
+    - Close for a balance between memory bandwidth and data locality
+    - Master mostly for memory locality and shared cache outweigh the need for distributed memory bandwidth
 
 - NUMA-aware configurations with spread or close bindings at 8 threads deliver the best speedup (~5.3–5.4×), significantly outperforming both the baseline and the NUMA-unaware optimizations.
 
@@ -1472,11 +1555,47 @@ The following table  compares the best speedups obtained under NUMA-aware config
 - NUMA-aware execution adds a critical optimization layer beyond vectorization and OpenMP, proving especially important as the number of threads scales.
 
 
-
-
 ## Labs1, Hybrid Programming; 1: pi_integral.c
 
+- module load gcc openmpi/4.0.5_ft3
+- module load intel vtune
+- module load intel impi
+- compute -c 64 --mem 246G
+- export OMP_NUM_THREADS={2,4,8}
 
+
+- **Manual execution**: To get baseline time execution
+
+    - mpicc -fopenmp -O2 -o pi_integral pi_integral.c -lm
+    - export OMP_NUM_THREADS=1
+    - ./mpi_omp_pi 1000000000
+
+
+Single Process and thread execution
+time ./pi_integral 1000000000
+The obtained Pi value is: 3.1415926535899708, the error is: 0.0000000000001776
+
+real	0m1.325s
+user	0m1.319s
+sys	0m0.003s
+[curso370@login210-18 pi_integral]$ time ./pi_integral 1000000000
+The obtained Pi value is: 3.1415926535899708, the error is: 0.0000000000001776
+
+real	0m1.349s
+user	0m1.343s
+sys	0m0.002s
+[curso370@login210-18 pi_integral]$ time ./pi_integral 1000000000
+The obtained Pi value is: 3.1415926535899708, the error is: 0.0000000000001776
+
+real	0m1.325s
+user	0m1.319s
+sys	0m0.002s
+
+
+add vtune-gui for NUMA 
+add vtune for MPI
+
+- **Slurm job**
 
 ## Overall Future Work
 
@@ -1489,4 +1608,5 @@ The following table  compares the best speedups obtained under NUMA-aware config
 
 
 ## References 
-[Santiago de Compostela - HPC - HPC Tools - Profiling tools for SpMV](https://github.com/TIAGOOOLIVEIRA/Master-HighPerformanceComputing-UniversidadSantiagoCompostela_code_cuda-mpi-omp/tree/main/hpc_tools/spmv)
+- [Parallel and High Performance Computing](www.manning.com/books/parallel-and-high-performance-computing)
+- [Santiago de Compostela - HPC - HPC Tools - Profiling tools for SpMV](https://github.com/TIAGOOOLIVEIRA/Master-HighPerformanceComputing-UniversidadSantiagoCompostela_code_cuda-mpi-omp/tree/main/hpc_tools/spmv)

@@ -8,6 +8,8 @@ endif
 
 TARGET ?= jacobi
 SRC ?= jacobi.c
+SHARED_DIR = ../shared
+OBJS = place_report_omp.o
 
 MODE ?= basic
 
@@ -34,9 +36,13 @@ endif
 
 all: $(TARGET)
 
-$(TARGET): $(SRC)
+$(TARGET): $(SRC) $(OBJS)
 	@echo "Compiling $(SRC) as $(TARGET) with mode: $(MODE)"
-	$(CC) $(CFLAGS) -o $(TARGET) $(SRC) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(SRC) $(OBJS) $(LDFLAGS)
+
+# Build object from shared source
+place_report_omp.o: $(SHARED_DIR)/place_report_omp.c $(SHARED_DIR)/place_report_omp.h
+	$(CC) $(CFLAGS) -c $(SHARED_DIR)/place_report_omp.c -o place_report_omp.o
 
 # Run the application to generate gmon.out (only meaningful in 'profile' mode)
 .PHONY: run-profile
@@ -54,4 +60,4 @@ gprof-report: gmon.out
 # Clean rule
 .PHONY: clean
 clean:
-	rm -f $(TARGET) gmon.out gprof-report.txt
+	rm -f $(TARGET) *.o gmon.out gprof-report.txt
