@@ -11,13 +11,10 @@
 #watch -n 1 squeue -u $USER
 #To automate in the interactive session, make sh executable
 #chmod +x pi_integral.sh
-#module avail cuda
 
 #to run in interactive mode
 #./pi_integral.sh
 
-
-# Load required modules
 module purge
 module load gcc openmpi/4.0.5_ft3
 module load intel vtune
@@ -25,9 +22,10 @@ module load intel impi
 
 echo "Compiling with profiling support"
 make clean
-make
+#to compile with aggressive optimization (auto-vectorization, etc.)
+make aggressive
 
-# Run configurations: (MPI_PROCS, OMP_THREADS)
+#(MPI_PROCS, OMP_THREADS)
 declare -a configs=(
   "2 8"
   "4 4"
@@ -35,6 +33,7 @@ declare -a configs=(
   "16 1"
 )
 
+#for average performance, run each configuration multiple times
 runs=3
 integralsize=1000000000
 

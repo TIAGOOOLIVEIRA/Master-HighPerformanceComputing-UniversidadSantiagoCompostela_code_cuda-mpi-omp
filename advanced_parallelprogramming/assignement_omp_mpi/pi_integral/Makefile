@@ -38,13 +38,13 @@ debug: $(SHAREDOBJ)
 	$(CC) $(CFLAGS_DEBUG) $(SRC) $(SHAREDOBJ) -o $(TARGET)_debug $(LDFLAGS)
 
 aggressive: $(SHAREDOBJ)
-	$(CC) $(CFLAGS_AGGRESSIVE) $(SRC) $(SHAREDOBJ) -o $(TARGET)_opt $(LDFLAGS)
+	$(CC) $(CFLAGS_AGGRESSIVE) $(SRC) $(SHAREDOBJ) -o $(TARGET) $(LDFLAGS)
 
 $(SHAREDOBJ): $(SHAREDSRC)
 	$(CC) -c $(BASEFLAGS) -O2 $< -o $@
 
 clean:
-	rm -f $(TARGET) $(TARGET)_prof $(TARGET)_debug $(TARGET)_vtune $(TARGET)_opt *.o gmon.out
+	rm -f $(TARGET) $(TARGET)_prof $(TARGET)_debug $(TARGET)_vtune *.o gmon.out
 
 help:
 	@echo "Available targets:"

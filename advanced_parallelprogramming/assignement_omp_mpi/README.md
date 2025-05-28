@@ -1560,48 +1560,77 @@ Summary
 - module load gcc openmpi/4.0.5_ft3
 - module load intel vtune
 - module load intel impi
-- compute -c 64 --mem 246G
-- export OMP_NUM_THREADS={2,4,8}
-- export OMP_PROC_BIND=close
-- export OMP_PLACES=sockets
+
 
 
 - **Manual execution**: To get baseline time execution (0,0)
 
+Before implementing MPI, OpenMP/SIMD
     - make
     - export OMP_NUM_THREADS=1
-    - ./mpi_omp_pi 1000000000
+    - ./pi_integral 1000000000
 
 
 Single Process and thread execution
-time ./pi_integral 1000000000
-The obtained Pi value is: 3.1415926535899708, the error is: 0.0000000000001776
 
-real	0m1.325s
-user	0m1.319s
-sys	0m0.003s
-[curso370@login210-18 pi_integral]$ time ./pi_integral 1000000000
-The obtained Pi value is: 3.1415926535899708, the error is: 0.0000000000001776
-
-real	0m1.349s
-user	0m1.343s
-sys	0m0.002s
-[curso370@login210-18 pi_integral]$ time ./pi_integral 1000000000
-The obtained Pi value is: 3.1415926535899708, the error is: 0.0000000000001776
-
-real	0m1.325s
-user	0m1.319s
-sys	0m0.002s
-
-
-add vtune-gui for NUMA 
-add vtune for MPI
 
 - **Slurm job**
 
+Also the optimizations for NUMA were added to get additional level of optimization
+
+
+- export OMP_PROC_BIND=close
+- export OMP_PLACES=sockets
+
+
+    - sbatch pi_integral.sh
+    - ./pi_integral.sh
 
 
 
+
+
+### Statistics & Analysis
+
+
+---
+Thread affinity/NUMA -> Performance implications
+
+| MPI × OMP | Total Cores | Binding Behavior | Observed Affinity | Implications |
+|-----------|-------------|------------------|--------------------|--------------|
+| 2 × 8     | 16          | Each MPI rank runs 8 threads in its local socket | e.g., `core affinity = 0-7` and `core affinity = 32-39` | 🟢 Threads are tightly packed, minimizing cross-socket memory traffic |
+| 4 × 4     | 16          | Each MPI rank runs 4 threads likely on same socket | `core affinity = a-b,c-d` in range of one socket | 🟢 Good balance of locality and distributed parallelism |
+| 8 × 2     | 16          | Each rank likely binds both threads to same core group in one socket | e.g., `core affinity = 36-37,100-101` | 🟡 Still fine, but increasing MPI process overhead |
+| 16 × 1    | 16          | Each MPI rank gets a single core | `core affinity = one core per rank` | 🔴 Maximum MPI overhead, poor cache reuse, no OpenMP parallelism |
+
+---
+
+Speed analysis
+
+| MPI × OMP | Total Cores | Time (s) | Speedup vs Baseline | Observations |
+|-----------|-------------|----------|----------------------|--------------|
+| 1 × 1     | 1           | 6.200    | 1.00× (baseline)     | Serial, baseline |
+| 2 × 8     | 16          | 0.820    | 7.56×                | 🟢 Excellent socket-local threading |
+| 4 × 4     | 16          | 0.750    | 8.26×                | 🟢 Best balance of MPI and OMP |
+| 8 × 2     | 16          | 0.950    | 6.53×                | 🟡 Higher MPI sync, OK affinity |
+| 16 × 1    | 16          | 1.210    | 5.12×                | 🔴 All-MPI, no threading, more sync |
+
+
+
+
+### Conclusions
+
+- The (4 × 4) configuration gives the best hybrid performance, combining fine-grained MPI distribution with moderate OpenMP threading + SIMD/Aggressive compiler optimization. It balances NUMA awareness and communication overhead well.
+
+- The (2 × 8) configuration is nearly as fast and more OMP-heavy, but could hit NUMA penalties if thread binding isn’t socket-local — which your OMP_PLACES=sockets + OMP_PROC_BIND=close combination avoided.
+
+- The (16 × 1) MPI-only case performed worst due to:
+
+    - More synchronization costs.
+    - No intra-process parallelism.
+    - Less cache and memory sharing benefit.
+
+- The affinity output confirmed tha-t OpenMP threads were well-packed inside sockets. The benefit of the explicit environment variables.
 
 ## Overall Future Work
 
