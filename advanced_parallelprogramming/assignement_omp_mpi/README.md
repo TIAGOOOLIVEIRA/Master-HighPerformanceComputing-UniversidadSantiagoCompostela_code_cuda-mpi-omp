@@ -1562,11 +1562,13 @@ Summary
 - module load intel impi
 - compute -c 64 --mem 246G
 - export OMP_NUM_THREADS={2,4,8}
+- export OMP_PROC_BIND=close
+- export OMP_PLACES=sockets
 
 
-- **Manual execution**: To get baseline time execution
+- **Manual execution**: To get baseline time execution (0,0)
 
-    - mpicc -fopenmp -O2 -o pi_integral pi_integral.c -lm
+    - make
     - export OMP_NUM_THREADS=1
     - ./mpi_omp_pi 1000000000
 
@@ -1596,6 +1598,10 @@ add vtune-gui for NUMA
 add vtune for MPI
 
 - **Slurm job**
+
+
+
+
 
 ## Overall Future Work
 

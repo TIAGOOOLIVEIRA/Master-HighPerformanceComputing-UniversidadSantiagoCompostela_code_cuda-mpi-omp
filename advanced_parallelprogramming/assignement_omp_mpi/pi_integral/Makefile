@@ -1,44 +1,56 @@
 UNAME_S := $(shell uname -s)
 
+# Platform-specific compiler and flags
 ifeq ($(UNAME_S),Darwin)
-    # MacOS
-    CC     = mpicc
-    CFLAGS = -Xpreprocessor -fopenmp -Ofast -march=native -funroll-loops -ffast-math -Wall -Wextra
-    LDFLAGS = -lomp -lm
-    PROF_FLAGS = -pg
+    CC         = mpicc
+    BASEFLAGS  = -Xpreprocessor -fopenmp -Wall -Wextra
+    LDFLAGS    = -lomp -lm
 else
-    # Linux HPC
-    CC     = mpicc
-    CFLAGS = -fopenmp -O3 -march=native -ffast-math -funroll-loops -fopt-info-vec-optimized -Wall -Wextra
-    LDFLAGS = -lm
-    PROF_FLAGS = -pg
+    CC         = mpicc
+    BASEFLAGS  = -fopenmp -Wall -Wextra
+    LDFLAGS    = -lm
 endif
 
-SRC     = pi_integral.c
-TARGET  = pi_integral
+CFLAGS_BASIC      = $(BASEFLAGS) -O3 -march=native -ffast-math -fopt-info-vec
+CFLAGS_PROFILE    = $(CFLAGS_BASIC) -pg
+CFLAGS_DEBUG      = $(BASEFLAGS) -g
+CFLAGS_VTUNE      = $(CFLAGS_BASIC) -g -fno-inline
+CFLAGS_AGGRESSIVE = $(BASEFLAGS) -O3 -march=native -funroll-loops -ffast-math -finline-functions -ftree-vectorize -fopt-info-vec-optimized
+
+SRC        = pi_integral.c
+TARGET     = pi_integral
+SHAREDDIR  = ../shared
+SHAREDOBJ  = place_report_mpi.o
+SHAREDSRC  = $(SHAREDDIR)/place_report_mpi.c
 
 all: basic
 
-#no optimization to compile with OpenMP and MPI support
-#mpicc -fopenmp -O2 -o pi_integral pi_integral.c -lm
+basic: $(SHAREDOBJ)
+	$(CC) $(CFLAGS_BASIC) $(SRC) $(SHAREDOBJ) -o $(TARGET) $(LDFLAGS)
 
-#Basic optimized build with SIMD and OpenMP
-basic:
-	$(CC) $(CFLAGS) $(SRC) -o $(TARGET) $(LDFLAGS)
+profile: $(SHAREDOBJ)
+	$(CC) $(CFLAGS_PROFILE) $(SRC) $(SHAREDOBJ) -o $(TARGET)_prof $(LDFLAGS)
 
-#Profiling-ready
-profile:
-	$(CC) $(CFLAGS) $(PROF_FLAGS) $(SRC) -o $(TARGET)_prof $(LDFLAGS)
+vtune: $(SHAREDOBJ)
+	$(CC) $(CFLAGS_VTUNE) $(SRC) $(SHAREDOBJ) -o $(TARGET)_vtune $(LDFLAGS)
 
-debug:
-	$(CC) -g -fopenmp -Wall -Wextra $(SRC) -o $(TARGET)_debug $(LDFLAGS)
+debug: $(SHAREDOBJ)
+	$(CC) $(CFLAGS_DEBUG) $(SRC) $(SHAREDOBJ) -o $(TARGET)_debug $(LDFLAGS)
+
+aggressive: $(SHAREDOBJ)
+	$(CC) $(CFLAGS_AGGRESSIVE) $(SRC) $(SHAREDOBJ) -o $(TARGET)_opt $(LDFLAGS)
+
+$(SHAREDOBJ): $(SHAREDSRC)
+	$(CC) -c $(BASEFLAGS) -O2 $< -o $@
 
 clean:
-	rm -f $(TARGET) $(TARGET)_prof $(TARGET)_debug *.o gmon.out
+	rm -f $(TARGET) $(TARGET)_prof $(TARGET)_debug $(TARGET)_vtune $(TARGET)_opt *.o gmon.out
 
 help:
 	@echo "Available targets:"
-	@echo "  make basic      - Build with OpenMP + SIMD + auto-vectorization"
-	@echo "  make profile    - Build with profiling enabled (gprof)"
-	@echo "  make debug      - Debug version"
-	@echo "  make clean      - Remove binaries"
+	@echo "  make basic       - Build with OpenMP + SIMD + base optimization"
+	@echo "  make aggressive  - Aggressive optimization with vectorization"
+	@echo "  make profile     - Build with gprof profiling enabled"
+	@echo "  make vtune       - Build for VTune analysis (with debug symbols)"
+	@echo "  make debug       - Debug version"
+	@echo "  make clean       - Remove binaries and objects"
