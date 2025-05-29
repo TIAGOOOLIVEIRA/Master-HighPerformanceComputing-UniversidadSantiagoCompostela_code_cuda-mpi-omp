@@ -1788,16 +1788,20 @@ Effective Physical Core Utilization: 2.0% (1.276 out of 64)
   Vtune-gui
 
  - Vtune Top Hotspots
- <img src="images/vtune-dotprod-hotspots.png" alt="Vtune-gui dotprod hotspots" width="500">
+
+ <img src="dotprod/images/vtune-dotprod-hotspots.png" alt="Vtune-gui dotprod hotspots" width="500">
  
  - Vtune Bottom-Up
-<img src="images/vtune-dotprod-bottomup.png" alt="Vtune-gui dotprod bottom-up" width="500">
+
+<img src="dotprod/images/vtune-dotprod-bottomup.png" alt="Vtune-gui dotprod bottom-up" width="500">
  
  - Vtune caller-callee (rank7)
-<img src="images/vtune-dotprod-callercallee.png" alt="Vtune-gui dotprod caller-callee" width="500">
+
+<img src="dotprod/images/vtune-dotprod-callercallee.png" alt="Vtune-gui dotprod caller-callee" width="500">
  
  - Vtune Flame Graph
-<img src="images/vtune-dotprod-flamegraph.png" alt="Vtune-gui dotprod flame-graph" width="500">
+
+<img src="dotprod/images/vtune-dotprod-flamegraph.png" alt="Vtune-gui dotprod flame-graph" width="500">
 
 
 | Issue                             | Explanation                                                                 | Recommendation                                                           |
@@ -1810,7 +1814,7 @@ Effective Physical Core Utilization: 2.0% (1.276 out of 64)
 
 ### Conclusions
 
-- VTune (Cli,Gui) allows to reason about further fine tunning on different layers of the application, as the table above tells. The tool also make suggestions as hints to keep optimizing the application.
+- VTune (Cli,Gui) allows to reason about further fine tunning on different layers of the application, as the table above shows. The tool also make suggestions as hints to keep optimizing the application.
 
 - With proper baseline, the best speedup is ~4×, using 16 MPI processes with 1 thread each.
 
