@@ -1681,9 +1681,136 @@ Speed analysis
 | 8 × 2                     | 0.09237      | 3.71×                |
 | 16 × 1                    | 0.08577      | 4.00×                |
 
+### Additional Insights via Intel VTune for MPI
 
+This analysis aims to understand the load balancing of the workload across processes and threads, taking into accoount the affinity policy (BIND, PLACE) and rank configuration.
+
+- export OMP_PROC_BIND=close
+- export OMP_PLACES=sockets
+- export OMP_NUM_THREADS=2
+- Processes, Threads (8,2)
+
+
+  Vtune-cli
+
+```c
+  mpirun -np 8 vtune -collect hotspots -result-dir vtune_results ./dotprod 100000000
+
+vtune: Analyzing data in the node-wide mode. The hostname (login210-18) will be added to the result path/name.
+vtune: Warning: Only user space will be profiled due to credentials lack. Consider changing /proc/sys/kernel/perf_event_paranoid file for enabling kernel space profiling.
+vtune: Collection started.
+...
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+Hello from rank 7, on login210-18. (core affinity = 56-63,120-127)
+Hello from rank 6, on login210-18. (core affinity = 48-55,112-119)
+Hello from rank 1, on login210-18. (core affinity = 8-15,72-79)
+Hello from rank 5, on login210-18. (core affinity = 24-31,88-95)
+Hello from rank 4, on login210-18. (core affinity = 16-23,80-87)
+[0] MPI startup(): Rank    Pid      Node name    Pin cpu
+[0] MPI startup(): 0       825075   login210-18  {0,1,2,3,4,5,6,7,64,65,66,67,68,69,70,71}
+[0] MPI startup(): 1       825076   login210-18  {8,9,10,11,12,13,14,15,72,73,74,75,76,77,78,79}
+Hello from rank 2, on login210-18. (core affinity = 32-39,96-103)
+Hello from rank 3, on login210-18. (core affinity = 40-47,104-111)
+[0] MPI startup(): 2       825060   login210-18  {32,33,34,35,36,37,38,39,96,97,98,99,100,101,102,103}
+[0] MPI startup(): 3       825021   login210-18  {40,41,42,43,44,45,46,47,104,105,106,107,108,109,110,111}
+[0] MPI startup(): 4       825090   login210-18  {16,17,18,19,20,21,22,23,80,81,82,83,84,85,86,87}
+[0] MPI startup(): 5       825077   login210-18  {24,25,26,27,28,29,30,31,88,89,90,91,92,93,94,95}
+[0] MPI startup(): 6       825062   login210-18  {48,49,50,51,52,53,54,55,112,113,114,115,116,117,118,119}
+[0] MPI startup(): 7       825061   login210-18  {56,57,58,59,60,61,62,63,120,121,122,123,124,125,126,127}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+Hello from rank 0, on login210-18. (core affinity = 0-7,64-71)
+[Rank 0] Dot product = -8333333083389880320.0000000000
+[Rank 0] Execution time: 0.082730 seconds
+vtune: Collection stopped.
+...
+vtune: Executing actions 75 % Generating a report                              Elapsed Time: 34.537s
+    CPU Time: 49.000s
+        Effective Time: 43.491s
+        Spin Time: 5.509s
+         | A significant portion of CPU time is spent waiting. Use this metric
+         | to discover which synchronizations are spinning. Consider adjusting
+         | spin wait parameters, changing the lock implementation (for example,
+         | by backing off then descheduling), or adjusting the synchronization
+         | granularity.
+         |
+            MPI Busy Wait Time: 4.729s
+            Other: 0.780s
+        Overhead Time: 0s
+            Other: 0s
+    Total Thread Count: 24
+    Paused Time: 0s
+
+Top Hotspots
+Function            Module              CPU Time  % of CPU Time(%)
+------------------  ------------------  --------  ----------------
+PMPI_Init           libmpi.so.12         15.493s             31.6%
+pthread_spin_lock   libpthread.so.0       9.291s             19.0%
+PMPI_Barrier        libmpi.so.12          4.721s              9.6%
+func@0x1a974        libmlx5-rdmav34.so    3.952s              8.1%
+ucs_event_set_wait  libucs.so.0           1.601s              3.3%
+[Others]            N/A                  13.942s             28.5%
+Effective Physical Core Utilization: 2.0% (1.276 out of 64)
+ | The metric value is low, which may signal a poor physical CPU cores
+ | utilization caused by:
+ |     - load imbalance
+ |     - threading runtime overhead
+ |     - contended synchronization
+ |     - thread/process underutilization
+ |     - incorrect affinity that utilizes logical cores instead of physical
+ |       cores
+ | Explore sub-metrics to estimate the efficiency of MPI and OpenMP parallelism
+ | or run the Locks and Waits analysis to identify parallel bottlenecks for
+ | other parallel runtimes.
+ |
+    Effective Logical Core Utilization: 1.0% (1.278 out of 128)
+     | The metric value is low, which may signal a poor logical CPU cores
+     | utilization. Consider improving physical core utilization as the first
+     | step and then look at opportunities to utilize logical cores, which in
+     | some cases can improve processor throughput and overall performance of
+     | multi-threaded applications.
+  ...
+
+```
+---
+
+  Vtune-gui
+
+ - Vtune Top Hotspots
+ <img src="images/vtune-dotprod-hotspots.png" alt="Vtune-gui dotprod hotspots" width="500">
+ 
+ - Vtune Bottom-Up
+<img src="images/vtune-dotprod-bottomup.png" alt="Vtune-gui dotprod bottom-up" width="500">
+ 
+ - Vtune caller-callee (rank7)
+<img src="images/vtune-dotprod-callercallee.png" alt="Vtune-gui dotprod caller-callee" width="500">
+ 
+ - Vtune Flame Graph
+<img src="images/vtune-dotprod-flamegraph.png" alt="Vtune-gui dotprod flame-graph" width="500">
+
+
+| Issue                             | Explanation                                                                 | Recommendation                                                           |
+|----------------------------------|-----------------------------------------------------------------------------|---------------------------------------------------------------------------|
+| 🔸 Load Imbalance                | Uneven thread/rank CPU times                                                | Profile input distribution; use guided scheduling or dynamic work split   |
+| 🔸 MPI Synchronization Overhead | High time in `PMPI_Init`, `PMPI_Barrier`                                    | Avoid unnecessary barriers; explore non-blocking collectives              |
+| 🔸 Spin Time                     | ~5.5s in `pthread_spin_lock`                                                | Replace with mutex/backoff or increase critical section granularity       |
+| 🔸 Poor Core Utilization         | Only 2% physical cores active on average                                    | Investigate vectorization, OpenMP loop parallelization, and NUMA locality |
+| 🔸 Thread Affinity               | Even with `OMP_PLACES=sockets`, imbalance suggests binding not optimal     | Consider `OMP_PLACES=cores` and benchmark both setups                     |
 
 ### Conclusions
+
+- VTune (Cli,Gui) allows to reason about further fine tunning on different layers of the application, as the table above tells. The tool also make suggestions as hints to keep optimizing the application.
 
 - With proper baseline, the best speedup is ~4×, using 16 MPI processes with 1 thread each.
 
