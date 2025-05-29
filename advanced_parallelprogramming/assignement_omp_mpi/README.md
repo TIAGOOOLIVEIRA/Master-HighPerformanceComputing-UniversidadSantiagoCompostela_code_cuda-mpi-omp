@@ -1814,7 +1814,7 @@ Effective Physical Core Utilization: 2.0% (1.276 out of 64)
 
 ### Conclusions
 
-- VTune (Cli,Gui) allows to reason about further fine tunning on different layers of the application, as the table above shows. The tool also make suggestions as hints to keep optimizing the application.
+- VTune (Cli,Gui) allows to reason about further fine tunning on different layers of the application. With those hints is possible to keep optimizing the application by sticking to additional hipothetisis, as the table above shows (Recommendation).
 
 - With proper baseline, the best speedup is ~4×, using 16 MPI processes with 1 thread each.
 
