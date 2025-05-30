@@ -1822,6 +1822,14 @@ Effective Physical Core Utilization: 2.0% (1.276 out of 64)
 
 - There are rooms for improvements, given the application is not hitting linear speedup (~16×), which is expected due to memory bandwidth limits and lack of further SIMD optimization in the baseline run.
 
+- For further investigations and exercising the concepts, it could also worth to validate the affinity polici being used by pinning MPI ranks to sockets so that the threads can spread to other cores.
+    - mpirun -n 8 --bind-to socket ./dotprod 100000000 ...
+    - export OMP_PLACES=cores
+    - OMP_CPU_BIND=true
+
+
+
+
 ## Overall Future Work
 
 ### HPC Tools - Compilation, profiling and optimization of HPC Software
