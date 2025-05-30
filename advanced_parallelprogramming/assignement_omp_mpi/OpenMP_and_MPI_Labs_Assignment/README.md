@@ -1829,17 +1829,6 @@ Effective Physical Core Utilization: 2.0% (1.276 out of 64)
 
 
 
-
-## Overall Future Work
-
-### HPC Tools - Compilation, profiling and optimization of HPC Software
-  - "3. The compiler: a key tool to exploit HPC resources"
-  - "10 - ProfOpt03.pdf"
-  - cc -S -fverbose-asm -O3 -march=native -g saxpy.c -o saxpy.s
-  - as -alhnd saxpy.s > saxpy.lst
-  - cat saxpy.lst
-
-
 ## References 
 - [Parallel and High Performance Computing](www.manning.com/books/parallel-and-high-performance-computing)
 - [Santiago de Compostela - HPC - HPC Tools - Profiling tools for SpMV](https://github.com/TIAGOOOLIVEIRA/Master-HighPerformanceComputing-UniversidadSantiagoCompostela_code_cuda-mpi-omp/tree/main/hpc_tools/spmv)
