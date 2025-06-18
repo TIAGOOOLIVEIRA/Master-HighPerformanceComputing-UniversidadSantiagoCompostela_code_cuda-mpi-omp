@@ -1,0 +1,363 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploy a cluster managed with Slurm
+
+Parameters:
+  SlurmPackageUrl:
+    Type: String
+    Default: https://download.schedmd.com/slurm/slurm-22.05-latest.tar.bz2
+    Description: URL to the Slurm installation package. The filename must be like slurm-*.tar.bz2
+
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC where the cluster nodes will be launched
+
+  HeadNodeAZ:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Description: Availability Zone where the head node will be launched
+
+  KeyPair:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Key pair that will be used to launch the cluster instances
+
+  LatestAmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+
+  HeadNodeInstanceType:
+    Type: String
+    Default: c5.large
+    Description: Instance type of the head node
+
+  ComputeNodeInstanceType:
+    Type: String
+    Default: c5.large
+    Description: Instance type of the compute nodes
+
+  ComputeNodesAmount:
+    Type: Number
+    Default: 2
+    AllowedValues: [1, 2, 3, 4, 5, 6, 7, 8]
+    Description: "Number of compute nodes (min: 1, max: 8)"
+    
+  HPCOrHTC:
+    Type: String
+    Default: HPC
+    AllowedValues: [HPC, HTC]
+    Description: "Cluster type (HPC or HTC). HPC: compute nodes are launched in the same AZ of the head node. HTC: compute nodes are launched in different AZs assigned using a round-robin policy."
+    
+Metadata: 
+  AWS::CloudFormation::Interface: 
+    ParameterGroups:
+      - Label: 
+          default: Network
+        Parameters:
+          - VpcId
+          - HeadNodeAZ
+          - HPCOrHTC
+      - Label:
+          default: Instances
+        Parameters:
+          - HeadNodeInstanceType
+          - ComputeNodeInstanceType
+          - ComputeNodesAmount
+          - KeyPair
+          - LatestAmiId
+      - Label: 
+          default: Packages
+        Parameters: 
+          - SlurmPackageUrl
+          - PluginPrefixUrl
+    ParameterLabels:
+      VpcId: 
+        default: VPC ID
+      HeadNodeAZ:
+        default: Head node AZ
+      HPCOrHTC:
+        default: HPC or HTC cluster
+      HeadNodeInstanceType:
+        default: Head node instance type
+      ComputeNodeInstanceType: 
+        default: Compute node instance type
+      ComputeNodesAmount:
+        default: Number of compute nodes
+      KeyPair: 
+        default: Key pair
+      LatestAmiId: 
+        default: Latest Amazon Linux 2 AMI ID
+      SlurmPackageUrl: 
+        default: Slurm package URL
+      PluginPrefixUrl: 
+        default: Plugin URL prefix
+
+Transform: AWS::LanguageExtensions
+
+Conditions:
+  IsHPCCluster: !Equals [ !Ref HPCOrHTC, HPC ]
+#  Never: !Equals [ 0, 1 ]
+
+Mappings:
+  ComputeNodesData:
+    Identifiers:
+      "1": ["0"]
+      "2": ["0", "1"]
+      "3": ["0", "1", "2"]
+      "4": ["0", "1", "2", "3"]
+      "5": ["0", "1", "2", "3", "4"]
+      "6": ["0", "1", "2", "3", "4", "5"]
+      "7": ["0", "1", "2", "3", "4", "5", "6"]
+      "8": ["0", "1", "2", "3", "4", "5", "6", "7"]
+  AvailabilityZones:
+    us-east-1:
+      "0": "us-east-1a"
+      "1": "us-east-1b"
+      "2": "us-east-1c"
+      "3": "us-east-1d"
+      "4": "us-east-1e"
+      "5": "us-east-1f"
+      "6": "us-east-1a"
+      "7": "us-east-1b"
+
+Resources:
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+        GroupDescription: Allow SSH traffic from Internet and traffic between Slurm nodes
+        VpcId: !Ref VpcId
+        SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+  SecurityGroupInbound:
+      Type: AWS::EC2::SecurityGroupIngress
+      Properties:
+        IpProtocol: -1
+        SourceSecurityGroupId: !GetAtt [ SecurityGroup, GroupId ]
+        GroupId: !GetAtt [ SecurityGroup, GroupId ]
+          
+  'Fn::ForEach::ComputeNodes':
+    - InstanceID
+    - !FindInMap [ComputeNodesData, Identifiers, !Ref ComputeNodesAmount]
+    - 'ComputeNode${InstanceID}':
+        Type: AWS::EC2::Instance
+        DependsOn: HeadNode
+        Properties:
+          ImageId: !Ref LatestAmiId
+          InstanceType: !Ref ComputeNodeInstanceType
+          IamInstanceProfile: LabInstanceProfile
+          KeyName: !Ref KeyPair
+          SecurityGroupIds:
+            - !GetAtt [SecurityGroup, GroupId]
+          AvailabilityZone: !If
+            - IsHPCCluster
+            - !Ref HeadNodeAZ
+            - !FindInMap [ AvailabilityZones, us-east-1, !Ref InstanceID]
+          Tags:
+            - Key: Name
+              Value: !Join [ "-", [ !Ref AWS::StackName, !Join [ "", [ "cn", !Ref InstanceID ]]]]
+          UserData:
+            Fn::Base64: !Sub |
+                #!/bin/bash -x
+                # Install packages
+                yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+                yum install munge munge-libs munge-devel -y
+                yum install openssl openssl-devel pam-devel numactl numactl-devel hwloc hwloc-devel lua lua-devel readline-devel rrdtool-devel ncurses-devel man2html libibmad libibumad rpm-build -y
+
+                # Configure Munge
+                echo "welcometoslurmamazonuserwelcometoslurmamazonuserwelcometoslurmamazonuser" | tee /etc/munge/munge.key
+                chown munge:munge /etc/munge/munge.key
+                chmod 600 /etc/munge/munge.key
+                chown -R munge /etc/munge/ /var/log/munge/
+                chmod 0700 /etc/munge/ /var/log/munge/
+                systemctl enable munge
+                systemctl start munge
+                sleep 15
+
+                # Install OpenMPI
+                yum install -y openmpi openmpi-devel
+
+                # Mount NFS share
+                mkdir -p /nfs
+                mount -t nfs ${HeadNode.PrivateIp}:/nfs /nfs
+                echo "${HeadNode.PrivateIp}:/nfs /nfs nfs rw,nosuid 0 0" >> /etc/fstab
+                export SLURM_HOME=/nfs/slurm
+
+                # Set environment variables
+                echo 'export SLURM_HOME=/nfs/slurm' | tee /etc/profile.d/slurm.sh
+                echo 'export SLURM_CONF=$SLURM_HOME/etc/slurm.conf' | tee -a /etc/profile.d/slurm.sh
+                echo 'export SLURM_NODENAME=cn${InstanceID}' | tee -a /etc/profile.d/slurm.sh
+                echo 'export PATH=/nfs/slurm/bin:$PATH' | tee -a /etc/profile.d/slurm.sh
+
+                # Launch Slurmd
+                mkdir -p /var/spool/slurm
+                sed "s|@SLURM_NODENAME@|cn${InstanceID}|" $SLURM_HOME/etc/slurm/slurmd.service > /lib/systemd/system/slurmd.service
+                systemctl enable slurmd.service
+                systemctl start slurmd.service
+                                          
+                /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource ComputeNode${InstanceID} --region ${AWS::Region}
+        CreationPolicy:
+          ResourceSignal:
+            Timeout: PT5M
+        
+  HeadNode:
+    Type: AWS::EC2::Instance
+#    Condition: Never
+    Properties:
+      ImageId: !Ref LatestAmiId
+      InstanceType: !Ref HeadNodeInstanceType
+      IamInstanceProfile: LabInstanceProfile
+      KeyName:  !Ref KeyPair
+      SecurityGroupIds:
+        - !GetAtt [ SecurityGroup, GroupId ]
+      AvailabilityZone: !Ref HeadNodeAZ
+      Tags:
+        - Key: Name
+          Value: !Join [ "-", [ !Ref AWS::StackName, "headnode" ]]
+      UserData: 
+        Fn::Base64: !Sub |
+              #!/bin/bash -x
+              # Install packages
+              yum update -y
+              yum install nfs-utils -y
+              yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+              yum install munge munge-libs munge-devel -y
+              yum install openssl openssl-devel pam-devel numactl numactl-devel hwloc hwloc-devel lua lua-devel readline-devel rrdtool-devel ncurses-devel man2html libibmad libibumad rpm-build -y
+              yum groupinstall "Development Tools" -y
+
+              # Install OpenMPI
+              yum install -y openmpi openmpi-devel
+              
+              # Configure NFS share
+              mkdir -p /nfs
+              echo "/nfs *(rw,async,no_subtree_check,no_root_squash)" | tee /etc/exports
+              systemctl enable nfs
+              systemctl start nfs
+              exportfs -av
+              
+              # OpenMPI shared folder in NFS
+              mkdir /nfs/mpi
+              chmod 777 /nfs/mpi
+
+              # Configure Munge
+              echo "welcometoslurmamazonuserwelcometoslurmamazonuserwelcometoslurmamazonuser" | tee /etc/munge/munge.key
+              chown munge:munge /etc/munge/munge.key
+              chmod 600 /etc/munge/munge.key
+              chown -R munge /etc/munge/ /var/log/munge/
+              chmod 0700 /etc/munge/ /var/log/munge/
+              systemctl enable munge
+              systemctl start munge
+              sleep 5
+
+              # Install Slurm
+              cd /home/ec2-user/
+              wget -q ${SlurmPackageUrl}
+              tar -xvf /home/ec2-user/slurm-*.tar.bz2 -C /home/ec2-user
+              cd /home/ec2-user/slurm-*
+              /home/ec2-user/slurm-*/configure --prefix=/nfs/slurm
+              make -j 4
+              make install
+              sleep 5
+              export SLURM_HOME=/nfs/slurm
+              mkdir -p $SLURM_HOME/etc/slurm
+              'cp' /home/ec2-user/slurm-*/etc/* $SLURM_HOME/etc/slurm
+
+              cat > $SLURM_HOME/etc/slurm.conf <<'EOF'
+              ClusterName=${AWS::StackName}
+              ControlMachine=@HEADNODE@
+              ControlAddr=@HEADPRIVATEIP@
+              SlurmdUser=root
+              SlurmctldPort=6817
+              SlurmdPort=6818
+              AuthType=auth/munge
+              StateSaveLocation=/var/spool/slurm/ctld
+              SlurmdSpoolDir=/var/spool/slurm/d
+              SwitchType=switch/none
+              MpiDefault=none
+              SlurmctldPidFile=/var/run/slurmctld.pid
+              SlurmdPidFile=/var/run/slurmd.pid
+              ProctrackType=proctrack/pgid
+              ReturnToService=2
+              # TIMERS
+              SlurmctldTimeout=300
+              SlurmdTimeout=60
+              InactiveLimit=0
+              MinJobAge=300
+              KillWait=30
+              Waittime=0
+              # SCHEDULING
+              SchedulerType=sched/backfill
+              SelectType=select/cons_tres
+              SelectTypeParameters=CR_Core
+              # LOGGING
+              SlurmctldDebug=3
+              SlurmctldLogFile=/var/log/slurmctld.log
+              SlurmdDebug=3
+              SlurmdLogFile=/var/log/slurmd.log
+              DebugFlags=NO_CONF_HASH
+              JobCompType=jobcomp/none
+              # DYNAMIC COMPUTE NODES
+              MaxNodeCount=8
+              TreeWidth=65533
+              PartitionName=aws Nodes=ALL Default=YES MaxTime=INFINITE State=UP
+              EOF
+              HOSTIP=`hostname -s | cut -c 4- | sed s'/-/./g'`
+              sed -i -e "s|@HEADNODE@|$HOSTNAME|" -e "s|@HEADPRIVATEIP@|$HOSTIP|" $SLURM_HOME/etc/slurm.conf
+
+              cat > $SLURM_HOME/etc/slurm/slurmd.service <<EOF
+              [Unit]
+              Description=Slurm node daemon
+              After=munge.service network.target remote-fs.target
+              [Service]
+              Type=forking
+              EnvironmentFile=-/etc/sysconfig/slurmd
+              ExecStart=/nfs/slurm/sbin/slurmd -N @SLURM_NODENAME@ -Z -vv
+              ExecReload=/bin/kill -HUP \$MAINPID
+              PIDFile=/var/run/slurmd.pid
+              KillMode=process
+              LimitNOFILE=131072
+              LimitMEMLOCK=infinity
+              LimitSTACK=infinity
+              Delegate=yes
+              [Install]
+              WantedBy=multi-user.target
+              EOF
+
+              cat > $SLURM_HOME/etc/slurm/slurmctld.service <<EOF
+              [Unit]
+              Description=Slurm controller daemon
+              After=network.target munge.service
+              ConditionPathExists=/nfs/slurm/etc/slurm.conf
+              [Service]
+              Type=forking
+              EnvironmentFile=-/etc/sysconfig/slurmctld
+              ExecStart=/nfs/slurm/sbin/slurmctld -vv
+              ExecReload=/bin/kill -HUP \$MAINPID
+              PIDFile=/var/run/slurmctld.pid
+              LimitNOFILE=65536
+              [Install]
+              WantedBy=multi-user.target
+              EOF
+
+              # Set environment variables
+              echo 'export SLURM_HOME=/nfs/slurm' | tee /etc/profile.d/slurm.sh
+              echo 'export SLURM_CONF=$SLURM_HOME/etc/slurm.conf' | tee -a /etc/profile.d/slurm.sh
+              echo 'export PATH=/nfs/slurm/bin:$PATH' | tee -a /etc/profile.d/slurm.sh
+
+              # Launch Slurmctld
+              mkdir -p /var/spool/slurm
+              'cp' /nfs/slurm/etc/slurm/slurmd.service /lib/systemd/system
+              'cp' /nfs/slurm/etc/slurm/slurmctld.service /lib/systemd/system
+              systemctl enable slurmctld
+              systemctl start slurmctld
+
+              /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource HeadNode --region ${AWS::Region}
+    CreationPolicy:
+      ResourceSignal:
+        Timeout: PT10M
+        
+Outputs:
+  HeadNodeId:
+    Description: Head node instance ID
+    Value: !Ref HeadNode
+#    Condition: Never
