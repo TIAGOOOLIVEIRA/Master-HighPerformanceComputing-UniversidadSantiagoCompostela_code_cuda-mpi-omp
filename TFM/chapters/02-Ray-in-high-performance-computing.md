@@ -1,52 +1,52 @@
 # Ray in high-performance computing
 
-Data preprocessing for commong challenges in HPC
+## Modular Architecture for Cloud HPC
 
-To elaborate statements on the challenges of handling huge amount of data to prepare before any further processing like simulation for CFD, Protein discovery, Molecule or Genomic purposes
-Situation today
+Modularity is a cornerstone of efficient HPC on AWS. By decomposing pipelines into small, independently testable components—defined as code, container, or microservice—you minimize manual intervention and accelerate CI/CD. Infrastructure-as-code (CloudFormation, ParallelCluster) and automated testing ensure that each change is validated in isolation, preventing system-wide downtime.
 
-AAmazon Feature store vs LanceDB vs S3:Parquet for embeddings or genomic DNA sequencing
+### Ray Core & Ray AIR: Building Blocks
 
-Well architected for HPC
-    https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html/
+    Ray Core offers two primitives:
 
-Fully Automation Ray to HPC
+        Tasks (stateless functions), ideal for parallel data transforms
+
+        Actors (stateful services), for pooling resources (e.g., caches, GPUs)
+
+    Ray AIR unifies Ray Datasets (distributed I/O), Ray Train (distributed training), Ray Tune (HPO) and Ray Serve (model deployment) under a consistent API. Each library is “distributed by design,” so you can mix-and-match—for example, map a preprocessing task over S3 files, train embeddings in parallel, then serve feature transformers as microservices.
+
+### Ray-Powered ETL for Feature Embeddings
+
+In a typical ETL before HPC compute:
+
+    Ingestion & Cleaning: Ray Datasets shards S3/FSx reads across workers, applies tokenization or format fixes.
+
+    Feature Extraction: Stateless Ray tasks invoke pretrained AI models (e.g. protein‐language models, ResNet) to compute embeddings. GPU actors batch inferences for high throughput.
+
+    Embedding Serialization: Results are written back to Parquet or HDF5 via parallel Ray Dataset writes, producing chunked numeric arrays ready for HPC solvers.
+
+### Integrating Embeddings into HPC Compute
+
+    Numeric Solvers (e.g. spectral solvers, graph algorithms) consume embeddings as input vectors or masks.
+
+    Ray → Slurm Bridge: Lightweight Ray tasks submit jobs via SSH/Sbatch to a ParallelCluster, passing S3 paths to embedding files.
+
+    This pattern lets Ray handle data-prep and model inference, while specialized MPI/GPU kernels run on HPC nodes.
+
+### Synthetic Data Generation for CFD
+Ray’s modularity shines in data augmentation:
+
+    Deep Generative Models (StyleGAN, PDE-aware VAEs) run as Ray actors to produce synthetic flow fields or mesh deformations.
+
+    On-the-fly Streaming: Generated images or volume grids are chunked and fed directly into CFD solvers (OpenFOAM, ANSYS) via Ray tasks, enabling rapid scenario exploration without manual data staging.
+
+By leveraging Ray Core and AIR, there is the strategical benefit of a cloud-agnostic, fully modular ETL stack that bridges AI-driven feature engineering and HPC numerical simulation—boosting developer productivity, resource utilization, and end-to-end pipeline agility.
 
 
-Diagrams of the flows
 
-Use cases:
-CFD image preprocessing with DeepLearning/Encoding - geometric (Stereolithography - STL - 3D points))
-    eFlesh: Highly customizable Magnetic Touch Sensing using Cut-Cell Microstructures https://arxiv.org/abs/2506.09994
-    https://cfd-on-pcluster.workshop.aws
-    https://insidehpc.com/2017/05/hpc-service-high-performance-video-rendering/
-    Learning three-dimensional flow for interactive aerodynamic design dl.acm.org/doi/10.1145/3197517.3201325
-    https://www.researchgate.net/figure/mage-from-an-Autodesk-tutorial-displaying-flow-lines-over-a-car_fig8_331929090
-        2 ACTIVE MEMS-BASED FLOW CONTROL
-Genomics for encoding GNA sequencing: LLM or Graph Neuron Netork (tasks of DNA classification, interpretation of structural, )
-    pattern mathing over GNN - after encodding (graph vector embeddings)
-    visualizie results: NICE DVC to load mesh (from OpenFOAM) in ParaView 
-Protein discovery
 
-References for Ray AWS resources
+
+
+
+
+References for Ray AWS resources - At Scale
     https://developer.nvidia.com/blog/petabyte-scale-video-processing-with-nvidia-nemo-curator-on-nvidia-dgx-cloud/
-
-References for Dataset 
-    registry.opendata.aws
-    protein 
-        https://github.com/PacktPublishing/Applied-Machine-Learning-and-High-Performance-Computing-on-AWS/blob/main/Chapter12/protein-secondary-structure-model-parallel.ipynb
-
-Diagram of regular pipeline
-
-
-02.1 Ray for complex object transformation
-
-
-4 Heterogeneous workload devices
-
-
-5 Proof of concept
-
-    Visualize results
-
-5.3 Examples
