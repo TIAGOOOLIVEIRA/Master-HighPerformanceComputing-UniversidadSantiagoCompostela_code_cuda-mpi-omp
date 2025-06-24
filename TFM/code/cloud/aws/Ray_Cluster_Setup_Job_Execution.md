@@ -21,4 +21,7 @@
 		$ source ~/.venvs/ray/bin/activate
 
 		$ wget https://github.com/ray-project/ray/blob/master/python/ray/autoscaler/aws/example-full.yaml
-		$ ray up example-full.yaml
+		
+        #$ ray up example-full.yaml
+        #Customized version with some fixes
+        $ ray up ray-cluster-example-full.yaml
