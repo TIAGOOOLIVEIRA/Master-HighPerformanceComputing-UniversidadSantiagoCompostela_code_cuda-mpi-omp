@@ -1,5 +1,4 @@
 
 
 Diagrams
-
-https://aws.amazon.com/blogs/compute/running-simcenter-star-ccm-on-aws
+    https://aws.amazon.com/blogs/compute/running-simcenter-star-ccm-on-aws
