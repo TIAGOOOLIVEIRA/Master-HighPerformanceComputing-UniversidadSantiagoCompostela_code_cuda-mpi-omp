@@ -15,7 +15,3 @@ On the hardware side, modern CPUs support wide-vector instructions (AVX-512, SVE
 Beyond raw speed, real-world AI pipelines must glue together multiple stages—data transfer (S3 or FSx-Lustre), pre-processing (Ray tasks), encoding/decoding (vector transforms), model training or fine-tuning, and post-processing/visualization.  We’ll evaluate several end-to-end deployment patterns on AWS: a lightweight Ray cluster for pre-processing, an AWS ParallelCluster for large MPI jobs, an S3 One-Zone bucket for intermediate data, and CloudFormation automations to stitch everything together—even mounting FSx for Lustre or writing Slurm job-submission actors.  Cost models will be derived from actual on-demand vs. spot pricing, and throughput-vs-dollar curves will guide design choices.
 
 Finally, this thesis will explores how Ray can streamline the data preparation phase—covering ingestion, sharding, and transformation—before offloading tasks to specialized compute architectures. Also to present a suite of proof-of-concept benchmarks—on datasets that stretch compute and I/O to validate similarity search algorithms, diffusion simulations, and graph-based embeddings in heterogeneous environments. Through this, we aim to demonstrate that a highly interoperable, scalable pipeline—anchored by Ray and leveraging CPU, GPU and FPGA accelerators—can deliver both performance and economic efficiency for next-generation AI workloads.
-
-
-
-<img src="../images/AWS_VectorMachine_Ray-HPC-architecture.drawio.svg" alt="AWS Architecture" width="500">
