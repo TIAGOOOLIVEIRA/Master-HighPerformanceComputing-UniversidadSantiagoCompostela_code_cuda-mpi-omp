@@ -1,13 +1,15 @@
 /*
  * Exercise of one-sided operations with passive target synchronization
- * 
+ *
  * Each process generates a list of random values and computes
  * a set of basic statistical metrics:
  * minimum, maximum, mean, and standard deviation
- * 
+ *
  * Compile: mpicc -Wall -o rma_03_passive rma_03_passive.c -lm
  * Run: no arguments required
+ * *  mpirun -np 4 ./rma_03_passive
  */
+
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,6 +19,17 @@
 
 #define A_SIZE 1000000000
 #define V_MAX 100.0
+
+#define MEC( call ) {int res; \
+    res = call; \
+    if (res != MPI_SUCCESS) { \
+      char error_string[MPI_MAX_ERROR_STRING]; \
+      int length_of_error_string; \
+      MPI_Error_string(res, error_string, &length_of_error_string); \
+      fprintf(stderr, "MPI Error: %s\n Call "#call"\n", error_string); \
+      MPI_Abort(MPI_COMM_WORLD, res); \
+    } \
+}
 
 typedef struct 
 {
@@ -32,10 +45,9 @@ int main(int argc, char ** argv)
   double *my_array;
   stats_t stats;
 
-  MPI_Init(&argc, &argv);
-
-  MPI_Comm_size(MPI_COMM_WORLD, &mpi_size);
-  MPI_Comm_rank(MPI_COMM_WORLD, &mpi_rank);
+  MEC(MPI_Init(&argc, &argv));
+  MEC(MPI_Comm_size(MPI_COMM_WORLD, &mpi_size));
+  MEC(MPI_Comm_rank(MPI_COMM_WORLD, &mpi_rank));
 
   int block_size = A_SIZE / mpi_size;
 
@@ -45,19 +57,15 @@ int main(int argc, char ** argv)
   for (int i=0; i<block_size; i++)
     my_array[i] = (1.0 * rand() / INT_MAX) * V_MAX;
 
-  /* initialize stats */
+
   stats.min = stats.max = my_array[0];
   stats.average = 0;
   double sumvalues = 0;
   double sumsquared = 0;
 
-  /* compute stats */
-  for (int i=0; i<block_size; i++)
-  {
-    if (my_array[i] < stats.min)
-      stats.min = my_array[i];
-    if (my_array[i] > stats.max)
-      stats.max = my_array[i];
+  for (int i=0; i<block_size; i++) {
+    if (my_array[i] < stats.min) stats.min = my_array[i];
+    if (my_array[i] > stats.max) stats.max = my_array[i];
     sumvalues += my_array[i];
     sumsquared += my_array[i] * my_array[i];
   }
@@ -67,59 +75,67 @@ int main(int argc, char ** argv)
       (sumsquared + 2*sumvalues*stats.average + stats.average*stats.average)
       / block_size);
 
-  //TODO: Replace the collective operations with One-Sided communications
-  stats_t global_stats;
+  printf("Process %d stats => min: %.4lf, max: %.4lf, avg: %.4lf, stddev: %.4lf\n",
+         mpi_rank, stats.min, stats.max, stats.average, stats.standard_deviation);
 
-  MPI_Reduce(&stats.min, &global_stats.min, 1, MPI_DOUBLE,
-             MPI_MIN, 0, MPI_COMM_WORLD);
-  MPI_Reduce(&stats.max, &global_stats.max, 1, MPI_DOUBLE,
-             MPI_MAX, 0, MPI_COMM_WORLD);
-  MPI_Reduce(&stats.average, &global_stats.average, 1, MPI_DOUBLE,
-             MPI_SUM, 0, MPI_COMM_WORLD);
-  MPI_Reduce(&stats.standard_deviation, &global_stats.standard_deviation, 1, MPI_DOUBLE,
-             MPI_SUM, 0, MPI_COMM_WORLD);
-  global_stats.average /= mpi_size;
-  global_stats.standard_deviation /= mpi_size;
+  //Create shared window where each rank allocates its own region
+  stats_t *shared_stats;
+  MPI_Win win;
 
-  if (!mpi_rank)
-  {
-    //TODO: Replace the results gathering with One-Sided communications
-    //      Start by creating a collective Window, but only the root process
-    //      should have memory attached to it.
-    stats_t perproc_stats[mpi_size];
-    MPI_Gather(&stats, sizeof(stats_t), MPI_BYTE,
-               perproc_stats, sizeof(stats_t), MPI_BYTE,
-               0, MPI_COMM_WORLD);
+  MEC(MPI_Win_allocate(sizeof(stats_t), sizeof(double), MPI_INFO_NULL, MPI_COMM_WORLD, &shared_stats, &win));
 
-    /* print individual stats */
+  //Each rank writes its stats locally
+  *shared_stats = stats;
+
+  MEC(MPI_Barrier(MPI_COMM_WORLD));
+
+  if (mpi_rank == 0) {
+    stats_t global_stats = {.min = V_MAX, .max = 0, .average = 0, .standard_deviation = 0};
+    stats_t *all_stats = malloc(mpi_size * sizeof(stats_t));
+
+    for (int i = 0; i < mpi_size; i++) {
+      MEC(MPI_Win_lock(MPI_LOCK_SHARED, i, 0, win));
+      /*MPI_Get:
+        Data is transferred from the target memory to the origin process
+        To complete the transfer a synchronization call must be made on the window involved
+        The local buffer should not be accessed until the synchronization call is completed
+        To read the content of the remote window (snd_buf) into the local variable rcv_buf
+        Processes expose memory via windows; root process pulls remote data
+        Decoupled communication: target processes don't need to call receive/send
+        Requires explicit locking (MPI_Win_lock/unlock)
+      */
+      MEC(MPI_Get(&all_stats[i], sizeof(stats_t), MPI_BYTE, i, 0, sizeof(stats_t), MPI_BYTE, win));
+      MEC(MPI_Win_unlock(i, win));
+    }
+
     printf("  proc   minimum  maximum    mean  standard_dev\n");
     printf("-----------------------------------------------\n");
-    for (int i=0; i<mpi_size; i++)
-    {
+    for (int i = 0; i < mpi_size; i++) {
       printf("  %3d   %8.4lf %8.4lf %8.4lf %10.4lf\n",
              i,
-             perproc_stats[i].min,
-             perproc_stats[i].max,
-             perproc_stats[i].average,
-             perproc_stats[i].standard_deviation);
+             all_stats[i].min,
+             all_stats[i].max,
+             all_stats[i].average,
+             all_stats[i].standard_deviation);
+
+      if (all_stats[i].min < global_stats.min) global_stats.min = all_stats[i].min;
+      if (all_stats[i].max > global_stats.max) global_stats.max = all_stats[i].max;
+      global_stats.average += all_stats[i].average;
+      global_stats.standard_deviation += all_stats[i].standard_deviation;
     }
+    global_stats.average /= mpi_size;
+    global_stats.standard_deviation /= mpi_size;
     printf("-----------------------------------------------\n");
     printf("        %8.4lf %8.4lf %8.4lf %10.4lf\n",
-             global_stats.min,
-             global_stats.max,
-             global_stats.average,
-             global_stats.standard_deviation);
+           global_stats.min,
+           global_stats.max,
+           global_stats.average,
+           global_stats.standard_deviation);
+    free(all_stats);
   }
-  else
-  {
-    MPI_Gather(&stats, sizeof(stats_t), MPI_BYTE,
-               0, sizeof(stats_t), MPI_BYTE,
-               0, MPI_COMM_WORLD);
-  }
-  
+
   free(my_array);
-    
-  MPI_Finalize();
+  MEC(MPI_Win_free(&win));
+  MEC(MPI_Finalize());
   return 0;
 }
-
