@@ -1,11 +1,13 @@
 /*
- * Example of active target synchronization using PSCW
- * 
- * Processes divide in 2 groups. Odd processes send data to even processes
- * 
- * Compile: mpicc -Wall -O3 -std=c99 -o 02_rma_pscw 02_rma_pscw.c
- * Run: no arguments required
+ * Example of active target synchronization using PSCW (Post-Start-Complete-Wait)
+ *
+ * Processes divide in 2 groups. Odd processes send data to even processes.
+ * This implementation uses One-Sided Communication with Active Target Synchronization.
+ *
+ * Compile: mpicc -Wall -O3 -std=c99 -o rma_02_pscw rma_02_pscw.c
+ * Run: No arguments required
  */
+
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,53 +15,72 @@
 
 #define A_SIZE 1000
 
+#define MEC( call ) {int res; \
+    res = call; \
+    if (res != MPI_SUCCESS) { \
+      char error_string[MPI_MAX_ERROR_STRING]; \
+      int length_of_error_string; \
+      MPI_Error_string(res, error_string, &length_of_error_string); \
+      fprintf(stderr, "MPI Error: %s\n Call "#call"\n", error_string); \
+      MPI_Abort(MPI_COMM_WORLD, res); \
+    } \
+}
+
 int main(int argc, char ** argv)
 {
   int *my_array;
   int size, rank;
 
-  MPI_Init(&argc, &argv);
+  MEC(MPI_Init(&argc, &argv));
+  MEC(MPI_Comm_size(MPI_COMM_WORLD, &size));
+  MEC(MPI_Comm_rank(MPI_COMM_WORLD, &rank));
 
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-  //TODO: Create a Group out of the communicator with MPI_Comm_group
-  //TODO: Include the odd/even processes in the group
   
-  /* create private memory */
-  //TODO: Create a memory window in "my_array",
-  //      allocating memory at the same time
-  my_array = (int *) malloc(size * sizeof(int));
-  memset(my_array, 0, size*sizeof(int));
+  MPI_Group world_group, partner_group;
+  MEC(MPI_Comm_group(MPI_COMM_WORLD, &world_group));
 
-  if (rank % 2)
-  {
-    /* odd processes send data: 
-     * we will place our rank in our partners' memory */
+  //partner ranks list (odd <-> even communication)
+  int partners[size/2], count = 0;
+  for (int i = 0; i < size; i++) {
+    if ((rank % 2 == 0 && i % 2 != 0) || (rank % 2 != 0 && i % 2 == 0)) {
+      partners[count++] = i;
+    }
+  }
+
+  MEC(MPI_Group_incl(world_group, count, partners, &partner_group));
+
+  MPI_Win win;
+  MEC(MPI_Win_allocate(size * sizeof(int), sizeof(int), MPI_INFO_NULL, MPI_COMM_WORLD,
+                       &my_array, &win));
+  memset(my_array, 0, size * sizeof(int));  // zero initialization
+
+  if (rank % 2 != 0) {
+    //odd processes to send data using One-Sided Put
     int send_data = rank;
-    
-    //TODO: Enclose operations within an access epoch to the partner group
-    
-    //TODO: Replace these Two-Sided with One-Sided operations
-    for (int i=0; i<size; i+=2)
-      MPI_Send(&send_data, 1, MPI_INT,
-               i, 0, MPI_COMM_WORLD);
+
+    //Post|Start-Complete-Wait (PSCW) synchronization
+    //Post Access Epoch
+    MEC(MPI_Win_start(partner_group, 0, win));
+
+    for (int i = 0; i < count; i++) {
+      int target_rank = partners[i];
+      MEC(MPI_Put(&send_data, 1, MPI_INT,
+                  target_rank, rank, 1, MPI_INT, win));
+    }
+
+    //end Access epoch
+    MEC(MPI_Win_complete(win));
   }
-  else
-  {
-    /* even processes receive data */
-    
-    //TODO: Create an exposure epoch to the partner group
-    
-    //TODO: No operation call is needed in the target part
-    for (int i=1; i<size; i+=2)
-      MPI_Recv(my_array+i, 1, MPI_INT,
-               i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
+  else {
+    //even processes expose mem region to odd partners
+    MEC(MPI_Win_post(partner_group, 0, win));
+    MEC(MPI_Win_wait(win));
   }
 
+  
   for (int i=0; i<size; i++)
   {
-    MPI_Barrier(MPI_COMM_WORLD);
+    MEC(MPI_Barrier(MPI_COMM_WORLD));
     if (i == rank)
     {
       printf("Process %2d. A={ ", rank);
@@ -72,10 +93,10 @@ int main(int argc, char ** argv)
     }
   }
   
-  //TODO: Free MPI Window
-  free(my_array);
-    
-  MPI_Finalize();
+  MEC(MPI_Group_free(&partner_group));
+  MEC(MPI_Group_free(&world_group));
+  MEC(MPI_Win_free(&win));
+  MEC(MPI_Finalize());
+
   return 0;
 }
-
