@@ -14,8 +14,76 @@
  * The optimality of the solver can be configured when calling the solve() function in line 112.
  * Try there different values to check if the workload can be balanced correctly. 
  * 
- * Compile: mpic++ -O3 -o final_15puzzle final_15puzzle.cpp aux_files/15puzzle.cpp -lm
- * Run: mpirun -n NP ./final_15puzzle data/puzzles.100.bin
+ * Compile: mpicxx -O3 -o final_15puzzle final_15puzzle.cpp aux_files/15puzzle.cpp -lm
+ * Run: mpirun -n 4 ./final_15puzzle data/puzzles.100.bin
+ */
+
+ /* ------------------ REPORT ANALYSIS ------------------
+
+
+Based on the collected workload balance data, "OPT_VERY_GOOD" seems to be the best choice for the solver's optimality level, 
+  indicating low variance in puzzle difficulty or efficient scheduling.
+OPT_GOOD offers a reasonable balance but with slightly higher variance, 
+  while OPT_MEH shows significant workload imbalance getting worse with higher optimality levels.
+-> Statistical imbalance suggests that static distribution (MPI_Scatter) is insufficient for lower optimality levels.
+  Dynamic load balancing tactics might help in poorly balanced scenarios.
+  Here is where MPI RMA (Remote Memory Access) can be beneficial, allowing processes to access each other's memory directly,
+  potentially redistributing workload dynamically based on real-time performance metrics.
+ 
+ OPT_VERY_GOOD
+  Workload balance:
+    Process  0     536.55 ms
+    Process  1     647.84 ms
+    Process  2     497.90 ms
+    Process  3     492.68 ms
+
+    Min: 492.68, Max: 647.84
+    Balance: 76.05%
+OPT_GOOD
+  Workload balance:
+    Process  0    3547.91 ms
+    Process  1    4277.73 ms
+    Process  2    5264.33 ms
+    Process  3    2898.86 ms
+
+    Min: 2898.86, Max: 5264.33
+    Balance: 55.07%
+OPT_MEH
+  Workload balance:
+    Process  0   29014.32 ms
+    Process  1   42560.32 ms
+    Process  2   54111.41 ms
+    Process  3   30663.40 ms
+
+    Min: 29014.32, Max: 54111.41
+    Balance: 53.62%
+OPT_POOR
+  Workload balance:
+    Process  0   67217.97 ms
+    Process  1   62647.99 ms
+    Process  2  109735.86 ms
+    Process  3   35109.05 ms
+
+    Min: 35109.05, Max: 109735.86
+    Balance: 31.99%
+OPT_BAD
+  Workload balance:
+    Process  0   69401.69 ms
+    Process  1   79259.14 ms
+    Process  2  132963.16 ms
+    Process  3   52306.47 ms
+
+    Min: 52306.47, Max: 132963.16
+    Balance: 39.34%
+OPT_AWFUL
+  Workload balance:
+    Process  0   76835.84 ms
+    Process  1  135015.38 ms
+    Process  2  181264.02 ms
+    Process  3   92310.90 ms
+
+    Min: 76835.84, Max: 181264.02
+    Balance: 42.39%
  */
 
  #include "aux_files/15puzzle.h"
@@ -111,8 +179,18 @@
  
      //TODO: Try different solver optimality levels
      /* optimality can be: OPT_{VERY_GOOD, GOOD, MEH, BAD, AWFUL} */
+     
+     /*
+     as explained in the comments above, the optimality level can be set to:
+     OPT_VERY_GOOD = 1, // Very good
+     OPT_GOOD      = 2, // Quite good
+     OPT_MEH       = 3, // Meh
+     OPT_POOR      = 4, // Not very optimal
+     OPT_BAD       = 5, // very bad
+     OPT_AWFUL     = 6  // demanding a lot of memory
+     */
      int can_solve = solve(hash_state, &path_length, &nodes_alloc,
-                           OPT_MEH,
+                          OPT_VERY_GOOD,
                            solution_moves);
  
      auto e_time = high_resolution_clock::now();
