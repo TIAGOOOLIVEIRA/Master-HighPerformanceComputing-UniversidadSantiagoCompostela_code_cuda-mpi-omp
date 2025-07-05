@@ -6,6 +6,7 @@
  *
  * Compile: mpicc -Wall -O3 -std=c99 -o rma_02_pscw rma_02_pscw.c
  * Run: No arguments required
+ * *  mpirun -np 4 ./rma_02_pscw
  */
 
 #include <mpi.h>
