@@ -49,4 +49,3 @@ The speedup analysis for the pi_integral.c in the Lab1 is taken into account to 
 - Hybrid configurations (4×4, 8×2) still perform excellently — nonblocking collectives provide more consistently high efficiency across layouts.
 
 
-## MPI: dotprod.c
