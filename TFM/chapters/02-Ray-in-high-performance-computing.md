@@ -5,6 +5,8 @@ In Transformer inference, input text is first broken into discrete numerical tok
 
 A large vocabulary directly impacts the size of the embeddings matrix, which is a set of weights. For example, the number of distinct k-mers in DNA sequences can be 40 times greater than the number of distinct words in English Wikipedia, leading to huge lookup tables and significant memory/disk requirements to persist them on a computing node [@zhang2021lshve]
 
+Despite sequencing advances that generate ∼1 billion reads (200–1 000 bp) per human genome (0.5–1 TB) in three days, analysts face three major computation challenges: (1) the flood of error‐prone reads must pass through 15–20 complex pipeline stages—from alignment (BWA, Bowtie [17, 14]) and data cleaning (Picard-Tools [28]) to variant calling (GATK [7])—to extract biologically meaningful variants; (2) most tools are designed for single-machine, often single-threaded execution, making them ill-suited for TB-scale inputs; and (3) end-to-end runtimes at centers like NYGC range from 3 to 23 days per sample [8], with specialized cancer-analysis steps (Mutect [5], Theta [25]) taking days or weeks—far exceeding the 1–2-day clinical turnaround required for precision medicine[@roy2017massively].
+
 ## Modular Architecture for Cloud HPC
 
 Modularity is a cornerstone of efficient HPC on AWS. By decomposing pipelines into small, independently testable components—defined as code, container, or microservice—you minimize manual intervention and accelerate CI/CD. Infrastructure-as-code (CloudFormation, ParallelCluster) and automated testing ensure that each change is validated in isolation, preventing system-wide downtime.
