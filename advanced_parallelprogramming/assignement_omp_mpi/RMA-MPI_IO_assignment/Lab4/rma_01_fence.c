@@ -14,6 +14,7 @@
  * 
  * Compile: mpicc -Wall -O3 -std=c99 -o rma_01_fence rma_01_fence.c
  * Run: no arguments required
+ *  mpirun -np 4 ./rma_01_fence
  */
 
  #include <mpi.h>

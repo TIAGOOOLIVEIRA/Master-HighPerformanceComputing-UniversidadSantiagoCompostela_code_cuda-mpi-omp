@@ -1621,7 +1621,7 @@ Speed analysis
 
 - The (4 × 4) configuration gives the best hybrid performance, combining fine-grained MPI distribution with moderate OpenMP threading + SIMD/Aggressive compiler optimization. It balances NUMA awareness and communication overhead well.
 
-- The (2 × 8) configuration is nearly as fast and more OMP-heavy, but could hit NUMA penalties if thread binding isn’t socket-local — which your OMP_PLACES=sockets + OMP_PROC_BIND=close combination avoided.
+- The (2 × 8) configuration is nearly as fast and more OMP-heavy, but could hit NUMA penalties if thread binding isn’t socket-local — which OMP_PLACES=sockets + OMP_PROC_BIND=close combination avoided.
 
 - The (16 × 1) MPI-only case performed worst due to:
 
@@ -1629,7 +1629,7 @@ Speed analysis
     - No intra-process parallelism.
     - Less cache and memory sharing benefit.
 
-- The affinity output confirmed tha-t OpenMP threads were well-packed inside sockets. The benefit of the explicit environment variables.
+- The affinity output confirmed that OpenMP threads were well-packed inside sockets. The benefit of the explicit environment variables.
 
 
 
