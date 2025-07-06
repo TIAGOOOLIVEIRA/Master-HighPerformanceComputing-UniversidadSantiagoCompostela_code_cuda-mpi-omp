@@ -1,5 +1,10 @@
 # Ray in high-performance computing
 
+In Transformer inference, input text is first broken into discrete numerical tokens, but these tokens aren’t used directly; they’re immediately transformed into learned “embeddings,” which are dense vectors capturing each token’s semantic and contextual information. During training, the model learns an embedding weight matrix that maps each token to its high-dimensional representation via a simple matrix multiplication. To incorporate word order, fixed positional embeddings—vectors encoding each token’s position—are added to the resulting token embeddings. This two-step process of multiplying the token-to-embedding matrix and then summing positional embeddings yields the final input vectors the Transformer uses for all downstream attention and feed-forward computations [@spuler2024tokenizer].
+
+
+A large vocabulary directly impacts the size of the embeddings matrix, which is a set of weights. For example, the number of distinct k-mers in DNA sequences can be 40 times greater than the number of distinct words in English Wikipedia, leading to huge lookup tables and significant memory/disk requirements to persist them on a computing node [@zhang2021lshve]
+
 ## Modular Architecture for Cloud HPC
 
 Modularity is a cornerstone of efficient HPC on AWS. By decomposing pipelines into small, independently testable components—defined as code, container, or microservice—you minimize manual intervention and accelerate CI/CD. Infrastructure-as-code (CloudFormation, ParallelCluster) and automated testing ensure that each change is validated in isolation, preventing system-wide downtime.
