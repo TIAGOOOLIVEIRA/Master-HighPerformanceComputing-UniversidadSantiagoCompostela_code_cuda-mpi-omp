@@ -3,7 +3,16 @@
 
 ## MPI: pi_integral.c
 
+After implementing the MPI nonblocking collective operations for pi_integral.c the shell from Lab1 pi_integral.c was adapted so the same analysis on the execution could be done to perform the comparison between both approaches.
 
+For the interactive mode, the pi_integral.sh can be changed its access mode as follows
+#chmod +x pi_integral.sh
+#./pi_integral.sh
+
+Otherwise it is just the matter to submit the file as a job to the slurm scheduler
+#sbatch pi_integral.sh
+
+The speedup analysis for the pi_integral.c in the Lab1 is taken into account to perform the analysis comparison as follows.
 
 
 ### MPI+OpenMP Speedup Table – Nonblocking Collectives
@@ -38,3 +47,6 @@
 - With nonblocking, 16×1 became the fastest configuration, indicating that latency was effectively hidden and collective progress overlapped with computation or other processes.
 
 - Hybrid configurations (4×4, 8×2) still perform excellently — nonblocking collectives provide more consistently high efficiency across layouts.
+
+
+## MPI: dotprod.c
