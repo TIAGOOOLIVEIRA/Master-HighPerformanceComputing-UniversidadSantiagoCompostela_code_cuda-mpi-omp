@@ -45,7 +45,6 @@ int main(int argc, char *argv[]) {
     MPI_Request req;
     MPI_Ireduce(&local_sum, &global_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD, &req);
 
-    // Work could be done here during reduction progress...
 
     MPI_Wait(&req, MPI_STATUS_IGNORE);
 
