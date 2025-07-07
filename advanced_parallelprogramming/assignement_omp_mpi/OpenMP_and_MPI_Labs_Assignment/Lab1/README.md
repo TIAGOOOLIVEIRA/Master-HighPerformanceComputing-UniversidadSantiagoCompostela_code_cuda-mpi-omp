@@ -17,6 +17,9 @@ Four versions of the matrix multiplication application were evaluated:
 
 ### Compiler and flags used:
 
+To make sure compiling place_report_mpi.c to object file
+- #gcc -c ../shared/place_report_mpi.c -o place_report_mpi.o
+
 - **Makefile**: Make
   - **make MODE=sequential**
 
@@ -253,6 +256,9 @@ Three versions of the saxpy factor multiplication application were evaluated:
 
 
 ### Compiler and flags used:
+
+To make sure compiling place_report_mpi.c to object file
+- #gcc -c ../shared/place_report_mpi.c -o place_report_mpi.o
 
 - **Makefile**: Make
   - **make MODE=basic**
@@ -492,6 +498,10 @@ Vectorization: 87.2% of Packed FP Operations
 - export OMP_NUM_THREADS={1,4,8}
 
 ### Compiler and flags used:
+
+
+To make sure compiling place_report_mpi.c to object file
+- #gcc -c ../shared/place_report_mpi.c -o place_report_mpi.o
 
 
 - **Makefile**: Make/Gprof
@@ -791,6 +801,10 @@ For future work, it would wworth it further investigation on:
 - export OMP_NUM_THREADS={1,4,8}
 
 ### Compiler and flags used:
+
+
+To make sure compiling place_report_mpi.c to object file
+- #gcc -c ../shared/place_report_mpi.c -o place_report_mpi.o
 
 
 - **Makefile**: Make/Gprof
@@ -1151,6 +1165,10 @@ Baseline Observations (No Optimization)
 
 
 ### Compiler and flags used:
+
+
+To make sure compiling place_report_mpi.c to object file
+- #gcc -c ../shared/place_report_mpi.c -o place_report_mpi.o
 
 
 - **Makefile**: Make/Gprof

@@ -3,7 +3,7 @@
 #include <math.h>
 #include <mpi.h>
 #include <omp.h>
-#include "../Lab1/shared/place_report_mpi.h"
+#include "../../Lab1/shared/place_report_mpi.h"
 
 int main(int argc, char *argv[]) {
     int rank, size;
