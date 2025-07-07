@@ -20,10 +20,10 @@ module load gcc openmpi/4.0.5_ft3
 module load intel vtune
 module load intel impi
 
-echo "Compiling with profiling support"
-make clean
+#echo "Compiling with profiling support"
+#make clean
 #to compile with aggressive optimization (auto-vectorization, etc.)
-make aggressive
+#make aggressive
 
 #(MPI_PROCS, OMP_THREADS)
 declare -a configs=(

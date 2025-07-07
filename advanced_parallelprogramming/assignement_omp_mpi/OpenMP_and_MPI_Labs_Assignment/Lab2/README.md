@@ -6,7 +6,8 @@
 After implementing the MPI nonblocking collective operations for pi_integral.c the shell from Lab1 pi_integral.c was adapted so the same analysis on the execution could be done to perform the comparison between both approaches.
 
 To compile
-- #mpicc -fopenmp -Wall -Wextra -O3 -march=native -ffast-math -fopt-info-vec -o pi_integral pi_integral.c
+- #gcc -c ../../Lab1/shared/place_report_mpi.c -o place_report_mpi.o
+- #mpicc pi_integral.c ../../Lab1/shared/place_report_mpi.c -o pi_integral -I ../../Lab1/shared -lpthread
 
 For the interactive mode, the pi_integral.sh can be changed its access mode as follows
 - #chmod +x pi_integral.sh
@@ -52,3 +53,25 @@ The speedup analysis for the pi_integral.c in the Lab1 is taken into account to 
 - Hybrid configurations (4×4, 8×2) still perform excellently — nonblocking collectives provide more consistently high efficiency across layouts.
 
 
+## MPI: dotprod.c
+
+To compile
+- #gcc -c ../../Lab1/shared/place_report_mpi.c -o place_report_mpi.o
+- #mpicc dotprod.c ../../Lab1/shared/place_report_mpi.c -o dotprod -I ../../Lab1/shared -lpthread
+
+For the interactive mode, the pi_integral.sh can be changed its access mode as follows
+- #chmod +x dotprod.sh
+- #./dotprod.sh
+
+Otherwise it is just the matter to submit the file as a job to the slurm scheduler
+- #sbatch dotprod.sh
+
+
+The speedup analysis for the dotprod.c in the Lab1 is taken into account to perform the analysis comparison as follows.
+
+
+### MPI+OpenMP Speedup Table – Nonblocking Collectives
+
+
+
+### Conclusions
