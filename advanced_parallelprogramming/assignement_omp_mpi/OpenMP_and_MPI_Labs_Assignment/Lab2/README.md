@@ -5,6 +5,9 @@
 
 After implementing the MPI nonblocking collective operations for pi_integral.c the shell from Lab1 pi_integral.c was adapted so the same analysis on the execution could be done to perform the comparison between both approaches.
 
+To compile
+- #mpicc -fopenmp -Wall -Wextra -O3 -march=native -ffast-math -fopt-info-vec -o pi_integral pi_integral.c
+
 For the interactive mode, the pi_integral.sh can be changed its access mode as follows
 - #chmod +x pi_integral.sh
 - #./pi_integral.sh
