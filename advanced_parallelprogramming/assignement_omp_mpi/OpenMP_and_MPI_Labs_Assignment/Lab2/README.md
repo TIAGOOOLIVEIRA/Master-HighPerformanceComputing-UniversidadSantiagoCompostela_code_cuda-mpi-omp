@@ -6,11 +6,11 @@
 After implementing the MPI nonblocking collective operations for pi_integral.c the shell from Lab1 pi_integral.c was adapted so the same analysis on the execution could be done to perform the comparison between both approaches.
 
 For the interactive mode, the pi_integral.sh can be changed its access mode as follows
-#chmod +x pi_integral.sh
-#./pi_integral.sh
+- #chmod +x pi_integral.sh
+- #./pi_integral.sh
 
 Otherwise it is just the matter to submit the file as a job to the slurm scheduler
-#sbatch pi_integral.sh
+- #sbatch pi_integral.sh
 
 The speedup analysis for the pi_integral.c in the Lab1 is taken into account to perform the analysis comparison as follows.
 
