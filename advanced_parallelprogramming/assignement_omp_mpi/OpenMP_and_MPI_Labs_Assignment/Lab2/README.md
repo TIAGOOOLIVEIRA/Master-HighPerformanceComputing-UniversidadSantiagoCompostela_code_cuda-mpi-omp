@@ -7,11 +7,12 @@ After implementing the MPI nonblocking collective operations for pi_integral.c t
 
 To compile
 - #gcc -c ../../Lab1/shared/place_report_mpi.c -o place_report_mpi.o
-- #mpicc pi_integral.c ../../Lab1/shared/place_report_mpi.c -o pi_integral -I ../../Lab1/shared -lpthread
+- #mpicc -fopenmp pi_integral.c ../../Lab1/shared/place_report_mpi.c -o pi_integral -I ../../Lab1/shared -lpthread
 
 For the interactive mode, the pi_integral.sh can be changed its access mode as follows
 - #chmod +x pi_integral.sh
 - #./pi_integral.sh
+- #mpirun -np 4 ./pi_integral 1000000000
 
 Otherwise it is just the matter to submit the file as a job to the slurm scheduler
 - #sbatch pi_integral.sh
@@ -21,13 +22,15 @@ The speedup analysis for the pi_integral.c in the Lab1 is taken into account to 
 
 ### MPI+OpenMP Speedup Table – Nonblocking Collectives
 
+- Nonblocking MPI
+
 | MPI × OMP | Total Cores | Time (s) | Speedup vs Baseline | Observations                         |
 |-----------|-------------|----------|----------------------|--------------------------------------|
-| 1 × 1     | 1           | 6.200    | 1.00× (baseline)     | 🔵 Serial, blocking version baseline |
-| 2 × 8     | 16          | 0.056433 | 109.90×              | 🟢 Superb hybrid scaling             |
-| 4 × 4     | 16          | 0.049028 | 126.46×              | 🟢 Best hybrid balance (nonblocking) |
-| 8 × 2     | 16          | 0.050750 | 122.22×              | 🟢 Strong hybrid, low sync overhead  |
-| 16 × 1    | 16          | 0.048685 | 127.37×              | 🟢 All-MPI shines with nonblocking   |
+| 1 × 1     | 1           | 6.200    | 1.00× (baseline)     | Serial, blocking version baseline |
+| 2 × 8     | 16          | 0.056433 | 109.90×              | Superb hybrid scaling             |
+| 4 × 4     | 16          | 0.049028 | 126.46×              | Best hybrid balance (nonblocking) |
+| 8 × 2     | 16          | 0.050750 | 122.22×              | Strong hybrid, low sync overhead  |
+| 16 × 1    | 16          | 0.048685 | 127.37×              | All-MPI shines with nonblocking   |
 
 
 - Comparative Analysis: Blocking vs Nonblocking MPI
@@ -57,11 +60,12 @@ The speedup analysis for the pi_integral.c in the Lab1 is taken into account to 
 
 To compile
 - #gcc -c ../../Lab1/shared/place_report_mpi.c -o place_report_mpi.o
-- #mpicc dotprod.c ../../Lab1/shared/place_report_mpi.c -o dotprod -I ../../Lab1/shared -lpthread
+- #mpicc -fopenmp dotprod.c ../../Lab1/shared/place_report_mpi.c -o dotprod -I ../../Lab1/shared -lpthread
 
 For the interactive mode, the pi_integral.sh can be changed its access mode as follows
 - #chmod +x dotprod.sh
 - #./dotprod.sh
+- #mpirun -np 4 ./dotprod 1000000000
 
 Otherwise it is just the matter to submit the file as a job to the slurm scheduler
 - #sbatch dotprod.sh
@@ -72,6 +76,36 @@ The speedup analysis for the dotprod.c in the Lab1 is taken into account to perf
 
 ### MPI+OpenMP Speedup Table – Nonblocking Collectives
 
+- Nonblocking MPI
+
+| MPI × OMP | Total Cores | Time (s)   | Speedup vs Baseline | Observations                            |
+| --------- | ----------- | ---------- | ------------------- | --------------------------------------- |
+| 1 × 1     | 1           | 6.254      | 1.00× (baseline)    | Serial baseline                      |
+| 2 × 8     | 16          | 0.856      | 7.31×               | Very good threading per rank         |
+| 4 × 4     | 16          | 0.784      | 7.97×               | Best hybrid balance                  |
+| 8 × 2     | 16          | 0.933      | 6.70×               | MPI comm cost rising                 |
+| 16 × 1    | 16          | ❌ SEGFAULT | —                   | Failed: memory access likely invalid |
+
+
+- Comparative Analysis: Blocking vs Nonblocking MPI
+
+  __comparison based on the analysis in /Lab1/README.md "Labs1, Hybrid Programming; 2: dotprod.c"__
+
+| **Configuration (MPI×OMP)** | **Blocking Avg Time (s)** | **Blocking Speedup** | **Nonblocking Avg Time (s)** | **Nonblocking Speedup** |
+| --------------------------- | ------------------------- | -------------------- | ---------------------------- | ----------------------- |
+| 1 × 1 (baseline)            | 0.34300                   | 1.00×                | 6.25400                      | 1.00×                   |
+| 2 × 8                       | 0.20877                   | 1.64×                | 0.85600                      | 7.31×                   |
+| 4 × 4                       | 0.11792                   | 2.91×                | 0.78400                      | 7.97×                   |
+| 8 × 2                       | 0.09237                   | 3.71×                | 0.93300                      | 6.70×                   |
+| 16 × 1                      | 0.08577                   | 4.00×                | ❌ SEGFAULT                   | —                       |
+
 
 
 ### Conclusions
+- Nonblocking collectives show much higher raw speedup (e.g., 7.97× at 4×4 vs 2.91× for blocking).
+
+- Blocking collectives are slower, even though their baseline time (0.343s) is far below the nonblocking baseline (6.254s). Likely due to: Smaller problem size, Tighter node affinity, Less memory pressure
+
+- Blocking version shows consistent improvement with increasing cores (1×1 → 16×1).
+
+- Nonblocking version crashes at 16×1 due to poor memory bounds checking — chunking logic must be fixed.
