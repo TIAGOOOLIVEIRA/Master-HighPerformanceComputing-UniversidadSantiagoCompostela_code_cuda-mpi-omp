@@ -110,7 +110,10 @@ The speedup analysis for the dotprod.c in the Lab1 is taken into account to perf
 
 - Nonblocking version crashes at 16×1 due to poor memory bounds checking — chunking logic must be fixed.
 
+- Later I realized that the fault in the (16 x 1) setup is due to the fact that I need to scale up the slurm job reserved capacity
 
+  - this (#SBATCH --ntasks=16; #SBATCH --cpus-per-task=8; #SBATCH --mem=32G)
+  - instead of this (#SBATCH --ntasks=16; #SBATCH --cpus-per-task=1; #SBATCH --mem=16G)
 
 ## MPI: mxnvm.c
 
@@ -125,7 +128,7 @@ To compile
 
 
 To execute and collect statistics
-- #time ./mxvnm_ori 5000 5000
+- #time ./mxvnm_noncollective 5000 5000
 
 - #export OMP_NUM_THREADS=4
 
