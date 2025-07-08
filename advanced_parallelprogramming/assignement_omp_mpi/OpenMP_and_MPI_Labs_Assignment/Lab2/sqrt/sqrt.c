@@ -9,115 +9,116 @@
 //
 // Modified to compute sqrt
 //
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <mpi.h>
 #include <assert.h>
 #include <math.h>
+#include <string.h>
 
-// Creates an array of random numbers. Each number has a value from 0 - 1
+#define MEC(call) { \
+     int res = (call); \
+     if (res != MPI_SUCCESS) { \
+         char err_str[256]; int err_len; \
+         MPI_Error_string(res, err_str, &err_len); \
+         fprintf(stderr, "[Rank %d] MPI error at line %d: %s\n", rank, __LINE__, err_str); \
+         MPI_Abort(MPI_COMM_WORLD, res); \
+     } \
+}
+
 float *create_rand_nums(int num_elements) {
   float *rand_nums = (float *)malloc(sizeof(float) * num_elements);
   assert(rand_nums != NULL);
-  int i;
-  for (i = 0; i < num_elements; i++) {
-    //rand_nums[i] = (rand() * 100 / (float)RAND_MAX);
-    rand_nums[i] = 9.0;
+  for (int i = 0; i < num_elements; i++) {
+    rand_nums[i] = 9.0f;
   }
   return rand_nums;
 }
 
-// Computes the sqrt for all elements an array of numbers
 void compute_sqrt(float *array, int inicio, int fin) {
-  int i;
-  for (i = inicio; i < fin; i++) {
+  for (int i = inicio; i < fin; i++) {
     array[i] = sqrt(array[i]);
   }
 }
 
-// test
-float my_test(float *array,int num_elements) {
-  float sum =0; 
-  int i;
-  for (i = 0; i < num_elements; i++) {
+float my_test(float *array, int num_elements) {
+  float sum = 0.0f;
+  for (int i = 0; i < num_elements; i++) {
     sum += array[i];
   }
   return sum;
 }
 
 int main(int argc, char** argv) {
-  if (argc != 2) {
-    fprintf(stderr, "Usage: avg num_elements_per_proc\n");
-    exit(1);
+  if (argc != 3) {
+    fprintf(stderr, "Usage: %s num_elements_per_proc num_pipeline_steps\n", argv[0]);
+    exit(EXIT_FAILURE);
   }
-  
-  double iniciow, finw;
 
+  double iniciow, finw;
   int num_elements_per_proc = atoi(argv[1]);
-  // Seed the random number generator to get different results each time
-    //srand(time(NULL));
-  //1 para determinista
-  srand(time(NULL));
+  int steps = atoi(argv[2]);
 
   MPI_Init(NULL, NULL);
 
-  int world_rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-  int world_size;
-  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+  int rank, size;
+  MEC(MPI_Comm_rank(MPI_COMM_WORLD, &rank));
+  MEC(MPI_Comm_size(MPI_COMM_WORLD, &size));
 
-  // Create a random array of elements on the root process. Its total
-  // size will be the number of elements per process times the number
-  // of processes
   float *rand_nums = NULL;
-  if (world_rank == 0) {
-    rand_nums = create_rand_nums(num_elements_per_proc * world_size);
-    printf("numbers created\n");
+  if (rank == 0) {
+    rand_nums = create_rand_nums(num_elements_per_proc * size);
   }
 
-  // For each process, create a buffer that will hold a subset of the entire
-  // array
   float *sub_rand_nums = (float *)malloc(sizeof(float) * num_elements_per_proc);
   assert(sub_rand_nums != NULL);
 
-  // Scatter the random numbers from the root process to all processes in
-  // the MPI world
-  MPI_Scatter(rand_nums, num_elements_per_proc, MPI_FLOAT, sub_rand_nums,
-              num_elements_per_proc, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  MEC(MPI_Scatter(rand_nums, num_elements_per_proc, MPI_FLOAT,
+                  sub_rand_nums, num_elements_per_proc, MPI_FLOAT,
+                  0, MPI_COMM_WORLD));
 
-  printf("elements scattered proc:%d\n",world_rank);
-  
-  iniciow = MPI_Wtime();
-  // Compute the sqrts of your subset
-  compute_sqrt(sub_rand_nums, 0,num_elements_per_proc);
-
-  printf("elements computed proc:%d\n",world_rank);
-  
-  // Gather all partial sqrts down to the root process
   float *result = NULL;
-  if (world_rank == 0) {
-    result = (float *)malloc(sizeof(float) * world_size * num_elements_per_proc);
+  if (rank == 0) {
+    result = (float *)malloc(sizeof(float) * size * num_elements_per_proc);
     assert(result != NULL);
   }
-  MPI_Gather(sub_rand_nums, num_elements_per_proc, MPI_FLOAT, result, num_elements_per_proc, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
-  printf("elements gathered proc:%d\n",world_rank);
-  
-  finw = MPI_Wtime();
-  // 
-  if (world_rank == 0) {
-    printf("Time %g\n", finw-iniciow);
-    printf("Test %g\n", my_test(result,world_size * num_elements_per_proc));
+  float *step_buffer = (float *)malloc(sizeof(float) * num_elements_per_proc / steps);
+  MPI_Request requests[steps];
+
+  iniciow = MPI_Wtime();
+
+  for (int s = 0; s < steps; s++) {
+    int chunk = num_elements_per_proc / steps;
+    int start = s * chunk;
+    int end = (s == steps - 1) ? num_elements_per_proc : start + chunk;
+
+    compute_sqrt(sub_rand_nums, start, end);
+    memcpy(step_buffer, &sub_rand_nums[start], (end - start) * sizeof(float));
+
+    MEC(MPI_Igather(step_buffer, end - start, MPI_FLOAT,
+                    rank == 0 ? &result[start] : NULL, end - start, MPI_FLOAT,
+                    0, MPI_COMM_WORLD, &requests[s]));
   }
 
-  // Clean up
-  if (world_rank == 0) {
+  // Wait for all gather steps to finish
+  MEC(MPI_Waitall(steps, requests, MPI_STATUSES_IGNORE));
+
+  finw = MPI_Wtime();
+
+  if (rank == 0) {
+    printf("Total execution time with %d steps: %g seconds\n", steps, finw - iniciow);
+    printf("Test sum: %g\n", my_test(result, size * num_elements_per_proc));
     free(rand_nums);
     free(result);
   }
-  free(sub_rand_nums);
 
-  MPI_Barrier(MPI_COMM_WORLD);
-  MPI_Finalize();
+  free(sub_rand_nums);
+  free(step_buffer);
+
+  MEC(MPI_Barrier(MPI_COMM_WORLD));
+  MEC(MPI_Finalize());
+  return 0;
 }
