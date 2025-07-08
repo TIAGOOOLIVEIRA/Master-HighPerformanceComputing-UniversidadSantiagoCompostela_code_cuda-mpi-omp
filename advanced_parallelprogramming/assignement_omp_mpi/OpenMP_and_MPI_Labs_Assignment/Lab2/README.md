@@ -109,3 +109,16 @@ The speedup analysis for the dotprod.c in the Lab1 is taken into account to perf
 - Blocking version shows consistent improvement with increasing cores (1×1 → 16×1).
 
 - Nonblocking version crashes at 16×1 due to poor memory bounds checking — chunking logic must be fixed.
+
+
+
+## MPI: mxnvm.c
+
+
+gcc -fopenmp mxvnm_noncollective.c -o mxvnm_noncollective
+
+
+### MPI+OpenMP Speedup Table – Nonblocking Collectives
+
+
+### Conclusions
