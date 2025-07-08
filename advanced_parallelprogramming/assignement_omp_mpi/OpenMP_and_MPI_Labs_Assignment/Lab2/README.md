@@ -158,9 +158,7 @@ To execute and collect statistics
 Enabling Pipelining/Overlapping:
 
 - The ability of MPI_I... calls to return immediately is crucial for overlapping. This allows the application to proceed with computation or other communication while the initiated collective operation progresses in the background
-
 - For optimal performance and true overlapping, it is often necessary for the MPI library to have an asynchronous progress engine
-
 - This can involve helper threads that continue to progress MPI operations while the main application threads compute. For example, with MPICH, setting MPICH_ASYNC_PROGRESS=1 can enable this, requiring MPI_THREAD_MULTIPLE support
 - The concept of "weak local" progress means that an MPI operation might only complete when another MPI call is made that enables progress
 - Therefore, it's often necessary to either frequently call MPI_Test() or use non-standard asynchronous progress mechanisms to ensure active overlapping.
@@ -168,3 +166,71 @@ Enabling Pipelining/Overlapping:
   ***References***
     - Understanding MPI on Cray XC30; Basic information about Cray's MPI implementation (XC30_1-05-Cray_MPI.pdf)
     - Introduction to the Message Passing Interface (MPI); University of Stuttgart, High-Performance Computing-Center Stuttgart (HLRS) (mpi_3.1_rab_2023-JSC.pdf)
+
+
+To compile
+ - #mpicc -Wall -Wextra  -fopenmp sqrt.c -o sqrt -lm
+ - #mpirun -np 4 ./sqrt 100000
+
+### MPI+OpenMP Speedup Table – Nonblocking Collectives
+
+To execute and benchmark
+
+ - #mpirun -np 4 ./sqrt 100000 1000
+- #mpirun -np 4 ./sqrt 100000 100
+- #mpirun -np 4 ./sqrt 100000 10
+- #mpirun -np 4 ./sqrt 100000 5
+
+
+***This table compares the average execution time (in seconds) of the pipelined square root computation using MPI_Igather, varying the number of pipeline steps***
+
+| Pipeline Steps | Avg Time (s) | Test Sum (per run) | Observations                                                   |
+| -------------- | ------------ | ------------------ | -------------------------------------------------------------- |
+| 1000           | 0.01136      | 300900             | High overhead from too many steps – poor pipelining efficiency |
+| 100            | 0.00137      | 309000             | Dramatic speedup – better overlap balance                      |
+| 10             | 0.00113      | 390000             | Near-optimal performance – minimal communication stalls        |
+| 5              | 0.000935     | 480000             | Best timing – minimal pipeline setup cost                      |
+
+### Conclusions
+
+- Overhead with high steps: At 1000 steps, overhead dominates – too many small nonblocking operations reduce performance due to frequent buffer management and synchronization cost.
+
+- Balanced pipelining: Around 100 or 10 steps, pipelining becomes efficient. MPI can overlap compute/comm, reducing wall time.
+
+- Fewer steps (~5): Best raw performance but limits the granularity of pipelining. Some overlapping may be lost if chunks are too large to compute while communication occurs.
+
+### Future work
+***MPI - Async Progress Engine Support***
+
+
+Asynchronous progress in MPI enables overlapping communication and computation, crucial for pipelined and nonblocking collective operations.
+
+MPI libraries such as MPICH and Intel® MPI offer asynchronous progress engines, which rely on helper threads that continue progressing MPI operations independently of the main thread.
+
+To activate this feature, environment variables must be configured:
+
+    MPICH_ASYNC_PROGRESS=1 — enables the helper thread in MPICH.
+
+    MPICH_NEMESIS_ASYNC_PROGRESS=1 — required on systems like Cray XC.
+
+    MPICH_MAX_THREAD_SAFETY=multiple — ensures thread-safe MPI behavior.
+
+Applications must initialize MPI using MPI_Init_thread(..., MPI_THREAD_MULTIPLE, ...) to ensure compatibility.
+
+MPI engines generally rely on user MPI calls (e.g., MPI_Test, MPI_Wait) to make communication progress. Without an async engine, progress may stall if no calls are made.
+
+Intel® MPI also supports this mechanism but requires tuning, and its use is not free, as helper threads introduce overhead and contention risks.
+
+These async engines are essential for high-performance computing, especially when using nonblocking collectives (e.g., MPI_Igather, MPI_Iscatter) in pipelined patterns.
+
+***Items to investigate***
+
+The performance impact of enabling MPICH_ASYNC_PROGRESS=1 under various thread-count and message-size scenarios.
+
+The overhead trade-offs introduced by helper threads and their interactions with OpenMP regions and CPU core binding.
+
+Extend experiments to include other MPI distributions (e.g., Intel® MPI, MVAPICH2) and validate their respective async progress implementations.
+
+Explore strategies for manual progress boosting via MPI_Test in applications where helper threads are either unavailable or undesirable.
+
+Assess how asynchronous progress affects energy efficiency, core utilization, and thread scheduling on multi-core/many-core systems.
