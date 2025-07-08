@@ -1849,6 +1849,13 @@ Effective Physical Core Utilization: 2.0% (1.276 out of 64)
 
 ## Labs1, Hybrid Programming; 3: mxvnm.c 
 
+To compile
+- #mpicc -fopenmp mxvnm.c -o mxvnm
+- #chmod +x mxvnm.sh
+
+To submit as a job
+- #sbatch mxvnm.sh
+
 
 ### Statistics & Analysis
 
