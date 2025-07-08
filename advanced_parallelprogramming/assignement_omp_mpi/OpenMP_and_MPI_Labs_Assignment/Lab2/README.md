@@ -151,3 +151,20 @@ To execute and collect statistics
 - The non-blocking variant is slightly faster (~2-3%) than the blocking one — as expected due to early computation overlap.
 
 - The consistency of output (y[0] and y[N-1]) across runs confirms numerical correctness.
+
+
+## MPI: sqrt.c
+
+Enabling Pipelining/Overlapping:
+
+- The ability of MPI_I... calls to return immediately is crucial for overlapping. This allows the application to proceed with computation or other communication while the initiated collective operation progresses in the background
+
+- For optimal performance and true overlapping, it is often necessary for the MPI library to have an asynchronous progress engine
+
+- This can involve helper threads that continue to progress MPI operations while the main application threads compute. For example, with MPICH, setting MPICH_ASYNC_PROGRESS=1 can enable this, requiring MPI_THREAD_MULTIPLE support
+- The concept of "weak local" progress means that an MPI operation might only complete when another MPI call is made that enables progress
+- Therefore, it's often necessary to either frequently call MPI_Test() or use non-standard asynchronous progress mechanisms to ensure active overlapping.
+
+  ***References***
+    - Understanding MPI on Cray XC30; Basic information about Cray's MPI implementation (XC30_1-05-Cray_MPI.pdf)
+    - Introduction to the Message Passing Interface (MPI); University of Stuttgart, High-Performance Computing-Center Stuttgart (HLRS) (mpi_3.1_rab_2023-JSC.pdf)
