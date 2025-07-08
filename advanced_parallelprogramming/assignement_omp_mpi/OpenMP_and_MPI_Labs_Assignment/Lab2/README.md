@@ -109,3 +109,45 @@ The speedup analysis for the dotprod.c in the Lab1 is taken into account to perf
 - Blocking version shows consistent improvement with increasing cores (1×1 → 16×1).
 
 - Nonblocking version crashes at 16×1 due to poor memory bounds checking — chunking logic must be fixed.
+
+
+
+## MPI: mxnvm.c
+
+A more simpllified benchmark analysis sticking to 3 execution samples per version of the matrix-vector multiplication program (mxvnm_*).
+Important to mention that also the calculation per process leverage OpenMP for local parallelism.
+
+
+To compile
+- #mpicc -fopenmp mxvnm_collectiveblocking.c -o mxvnm_collectiveblocking
+- #mpicc -fopenmp mxvnm_collectivenonblocking.c -o mxvnm_collectivenonblocking
+- #gcc -fopenmp mxvnm_noncollective.c -o mxvnm_noncollective
+
+
+To execute and collect statistics
+- #time ./mxvnm_ori 5000 5000
+
+- #export OMP_NUM_THREADS=4
+
+- #mpirun -np 4 ./mxvnm_collectiveblocking 5000 5000
+- #mpirun -np 4 ./mxvnm_collectivenonblocking 5000 5000
+
+
+
+### MPI+OpenMP Speedup Table – Nonblocking Collectives
+
+| Version               | Parallel Setup         | Avg Time (s) | Speedup vs Non-Collective (1×1) |
+| --------------------- | ---------------------- | ------------ | ------------------------------- |
+| `mxvnm_noncollective` | 1 MPI × 1 OMP (serial) | 0.1600       | 1.00× (baseline)                |
+| `mxvnm_collectiveblocking`      | 4 MPI × 4 OMP          | 0.00477      | 33.54×                          |
+| `mxvnm_collectivenonblocking`   | 4 MPI × 4 OMP          | 0.00461      | 34.72×                          |
+
+
+
+### Conclusions
+
+- Both blocking and non-blocking collectives offer dramatic speedup (~34×) over the single-threaded baseline.
+
+- The non-blocking variant is slightly faster (~2-3%) than the blocking one — as expected due to early computation overlap.
+
+- The consistency of output (y[0] and y[N-1]) across runs confirms numerical correctness.
