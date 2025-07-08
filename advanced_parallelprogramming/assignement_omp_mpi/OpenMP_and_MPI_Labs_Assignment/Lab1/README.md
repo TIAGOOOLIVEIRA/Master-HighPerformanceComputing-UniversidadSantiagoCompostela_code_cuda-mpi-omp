@@ -1847,6 +1847,35 @@ Effective Physical Core Utilization: 2.0% (1.276 out of 64)
 
 
 
+## Labs1, Hybrid Programming; 3: mxvnm.c 
+
+
+### Statistics & Analysis
+
+Matrix-vector multiplication (MxV) tests across different (N × M) sizes and MPI/OpenMP configurations reveal important insights. The following table is just a summary to highlight the Speedup behavior, for the sake of simplicify because of the lengthy number of combinations to analise (which can be seen in the execution logs):
+
+
+| N × M      | Baseline (1×1) | Best Config (MPI×OMP) | Best Time (s) | Speedup |
+| ---------- | -------------- | --------------------- | ------------- | ------- |
+| 1000×10000 | 0.015183       | 2×8                   | 0.002879      | 5.27×   |
+| 10000×1000 | 0.020614       | 4×4                   | 0.005534      | 3.73×   |
+| 1000×1000  | 0.001728       | 2×8                   | 0.000405      | 4.27×   |
+
+### Conclusions
+For larger workloads like 1000×10000 and 10000×1000,  consistent and significant speedups (3.7× to 5.2×) can be observed.
+
+For smaller sizes like 1000×1000, the speedup is still good (up to 4.2×), but we approach a point where parallel overheads (MPI init, communication, thread spawning) start to dominate.
+
+2 MPI × 8 OMP threads shows the best performance for two of the three cases. This implies that more threads per process (strong intra-node parallelism) is more efficient in this memory-bound workload than many distributed processes (Efficient cache usage with fewer MPI processes, Reduced MPI communication volume due to fewer processes, Better OpenMP loop-level parallelization of inner M loop).
+
+Going beyond 4×4 to 8×2 and 16×1 doesn’t always yield better performance. For example, 16×1 often performs worse than 2×8.
+
+1000×10000 (wide matrix): OpenMP helps more due to inner loop (M) being large, which is where the work is. 10000×1000 (tall matrix): MPI parallelism helps more because outer loop (N) distributes easily across ranks.
+
+Better to chose hybrid parallelism with few MPI ranks and more threads (e.g., 2×8 or 4×4), especially when inner loop (M) is large.
+
+
+
 ## References 
 - [Parallel and High Performance Computing](www.manning.com/books/parallel-and-high-performance-computing)
 - [Santiago de Compostela - HPC - HPC Tools - Profiling tools for SpMV](https://github.com/TIAGOOOLIVEIRA/Master-HighPerformanceComputing-UniversidadSantiagoCompostela_code_cuda-mpi-omp/tree/main/hpc_tools/spmv)

@@ -103,7 +103,6 @@ int main(int argc, char** argv) {
                     0, MPI_COMM_WORLD, &requests[s]));
   }
 
-  // Wait for all gather steps to finish
   MEC(MPI_Waitall(steps, requests, MPI_STATUSES_IGNORE));
 
   finw = MPI_Wtime();

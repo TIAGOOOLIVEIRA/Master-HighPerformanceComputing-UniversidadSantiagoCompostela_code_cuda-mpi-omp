@@ -1,0 +1,1986 @@
+==== Configuration: MPI=1, OMP=1 ====
+-- Matrix size N=1000, M=10000
+Run 1...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1303563  c201-7     {2,4}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 8345813.000000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.26
+[Rank 0] Total execution time: 0.003768 seconds
+Run 2...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1303606  c201-7     {2,4}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 8345813.000000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.26
+[Rank 0] Total execution time: 0.003863 seconds
+Run 3...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1303647  c201-7     {2,4}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 8345813.000000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.26
+[Rank 0] Total execution time: 0.003852 seconds
+-- Matrix size N=10000, M=1000
+Run 1...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1303689  c201-7     {2,4}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 8334278656.000000
+[Rank 0] Done, y[0] = 833083  y[9999] = 833835
+[Rank 0] Total execution time: 0.354914 seconds
+Run 2...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1303731  c201-7     {2,4}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 8334278656.000000
+[Rank 0] Done, y[0] = 833083  y[9999] = 833835
+[Rank 0] Total execution time: 0.358108 seconds
+Run 3...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1303775  c201-7     {2,4}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 8334278656.000000
+[Rank 0] Done, y[0] = 833083  y[9999] = 833835
+[Rank 0] Total execution time: 0.360513 seconds
+-- Matrix size N=1000, M=100000
+Run 1...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1303817  c201-7     {2,4}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 8345813.000000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.26
+[Rank 0] Total execution time: 0.003785 seconds
+Run 2...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1303858  c201-7     {2,4}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 8345813.000000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.26
+[Rank 0] Total execution time: 0.003829 seconds
+Run 3...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1303899  c201-7     {2,4}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 8345813.000000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.26
+[Rank 0] Total execution time: 0.003758 seconds
+
+==== Configuration: MPI=2, OMP=8 ====
+-- Matrix size N=1000, M=10000
+Run 1...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1303941  c201-7     {2,4}
+[0] MPI startup(): 1       3698423  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 4163533.500000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.28
+[Rank 0] Total execution time: 0.020514 seconds
+[Rank 1] Local accumulated y = 4182283.000000
+Run 2...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1303991  c201-7     {2,4}
+[0] MPI startup(): 1       3698460  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 4163533.500000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.28
+[Rank 0] Total execution time: 0.019437 seconds
+[Rank 1] Local accumulated y = 4182282.750000
+Run 3...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304040  c201-7     {2,4}
+[0] MPI startup(): 1       3698497  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 4163533.500000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.28
+[Rank 0] Total execution time: 0.020536 seconds
+[Rank 1] Local accumulated y = 4182282.500000
+-- Matrix size N=10000, M=1000
+Run 1...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304089  c201-7     {2,4}
+[0] MPI startup(): 1       3698532  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 4166317056.000000
+[Rank 0] Done, y[0] = 833083  y[9999] = 833833
+[Rank 0] Total execution time: 0.295890 seconds
+[Rank 1] Local accumulated y = 4168311552.000000
+Run 2...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304139  c201-7     {2,4}
+[0] MPI startup(): 1       3698569  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 4166317312.000000
+[Rank 0] Done, y[0] = 833083  y[9999] = 833833
+[Rank 0] Total execution time: 0.254073 seconds
+[Rank 1] Local accumulated y = 4168311552.000000
+Run 3...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304188  c201-7     {2,4}
+[0] MPI startup(): 1       3698606  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 1] Local accumulated y = 4168311552.000000
+[Rank 0] Local accumulated y = 4166317056.000000
+[Rank 0] Done, y[0] = 833083  y[9999] = 833833
+[Rank 0] Total execution time: 0.289175 seconds
+-- Matrix size N=1000, M=100000
+Run 1...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304237  c201-7     {2,4}
+[0] MPI startup(): 1       3698642  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 1] Local accumulated y = 4182283.000000
+[Rank 0] Local accumulated y = 4163533.000000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.28
+[Rank 0] Total execution time: 0.019502 seconds
+Run 2...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304286  c201-7     {2,4}
+[0] MPI startup(): 1       3698677  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 4163533.500000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.28
+[Rank 0] Total execution time: 0.019979 seconds
+[Rank 1] Local accumulated y = 4182283.250000
+Run 3...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304335  c201-7     {2,4}
+[0] MPI startup(): 1       3698713  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 4163532.500000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.27
+[Rank 0] Total execution time: 0.018918 seconds
+[Rank 1] Local accumulated y = 4182283.250000
+
+==== Configuration: MPI=4, OMP=4 ====
+-- Matrix size N=1000, M=10000
+Run 1...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304386  c201-7     {2,4}
+[0] MPI startup(): 1       3698749  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179274  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953286  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 2079421.875000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.27
+[Rank 0] Total execution time: 0.003686 seconds
+[Rank 1] Local accumulated y = 2084109.375000
+[Rank 3] Local accumulated y = 2093484.250000
+[Rank 2] Local accumulated y = 2088796.875000
+Run 2...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304433  c201-7     {2,4}
+[0] MPI startup(): 1       3698780  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179307  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953320  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 2079421.875000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.27
+[Rank 1] Local accumulated y = 2084109.375000
+[Rank 0] Total execution time: 0.003536 seconds
+[Rank 2] Local accumulated y = 2088796.750000
+[Rank 3] Local accumulated y = 2093484.250000
+Run 3...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304480  c201-7     {2,4}
+[0] MPI startup(): 1       3698811  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179341  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953352  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 2079421.875000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.27
+[Rank 0] Total execution time: 0.003536 seconds
+[Rank 3] Local accumulated y = 2093484.250000
+[Rank 2] Local accumulated y = 2088796.750000
+[Rank 1] Local accumulated y = 2084109.375000
+-- Matrix size N=10000, M=1000
+Run 1...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304527  c201-7     {2,4}
+[0] MPI startup(): 1       3698842  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179372  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953384  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 2082945280.000000
+[Rank 0] Done, y[0] = 833083  y[9999] = 833833
+[Rank 0] Total execution time: 0.072574 seconds
+[Rank 3] Local accumulated y = 2084359040.000000
+[Rank 2] Local accumulated y = 2083884544.000000
+[Rank 1] Local accumulated y = 2083407232.000000
+Run 2...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304575  c201-7     {2,4}
+[0] MPI startup(): 1       3698873  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179405  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953417  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 2082945280.000000
+[Rank 0] Done, y[0] = 833083  y[9999] = 833833
+[Rank 0] Total execution time: 0.070561 seconds
+[Rank 1] Local accumulated y = 2083407232.000000
+[Rank 2] Local accumulated y = 2083884544.000000
+[Rank 3] Local accumulated y = 2084359040.000000
+Run 3...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304622  c201-7     {2,4}
+[0] MPI startup(): 1       3698906  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179441  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953448  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 2] Local accumulated y = 2083884544.000000
+[Rank 1] Local accumulated y = 2083407232.000000
+[Rank 0] Local accumulated y = 2082945280.000000
+[Rank 0] Done, y[0] = 833083  y[9999] = 833833
+[Rank 0] Total execution time: 0.073757 seconds
+[Rank 3] Local accumulated y = 2084359040.000000
+-- Matrix size N=1000, M=100000
+Run 1...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304669  c201-7     {2,4}
+[0] MPI startup(): 1       3698937  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179473  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953480  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 2079421.875000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.27
+[Rank 0] Total execution time: 0.003314 seconds
+[Rank 3] Local accumulated y = 2093484.250000
+[Rank 1] Local accumulated y = 2084109.375000
+[Rank 2] Local accumulated y = 2088796.750000
+Run 2...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304717  c201-7     {2,4}
+[0] MPI startup(): 1       3698968  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179506  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953512  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 2079421.875000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.27
+[Rank 0] Total execution time: 0.003416 seconds
+[Rank 3] Local accumulated y = 2093484.250000
+[Rank 1] Local accumulated y = 2084109.375000
+[Rank 2] Local accumulated y = 2088796.750000
+Run 3...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304764  c201-7     {2,4}
+[0] MPI startup(): 1       3698999  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179537  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953543  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 2079421.875000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.27
+[Rank 0] Total execution time: 0.003428 seconds
+[Rank 3] Local accumulated y = 2093484.250000
+[Rank 1] Local accumulated y = 2084109.375000
+[Rank 2] Local accumulated y = 2088796.875000
+
+==== Configuration: MPI=8, OMP=2 ====
+-- Matrix size N=1000, M=10000
+Run 1...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304814  c201-7     {2,4}
+[0] MPI startup(): 1       3699031  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179568  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953575  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1408985  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1408986  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3952711  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       908610   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 3] Local accumulated y = 1042640.562500
+[Rank 0] Local accumulated y = 1039125.000000
+[Rank 4] Local accumulated y = 1043812.562500
+[Rank 7] Local accumulated y = 1047328.187500
+[Rank 1] Local accumulated y = 1040296.812500
+[Rank 5] Local accumulated y = 1044984.375000
+[Rank 6] Local accumulated y = 1046156.375000
+[Rank 2] Local accumulated y = 1041468.687500
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.27
+[Rank 0] Total execution time: 0.000505 seconds
+Run 2...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304874  c201-7     {2,4}
+[0] MPI startup(): 1       3699060  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179598  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953605  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1409340  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1409342  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3952745  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       908645   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 1039125.000000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.27
+[Rank 0] Total execution time: 0.126839 seconds
+[Rank 7] Local accumulated y = 1047328.187500
+[Rank 3] Local accumulated y = 1042640.562500
+[Rank 6] Local accumulated y = 1046156.375000
+[Rank 4] Local accumulated y = 1043812.562500
+[Rank 1] Local accumulated y = 1040296.812500
+[Rank 2] Local accumulated y = 1041468.687500
+[Rank 5] Local accumulated y = 1044984.375000
+Run 3...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304934  c201-7     {2,4}
+[0] MPI startup(): 1       3699089  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179628  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953635  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1409700  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1409701  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3952776  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       908677   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 7] Local accumulated y = 1047328.187500
+[Rank 0] Local accumulated y = 1039125.000000
+[Rank 4] Local accumulated y = 1043812.562500
+[Rank 3] Local accumulated y = 1042640.562500
+[Rank 1] Local accumulated y = 1040296.812500
+[Rank 6] Local accumulated y = 1046156.375000
+[Rank 5] Local accumulated y = 1044984.375000
+[Rank 2] Local accumulated y = 1041468.687500
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.27
+[Rank 0] Total execution time: 0.000498 seconds
+-- Matrix size N=10000, M=1000
+Run 1...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1304994  c201-7     {2,4}
+[0] MPI startup(): 1       3699121  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179657  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953664  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1409988  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1409989  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3952806  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       908708   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 6] Local accumulated y = 1042121472.000000
+[Rank 1] Local accumulated y = 1041531008.000000
+[Rank 2] Local accumulated y = 1041649536.000000
+[Rank 7] Local accumulated y = 1042229696.000000
+[Rank 4] Local accumulated y = 1041885888.000000
+[Rank 3] Local accumulated y = 1041763840.000000
+[Rank 0] Local accumulated y = 1041411648.000000
+[Rank 5] Local accumulated y = 1041996288.000000
+[Rank 0] Done, y[0] = 833083  y[9999] = 833834
+[Rank 0] Total execution time: 0.023742 seconds
+Run 2...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1305054  c201-7     {2,4}
+[0] MPI startup(): 1       3699150  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179687  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953693  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1410321  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1410322  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3952835  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       908738   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 7] Local accumulated y = 1042229696.000000
+[Rank 4] Local accumulated y = 1041885888.000000
+[Rank 3] Local accumulated y = 1041763840.000000
+[Rank 5] Local accumulated y = 1041996288.000000
+[Rank 1] Local accumulated y = 1041531008.000000
+[Rank 6] Local accumulated y = 1042121472.000000
+[Rank 0] Local accumulated y = 1041411648.000000
+[Rank 2] Local accumulated y = 1041649536.000000
+[Rank 0] Done, y[0] = 833083  y[9999] = 833834
+[Rank 0] Total execution time: 0.023442 seconds
+Run 3...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1305114  c201-7     {2,4}
+[0] MPI startup(): 1       3699181  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179717  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953722  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1410644  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1410645  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3952866  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       908767   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 7] Local accumulated y = 1042229696.000000
+[Rank 4] Local accumulated y = 1041885888.000000
+[Rank 0] Local accumulated y = 1041411648.000000
+[Rank 0] Done, y[0] = 833083  y[9999] = 833834
+[Rank 0] Total execution time: 0.278175 seconds
+[Rank 3] Local accumulated y = 1041763840.000000
+[Rank 5] Local accumulated y = 1041996288.000000
+[Rank 2] Local accumulated y = 1041649536.000000
+[Rank 1] Local accumulated y = 1041531008.000000
+[Rank 6] Local accumulated y = 1042121472.000000
+-- Matrix size N=1000, M=100000
+Run 1...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1305177  c201-7     {2,4}
+[0] MPI startup(): 1       3699211  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179748  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953751  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1411093  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1411094  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3952898  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       908799   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 7] Local accumulated y = 1047328.187500
+[Rank 3] Local accumulated y = 1042640.562500
+[Rank 1] Local accumulated y = 1040296.812500
+[Rank 0] Local accumulated y = 1039125.000000
+[Rank 4] Local accumulated y = 1043812.562500
+[Rank 2] Local accumulated y = 1041468.687500
+[Rank 6] Local accumulated y = 1046156.375000
+[Rank 5] Local accumulated y = 1044984.375000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.27
+[Rank 0] Total execution time: 0.000515 seconds
+Run 2...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1305237  c201-7     {2,4}
+[0] MPI startup(): 1       3699240  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179783  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953780  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1411384  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1411385  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3952932  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       908829   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 7] Local accumulated y = 1047328.187500
+[Rank 4] Local accumulated y = 1043812.562500
+[Rank 0] Local accumulated y = 1039125.000000
+[Rank 3] Local accumulated y = 1042640.562500
+[Rank 1] Local accumulated y = 1040296.812500
+[Rank 2] Local accumulated y = 1041468.687500
+[Rank 5] Local accumulated y = 1044984.375000
+[Rank 6] Local accumulated y = 1046156.375000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.27
+[Rank 0] Total execution time: 0.000475 seconds
+Run 3...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1305297  c201-7     {2,4}
+[0] MPI startup(): 1       3699269  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179812  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953810  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1411669  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1411670  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3952962  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       908859   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 7] Local accumulated y = 1047328.187500
+[Rank 0] Local accumulated y = 1039125.000000
+[Rank 3] Local accumulated y = 1042640.562500
+[Rank 1] Local accumulated y = 1040296.812500
+[Rank 4] Local accumulated y = 1043812.562500
+[Rank 6] Local accumulated y = 1046156.375000
+[Rank 5] Local accumulated y = 1044984.375000
+[Rank 2] Local accumulated y = 1041468.687500
+[Rank 0] Done, y[0] = 8308.35  y[999] = 8383.27
+[Rank 0] Total execution time: 0.004695 seconds
+
+==== Configuration: MPI=16, OMP=1 ====
+-- Matrix size N=1000, M=10000
+Run 1...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1305360  c201-7     {2,4}
+[0] MPI startup(): 1       3699299  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179842  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953839  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1412000  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1412001  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3952996  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       908888   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 8       3873274  c204-2     {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 9       3873275  c204-2     {24,25,26,31,33,61,62,63}
+[0] MPI startup(): 10      3026639  c204-3     {0,1,2,4}
+[0] MPI startup(): 11      3026640  c204-3     {0,1,2,4}
+[0] MPI startup(): 12      3026641  c204-3     {0,1,2,4}
+[0] MPI startup(): 13      3026642  c204-3     {0,1,2,4}
+[0] MPI startup(): 14      3026643  c204-3     {0,1,2,4}
+[0] MPI startup(): 15      1141527  c211-29    {23,24,25,26,27,28,29,30}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 515259.500000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 0
+[Rank 0] Total execution time: 0.015224 seconds
+[Rank 7] Local accumulated y = 517277.718750
+[Rank 4] Local accumulated y = 516412.656250
+[Rank 8] Local accumulated y = 517565.812500
+[Rank 10] Local accumulated y = 518142.593750
+[Rank 3] Local accumulated y = 516124.437500
+[Rank 1] Local accumulated y = 515547.812500
+[Rank 9] Local accumulated y = 517854.156250
+[Rank 15] Local accumulated y = 586648.187500
+[Rank 12] Local accumulated y = 518719.031250
+[Rank 2] Local accumulated y = 515836.125000
+[Rank 6] Local accumulated y = 516989.406250
+[Rank 5] Local accumulated y = 516701.062500
+[Rank 13] Local accumulated y = 519007.343750
+[Rank 14] Local accumulated y = 519295.750000
+[Rank 11] Local accumulated y = 518430.593750
+Run 2...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1305414  c201-7     {2,4}
+[0] MPI startup(): 1       3699341  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179870  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953867  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1412522  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1412523  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3953024  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       908917   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 8       3873308  c204-2     {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 9       3873309  c204-2     {24,25,26,31,33,61,62,63}
+[0] MPI startup(): 10      3026683  c204-3     {0,1,2,4}
+[0] MPI startup(): 11      3026684  c204-3     {0,1,2,4}
+[0] MPI startup(): 12      3026685  c204-3     {0,1,2,4}
+[0] MPI startup(): 13      3026686  c204-3     {0,1,2,4}
+[0] MPI startup(): 14      3026687  c204-3     {0,1,2,4}
+[0] MPI startup(): 15      1141555  c211-29    {23,24,25,26,27,28,29,30}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 515259.500000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 0
+[Rank 10] Local accumulated y = 518142.593750
+[Rank 7] Local accumulated y = 517277.718750
+[Rank 0] Total execution time: 0.026997 seconds
+[Rank 4] Local accumulated y = 516412.656250
+[Rank 15] Local accumulated y = 586648.187500
+[Rank 8] Local accumulated y = 517565.812500
+[Rank 1] Local accumulated y = 515547.812500
+[Rank 3] Local accumulated y = 516124.437500
+[Rank 11] Local accumulated y = 518430.593750
+[Rank 5] Local accumulated y = 516701.062500
+[Rank 9] Local accumulated y = 517854.156250
+[Rank 6] Local accumulated y = 516989.406250
+[Rank 12] Local accumulated y = 518719.031250
+[Rank 14] Local accumulated y = 519295.750000
+[Rank 2] Local accumulated y = 515836.125000
+[Rank 13] Local accumulated y = 519007.343750
+Run 3...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1305472  c201-7     {2,4}
+[0] MPI startup(): 1       3699383  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179898  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953895  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1412944  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1412945  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3953052  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       908945   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 8       3873338  c204-2     {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 9       3873339  c204-2     {24,25,26,31,33,61,62,63}
+[0] MPI startup(): 10      3026722  c204-3     {0,1,2,4}
+[0] MPI startup(): 11      3026723  c204-3     {0,1,2,4}
+[0] MPI startup(): 12      3026724  c204-3     {0,1,2,4}
+[0] MPI startup(): 13      3026725  c204-3     {0,1,2,4}
+[0] MPI startup(): 14      3026726  c204-3     {0,1,2,4}
+[0] MPI startup(): 15      1141583  c211-29    {23,24,25,26,27,28,29,30}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 10] Local accumulated y = 518142.593750
+[Rank 7] Local accumulated y = 517277.718750
+[Rank 3] Local accumulated y = 516124.437500
+[Rank 1] Local accumulated y = 515547.812500
+[Rank 0] Local accumulated y = 515259.500000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 0
+[Rank 0] Total execution time: 0.027993 seconds
+[Rank 4] Local accumulated y = 516412.656250
+[Rank 2] Local accumulated y = 515836.125000
+[Rank 11] Local accumulated y = 518430.593750
+[Rank 6] Local accumulated y = 516989.406250
+[Rank 8] Local accumulated y = 517565.812500
+[Rank 15] Local accumulated y = 586648.187500
+[Rank 5] Local accumulated y = 516701.062500
+[Rank 9] Local accumulated y = 517854.156250
+[Rank 12] Local accumulated y = 518719.031250
+[Rank 13] Local accumulated y = 519007.343750
+[Rank 14] Local accumulated y = 519295.750000
+-- Matrix size N=10000, M=1000
+Run 1...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1305526  c201-7     {2,4}
+[0] MPI startup(): 1       3699425  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179926  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953923  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1413360  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1413361  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3953080  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       908974   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 8       3873368  c204-2     {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 9       3873369  c204-2     {24,25,26,31,33,61,62,63}
+[0] MPI startup(): 10      3026760  c204-3     {0,1,2,4}
+[0] MPI startup(): 11      3026761  c204-3     {0,1,2,4}
+[0] MPI startup(): 12      3026762  c204-3     {0,1,2,4}
+[0] MPI startup(): 13      3026763  c204-3     {0,1,2,4}
+[0] MPI startup(): 14      3026764  c204-3     {0,1,2,4}
+[0] MPI startup(): 15      1141611  c211-29    {23,24,25,26,27,28,29,30}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 7] Local accumulated y = 520895488.000000
+[Rank 0] Local accumulated y = 520692416.000000
+[Rank 0] Done, y[0] = 833083  y[9999] = 833835
+[Rank 0] Total execution time: 0.056987 seconds
+[Rank 6] Local accumulated y = 520868480.000000
+[Rank 10] Local accumulated y = 520984928.000000
+[Rank 3] Local accumulated y = 520779072.000000
+[Rank 4] Local accumulated y = 520810304.000000
+[Rank 1] Local accumulated y = 520720992.000000
+[Rank 15] Local accumulated y = 521131744.000000
+[Rank 8] Local accumulated y = 520926752.000000
+[Rank 11] Local accumulated y = 521013312.000000
+[Rank 5] Local accumulated y = 520837728.000000
+[Rank 9] Local accumulated y = 520954080.000000
+[Rank 12] Local accumulated y = 521043488.000000
+[Rank 2] Local accumulated y = 520751424.000000
+[Rank 13] Local accumulated y = 521072640.000000
+[Rank 14] Local accumulated y = 521101856.000000
+Run 2...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1305580  c201-7     {2,4}
+[0] MPI startup(): 1       3699467  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179956  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953951  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1413855  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1413856  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3953108  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       909002   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 8       3873398  c204-2     {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 9       3873399  c204-2     {24,25,26,31,33,61,62,63}
+[0] MPI startup(): 10      3026797  c204-3     {0,1,2,4}
+[0] MPI startup(): 11      3026798  c204-3     {0,1,2,4}
+[0] MPI startup(): 12      3026799  c204-3     {0,1,2,4}
+[0] MPI startup(): 13      3026800  c204-3     {0,1,2,4}
+[0] MPI startup(): 14      3026801  c204-3     {0,1,2,4}
+[0] MPI startup(): 15      1141639  c211-29    {23,24,25,26,27,28,29,30}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 520692416.000000
+[Rank 0] Done, y[0] = 833083  y[9999] = 833835
+[Rank 0] Total execution time: 0.056066 seconds
+[Rank 10] Local accumulated y = 520984928.000000
+[Rank 7] Local accumulated y = 520895488.000000
+[Rank 11] Local accumulated y = 521013312.000000
+[Rank 6] Local accumulated y = 520868480.000000
+[Rank 3] Local accumulated y = 520779072.000000
+[Rank 15] Local accumulated y = 521131744.000000
+[Rank 1] Local accumulated y = 520720992.000000
+[Rank 8] Local accumulated y = 520926752.000000
+[Rank 4] Local accumulated y = 520810304.000000
+[Rank 12] Local accumulated y = 521043488.000000
+[Rank 9] Local accumulated y = 520954080.000000
+[Rank 5] Local accumulated y = 520837728.000000
+[Rank 2] Local accumulated y = 520751424.000000
+[Rank 13] Local accumulated y = 521072640.000000
+[Rank 14] Local accumulated y = 521101856.000000
+Run 3...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1305634  c201-7     {2,4}
+[0] MPI startup(): 1       3699509  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4179984  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1953979  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1414345  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1414346  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3953136  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       909032   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 8       3873434  c204-2     {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 9       3873435  c204-2     {24,25,26,31,33,61,62,63}
+[0] MPI startup(): 10      3026837  c204-3     {0,1,2,4}
+[0] MPI startup(): 11      3026838  c204-3     {0,1,2,4}
+[0] MPI startup(): 12      3026839  c204-3     {0,1,2,4}
+[0] MPI startup(): 13      3026840  c204-3     {0,1,2,4}
+[0] MPI startup(): 14      3026841  c204-3     {0,1,2,4}
+[0] MPI startup(): 15      1141667  c211-29    {23,24,25,26,27,28,29,30}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 520692416.000000
+[Rank 0] Done, y[0] = 833083  y[9999] = 833835
+[Rank 3] Local accumulated y = 520779072.000000
+[Rank 4] Local accumulated y = 520810304.000000
+[Rank 10] Local accumulated y = 520984928.000000
+[Rank 7] Local accumulated y = 520895488.000000
+[Rank 15] Local accumulated y = 521131744.000000
+[Rank 1] Local accumulated y = 520720992.000000
+[Rank 0] Total execution time: 0.057089 seconds
+[Rank 5] Local accumulated y = 520837728.000000
+[Rank 2] Local accumulated y = 520751424.000000
+[Rank 6] Local accumulated y = 520868480.000000
+[Rank 11] Local accumulated y = 521013312.000000
+[Rank 8] Local accumulated y = 520926752.000000
+[Rank 12] Local accumulated y = 521043488.000000
+[Rank 9] Local accumulated y = 520954080.000000
+[Rank 13] Local accumulated y = 521072640.000000
+[Rank 14] Local accumulated y = 521101856.000000
+-- Matrix size N=1000, M=100000
+Run 1...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1305688  c201-7     {2,4}
+[0] MPI startup(): 1       3699551  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4180012  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1954007  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1414830  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1414831  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3953164  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       909060   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 8       3873464  c204-2     {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 9       3873465  c204-2     {24,25,26,31,33,61,62,63}
+[0] MPI startup(): 10      3026876  c204-3     {0,1,2,4}
+[0] MPI startup(): 11      3026877  c204-3     {0,1,2,4}
+[0] MPI startup(): 12      3026878  c204-3     {0,1,2,4}
+[0] MPI startup(): 13      3026879  c204-3     {0,1,2,4}
+[0] MPI startup(): 14      3026880  c204-3     {0,1,2,4}
+[0] MPI startup(): 15      1141695  c211-29    {23,24,25,26,27,28,29,30}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 10] Local accumulated y = 518142.593750
+[Rank 0] Local accumulated y = 515259.500000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 0
+[Rank 0] Total execution time: 0.014205 seconds
+[Rank 4] Local accumulated y = 516412.656250
+[Rank 7] Local accumulated y = 517277.718750
+[Rank 3] Local accumulated y = 516124.437500
+[Rank 15] Local accumulated y = 586648.187500
+[Rank 11] Local accumulated y = 518430.593750
+[Rank 8] Local accumulated y = 517565.812500
+[Rank 5] Local accumulated y = 516701.062500
+[Rank 1] Local accumulated y = 515547.812500
+[Rank 12] Local accumulated y = 518719.031250
+[Rank 9] Local accumulated y = 517854.156250
+[Rank 2] Local accumulated y = 515836.125000
+[Rank 13] Local accumulated y = 519007.343750
+[Rank 6] Local accumulated y = 516989.406250
+[Rank 14] Local accumulated y = 519295.750000
+Run 2...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1305742  c201-7     {2,4}
+[0] MPI startup(): 1       3699593  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4180040  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1954035  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1415293  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1415294  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3953195  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       909088   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 8       3873502  c204-2     {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 9       3873503  c204-2     {24,25,26,31,33,61,62,63}
+[0] MPI startup(): 10      3026913  c204-3     {0,1,2,4}
+[0] MPI startup(): 11      3026914  c204-3     {0,1,2,4}
+[0] MPI startup(): 12      3026915  c204-3     {0,1,2,4}
+[0] MPI startup(): 13      3026916  c204-3     {0,1,2,4}
+[0] MPI startup(): 14      3026917  c204-3     {0,1,2,4}
+[0] MPI startup(): 15      1141723  c211-29    {23,24,25,26,27,28,29,30}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 515259.500000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 0
+[Rank 0] Total execution time: 0.026993 seconds
+[Rank 7] Local accumulated y = 517277.718750
+[Rank 3] Local accumulated y = 516124.437500
+[Rank 4] Local accumulated y = 516412.656250
+[Rank 10] Local accumulated y = 518142.593750
+[Rank 5] Local accumulated y = 516701.062500
+[Rank 8] Local accumulated y = 517565.812500
+[Rank 1] Local accumulated y = 515547.812500
+[Rank 11] Local accumulated y = 518430.593750
+[Rank 15] Local accumulated y = 586648.187500
+[Rank 9] Local accumulated y = 517854.156250
+[Rank 6] Local accumulated y = 516989.406250
+[Rank 2] Local accumulated y = 515836.125000
+[Rank 12] Local accumulated y = 518719.031250
+[Rank 13] Local accumulated y = 519007.343750
+[Rank 14] Local accumulated y = 519295.750000
+Run 3...
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): Intel(R) MPI Library, Version 2021.3  Build 20210601 (id: 6f90181f1)
+[0] MPI startup(): Copyright (C) 2003-2021 Intel Corporation.  All rights reserved.
+[0] MPI startup(): library kind: release
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+[0] MPI startup(): libfabric version: 1.12.1-impi
+[0] MPI startup(): libfabric provider: mlx
+[0] MPI startup(): Load tuning file: "/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest/etc/tuning_icx_shm-ofi_mlx.dat"
+[0] MPI startup(): Rank    Pid      Node name  Pin cpu
+[0] MPI startup(): 0       1305797  c201-7     {2,4}
+[0] MPI startup(): 1       3699636  c201-38    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 2       4180068  c201-42    {36,37,38,39,40,41,42,43}
+[0] MPI startup(): 3       1954063  c203-16    {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 4       1415781  c203-20    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 5       1415782  c203-20    {40,41,42,43,44,45,46,47}
+[0] MPI startup(): 6       3953223  c203-36    {31,34,35,36,38,39,40,41}
+[0] MPI startup(): 7       909117   c203-48    {32,33,34,35,36,37,38,39}
+[0] MPI startup(): 8       3873532  c204-2     {16,17,18,19,20,21,22,23}
+[0] MPI startup(): 9       3873533  c204-2     {24,25,26,31,33,61,62,63}
+[0] MPI startup(): 10      3026950  c204-3     {0,1,2,4}
+[0] MPI startup(): 11      3026951  c204-3     {0,1,2,4}
+[0] MPI startup(): 12      3026952  c204-3     {0,1,2,4}
+[0] MPI startup(): 13      3026953  c204-3     {0,1,2,4}
+[0] MPI startup(): 14      3026954  c204-3     {0,1,2,4}
+[0] MPI startup(): 15      1141751  c211-29    {23,24,25,26,27,28,29,30}
+[0] MPI startup(): I_MPI_LIBRARY_KIND=release_mt
+[0] MPI startup(): I_MPI_ROOT=/opt/cesga/2020/software/Compiler/intel/2021.3.0/impi/2021.3.0/mpi/latest
+[0] MPI startup(): I_MPI_MPIRUN=mpirun
+[0] MPI startup(): I_MPI_HYDRA_TOPOLIB=hwloc
+[0] MPI startup(): I_MPI_HYDRA_BOOTSTRAP=slurm
+[0] MPI startup(): I_MPI_PIN_DOMAIN=8
+[0] MPI startup(): I_MPI_INTERNAL_MEM_POLICY=default
+[0] MPI startup(): I_MPI_DEBUG=5
+[0] MPI startup(): I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+[Rank 0] Local accumulated y = 515259.500000
+[Rank 0] Done, y[0] = 8308.35  y[999] = 0
+[Rank 10] Local accumulated y = 518142.593750
+[Rank 7] Local accumulated y = 517277.718750
+[Rank 0] Total execution time: 0.025994 seconds
+[Rank 11] Local accumulated y = 518430.593750
+[Rank 4] Local accumulated y = 516412.656250
+[Rank 15] Local accumulated y = 586648.187500
+[Rank 1] Local accumulated y = 515547.812500
+[Rank 13] Local accumulated y = 519007.343750
+[Rank 5] Local accumulated y = 516701.062500
+[Rank 3] Local accumulated y = 516124.437500
+[Rank 2] Local accumulated y = 515836.125000
+[Rank 14] Local accumulated y = 519295.750000
+[Rank 8] Local accumulated y = 517565.812500
+[Rank 9] Local accumulated y = 517854.156250
+[Rank 6] Local accumulated y = 516989.406250
+[Rank 12] Local accumulated y = 518719.031250
+All configurations completed.
+
+*****************************************************************************
+*                                                                           *
+*                    JOB EFFICIENCY REPORT (seff 14302225)                   *
+*                                                                           *
+*****************************************************************************
+
+Job ID: 14302225
+Cluster: finisterrae3
+User/Group: curso370/ulc
+State: COMPLETED (exit code 0)
+Nodes: 10
+Cores per node: 12
+CPU Utilized: 00:01:39
+CPU Efficiency: 1.89% of 01:27:28 core-walltime
+Job Wall-clock time: 00:00:41
+Memory Utilized: 5.54 MB
+Memory Efficiency: 0.00% of 320.00 GB
+
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ ++   Memory Efficiency is too small. Please review the requested memory. ++
+ ++ It seems that you do not need that much memory so we recommend        ++
+ ++ requesting less memory in other similar jobs.                         ++
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+*****************************************************************************
+
+
+*****************************************************************************
+*                                                                           *
+*                    JOB EFFICIENCY REPORT (seff 14302225)                   *
+*                                                                           *
+*****************************************************************************
+
+Job ID: 14302225
+Cluster: finisterrae3
+User/Group: curso370/ulc
+State: COMPLETED (exit code 0)
+Nodes: 10
+Cores per node: 12
+CPU Utilized: 00:01:39
+CPU Efficiency: 1.89% of 01:27:28 core-walltime
+Job Wall-clock time: 00:00:41
+Memory Utilized: 5.54 MB
+Memory Efficiency: 0.00% of 320.00 GB
+
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ ++   Memory Efficiency is too small. Please review the requested memory. ++
+ ++ It seems that you do not need that much memory so we recommend        ++
+ ++ requesting less memory in other similar jobs.                         ++
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+*****************************************************************************
+
+
+*****************************************************************************
+*                                                                           *
+*                    JOB EFFICIENCY REPORT (seff 14302225)                   *
+*                                                                           *
+*****************************************************************************
+
+Job ID: 14302225
+Cluster: finisterrae3
+User/Group: curso370/ulc
+State: COMPLETED (exit code 0)
+Nodes: 10
+Cores per node: 12
+CPU Utilized: 00:01:39
+CPU Efficiency: 1.89% of 01:27:28 core-walltime
+Job Wall-clock time: 00:00:41
+Memory Utilized: 5.54 MB
+Memory Efficiency: 0.00% of 320.00 GB
+
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ ++   Memory Efficiency is too small. Please review the requested memory. ++
+ ++ It seems that you do not need that much memory so we recommend        ++
+ ++ requesting less memory in other similar jobs.                         ++
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+*****************************************************************************
+
+
+*****************************************************************************
+*                                                                           *
+*                    JOB EFFICIENCY REPORT (seff 14302225)                   *
+*                                                                           *
+*****************************************************************************
+
+Job ID: 14302225
+Cluster: finisterrae3
+User/Group: curso370/ulc
+State: COMPLETED (exit code 0)
+Nodes: 10
+Cores per node: 12
+CPU Utilized: 00:01:39
+CPU Efficiency: 1.89% of 01:27:28 core-walltime
+Job Wall-clock time: 00:00:41
+Memory Utilized: 5.54 MB
+Memory Efficiency: 0.00% of 320.00 GB
+
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ ++   Memory Efficiency is too small. Please review the requested memory. ++
+ ++ It seems that you do not need that much memory so we recommend        ++
+ ++ requesting less memory in other similar jobs.                         ++
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+*****************************************************************************
+
+
+*****************************************************************************
+*                                                                           *
+*                    JOB EFFICIENCY REPORT (seff 14302225)                   *
+*                                                                           *
+*****************************************************************************
+
+Job ID: 14302225
+Cluster: finisterrae3
+User/Group: curso370/ulc
+State: COMPLETED (exit code 0)
+Nodes: 10
+Cores per node: 12
+CPU Utilized: 00:01:39
+CPU Efficiency: 1.89% of 01:27:28 core-walltime
+Job Wall-clock time: 00:00:41
+Memory Utilized: 5.54 MB
+Memory Efficiency: 0.00% of 320.00 GB
+
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ ++   Memory Efficiency is too small. Please review the requested memory. ++
+ ++ It seems that you do not need that much memory so we recommend        ++
+ ++ requesting less memory in other similar jobs.                         ++
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+*****************************************************************************
+
+
+*****************************************************************************
+*                                                                           *
+*                    JOB EFFICIENCY REPORT (seff 14302225)                   *
+*                                                                           *
+*****************************************************************************
+
+Job ID: 14302225
+Cluster: finisterrae3
+User/Group: curso370/ulc
+State: COMPLETED (exit code 0)
+Nodes: 10
+Cores per node: 12
+CPU Utilized: 00:01:39
+CPU Efficiency: 1.89% of 01:27:28 core-walltime
+Job Wall-clock time: 00:00:41
+Memory Utilized: 5.54 MB
+Memory Efficiency: 0.00% of 320.00 GB
+
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ ++   Memory Efficiency is too small. Please review the requested memory. ++
+ ++ It seems that you do not need that much memory so we recommend        ++
+ ++ requesting less memory in other similar jobs.                         ++
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+*****************************************************************************
+
+
+*****************************************************************************
+*                                                                           *
+*                    JOB EFFICIENCY REPORT (seff 14302225)                   *
+*                                                                           *
+*****************************************************************************
+
+Job ID: 14302225
+Cluster: finisterrae3
+User/Group: curso370/ulc
+State: COMPLETED (exit code 0)
+Nodes: 10
+Cores per node: 12
+CPU Utilized: 00:01:39
+CPU Efficiency: 1.89% of 01:27:28 core-walltime
+Job Wall-clock time: 00:00:41
+Memory Utilized: 5.54 MB
+Memory Efficiency: 0.00% of 320.00 GB
+
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ ++   Memory Efficiency is too small. Please review the requested memory. ++
+ ++ It seems that you do not need that much memory so we recommend        ++
+ ++ requesting less memory in other similar jobs.                         ++
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+*****************************************************************************
+
+
+*****************************************************************************
+*                                                                           *
+*                    JOB EFFICIENCY REPORT (seff 14302225)                   *
+*                                                                           *
+*****************************************************************************
+
+Job ID: 14302225
+Cluster: finisterrae3
+User/Group: curso370/ulc
+State: COMPLETED (exit code 0)
+Nodes: 10
+Cores per node: 12
+CPU Utilized: 00:01:39
+CPU Efficiency: 1.89% of 01:27:28 core-walltime
+Job Wall-clock time: 00:00:41
+Memory Utilized: 5.54 MB
+Memory Efficiency: 0.00% of 320.00 GB
+
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ ++   Memory Efficiency is too small. Please review the requested memory. ++
+ ++ It seems that you do not need that much memory so we recommend        ++
+ ++ requesting less memory in other similar jobs.                         ++
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+*****************************************************************************
+
+
+*****************************************************************************
+*                                                                           *
+*                    JOB EFFICIENCY REPORT (seff 14302225)                   *
+*                                                                           *
+*****************************************************************************
+
+Job ID: 14302225
+Cluster: finisterrae3
+User/Group: curso370/ulc
+State: COMPLETED (exit code 0)
+Nodes: 10
+Cores per node: 12
+CPU Utilized: 00:01:39
+CPU Efficiency: 1.89% of 01:27:28 core-walltime
+Job Wall-clock time: 00:00:41
+Memory Utilized: 5.54 MB
+Memory Efficiency: 0.00% of 320.00 GB
+
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ ++   Memory Efficiency is too small. Please review the requested memory. ++
+ ++ It seems that you do not need that much memory so we recommend        ++
+ ++ requesting less memory in other similar jobs.                         ++
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+*****************************************************************************
+
+
+*****************************************************************************
+*                                                                           *
+*                    JOB EFFICIENCY REPORT (seff 14302225)                   *
+*                                                                           *
+*****************************************************************************
+
+Job ID: 14302225
+Cluster: finisterrae3
+User/Group: curso370/ulc
+State: COMPLETED (exit code 0)
+Nodes: 10
+Cores per node: 12
+CPU Utilized: 00:01:39
+CPU Efficiency: 1.89% of 01:27:28 core-walltime
+Job Wall-clock time: 00:00:41
+Memory Utilized: 5.54 MB
+Memory Efficiency: 0.00% of 320.00 GB
+
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ ++   Memory Efficiency is too small. Please review the requested memory. ++
+ ++ It seems that you do not need that much memory so we recommend        ++
+ ++ requesting less memory in other similar jobs.                         ++
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+*****************************************************************************
