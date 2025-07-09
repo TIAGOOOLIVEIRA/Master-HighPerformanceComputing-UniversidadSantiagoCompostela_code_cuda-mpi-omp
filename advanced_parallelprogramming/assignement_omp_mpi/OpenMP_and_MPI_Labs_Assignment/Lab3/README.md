@@ -44,5 +44,6 @@ To compile and call 2D Topology stencil - Point-to-point approach
 - #mpicc -o stencil_2dp2p stencil_2dp2p.c printarr_par.c -lm
 - #mpirun -np 4 ./stencil_2dp2p 200 10 500
 
+_[Work-in-progress]_
 
 ### Conclusions
