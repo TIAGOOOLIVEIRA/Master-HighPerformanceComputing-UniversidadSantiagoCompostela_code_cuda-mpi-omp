@@ -66,5 +66,28 @@ In a typical ETL before HPC compute:
 
     This pattern lets Ray handle data-prep and model inference, while specialized MPI/GPU kernels run on HPC nodes.
 
+### Ray to Speedup Encoding: Actor Model with GPU acceleration
+    ###TODO to add reference to "learning ray flexible distributed python for machine learning"
+
+        We can also choose to map batches of data instead of individual records
+        using .map_batches(). Some types of computations are much more efficient when
+        they’re vectorized, meaning that they use an algorithm or implementation that is more
+        efficient operating on a set of items instead of one at a time.
+
+        Vectorized computations are especially useful on GPUs when performing deep learn‐
+        ing training or inference. However, generally performing computations on GPUs also
+        has significant fixed cost due to needing to load model weights or other data into the
+        GPU RAM. For this purpose, Ray Datasets supports mapping data using Ray actors.
+        Ray actors are long-lived and can hold state, as opposed to stateless Ray tasks, so
+        we can cache expensive operations costs by running them in the actor’s constructor
+        (such as loading a model onto a GPU).
+
+        To run the inference on a GPU, we would pass num_gpus=1 to the map_batches call to
+        specify that the actors running the map function each require a GPU.
+
+    ###TODO to add code snippet of a regular actor submit a kernel/model to GPU. Link to code folder
+    ###TODO to add any reference to actor model efficiency/GPU vs spark and other data/ML engines
+    ###TODO to add rationale regarding the power of heterogeneous model for data preparation and HPC (GPU, FPGA)
+
 
 By leveraging Ray Core and AIR, there is the strategical benefit of a cloud-agnostic, fully modular ETL stack that bridges AI-driven feature engineering and HPC numerical simulation—boosting developer productivity, resource utilization, and end-to-end pipeline agility.
