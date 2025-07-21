@@ -1,5 +1,7 @@
 
-
+###TODO book Applied Machine Learning and High-Performance Computing on AWS
+###TODO get ideias from "massive..." for the structure, software artifacts, paragraphs, small objectives, scope/non scope, toolings, references where industry already have gone
+###TODO decide metrics to evaluate, graphs, reports, diagrams
 
 4 HPC AWS
     https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3-pip.html
