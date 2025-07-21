@@ -17,9 +17,8 @@ When we apply the same paradigm to DNA and protein sequencing — treating nucle
 
 Together, these factors motivate a two stage architecture: Ray handles the high-throughput, distributed featurization and embedding generation, and then passes compact numeric representations to an HPC cluster (MPI/Slurm, GPU-accelerated) for the heavy lifting of downstream simulations or inference. This separation of concerns leverages Ray’s lightweight orchestration for data prep and the raw computational power of specialized hardware for complex, numeric-intensive tasks.
 
-###TODO
-Add conceptual pipeline diagram
-    ref https://developer.nvidia.com/blog/petabyte-scale-video-processing-with-nvidia-nemo-curator-on-nvidia-dgx-cloud/
+#TODO adapt this diagram for a general purpose architecture
+<img src="../images/Anyscale-Ray-Gen-AI-6.png" alt="Ray general purpose arch" width="500">
 
 <img src="../images/streamlined-batch-processing.png" alt="Ray streamlined" width="500">
 
@@ -65,6 +64,24 @@ In a typical ETL before HPC compute:
     Ray → Slurm Bridge: Lightweight Ray tasks submit jobs via SSH/Sbatch to a ParallelCluster, passing S3 paths to embedding files.
 
     This pattern lets Ray handle data-prep and model inference, while specialized MPI/GPU kernels run on HPC nodes.
+
+### Ray to Speedup Encoding: Actor Model with GPU acceleration
+
+    We can also choose to map batches of data instead of individual records
+    using .map_batches(). Some types of computations are much more efficient when
+    they’re vectorized, meaning that they use an algorithm or implementation that is more
+    efficient operating on a set of items instead of one at a time.
+
+    Vectorized computations are especially useful on GPUs when performing deep learn‐
+    ing training or inference. However, generally performing computations on GPUs also
+    has significant fixed cost due to needing to load model weights or other data into the
+    GPU RAM. For this purpose, Ray Datasets supports mapping data using Ray actors.
+    Ray actors are long-lived and can hold state, as opposed to stateless Ray tasks, so
+    we can cache expensive operations costs by running them in the actor’s constructor
+    (such as loading a model onto a GPU).
+
+    To run the inference on a GPU, we would pass num_gpus=1 to the map_batches call to
+    specify that the actors running the map function each require a GPU [@pumperla2023learning].
 
 
 By leveraging Ray Core and AIR, there is the strategical benefit of a cloud-agnostic, fully modular ETL stack that bridges AI-driven feature engineering and HPC numerical simulation—boosting developer productivity, resource utilization, and end-to-end pipeline agility.
