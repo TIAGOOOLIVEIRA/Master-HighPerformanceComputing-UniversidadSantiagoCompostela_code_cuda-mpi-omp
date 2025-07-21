@@ -1,5 +1,3 @@
-
-
 High-Performance Computing (HPC), also known as accelerated computing, aggregates the computing power from a cluster of nodes to divide and conquer complex tasks, achieving significantly higher performance than a single machine. It is essential for processing the massive amounts of data generated today and for solving intricate scientific and engineering problems, such as drug discovery, flight simulations, and financial risk analysis
 
 **Limitations of On-Premises HPC**
@@ -80,3 +78,5 @@ learning [@khanuja2022applied].
 This reference architecture uses AWS ParallelCluster to deploy a turnkey HPC environment for running Siemens’ Simcenter STAR-CCM+ CFD application. It automates provisioning of C5n instances with EFA for low-latency MPI, mounts an Amazon FSx for Lustre parallel file system for high-throughput I/O, and leverages 100 Gbps networking—all in under 15 minutes. Users then install STAR-CCM+ on the cluster and submit simulation jobs, with optional NICE DCV desktops for remote visualization. The strategy emphasizes rapid, repeatable deployment of optimized HPC resources to accelerate large-scale CFD workloads in the cloud [@aws_compute_starccm].
 
 <img src="../images/AWS_HPC_ParallelCluster_StarccmFig1.png" alt="HPC AWS" width="500">
+
+<img src="../images/hpcblog-53-fig4.png" alt="HPC client - HPC" width="500">
