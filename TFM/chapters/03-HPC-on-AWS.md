@@ -12,12 +12,12 @@ Traditionally, HPC applications have faced several limitations when run on-premi
 - Limited scalability and elasticity, as specialized hardware like GPUs and serverless technologies are not readily available and require significant procurement and maintenance efforts
 - Inability to efficiently cater to diverse HPC application needs such as parallel processing, low-latency/high-throughput networking, and fast I/O subsystems, leading to reduced efficiency and lost opportunities
 - Traditional HPC systems are compute-centric, emphasizing floating-point performance, but scientific applications are increasingly data-intensive, posing challenges for existing architectures
-- Voluminous data can consume network bandwidth and cause traffic issues during transfer, and local data centers struggle with data access, I/O, backup, power, and cooling [mandoiu2016computational]
+- Voluminous data can consume network bandwidth and cause traffic issues during transfer, and local data centers struggle with data access, I/O, backup, power, and cooling [@mandoiu2016computational]
 - Load imbalance is a common issue in parallel genomics applications due to heterogeneous processing costs and variable biological sequence sizes [fernandezfraga2024applying]
 
 **Benefits of HPC in the Cloud**
 
-Moving HPC workloads to the cloud offers significant advantages over on-premises solutions, effectively overcoming many of these limitations [khanuja2022applied]:
+Moving HPC workloads to the cloud offers significant advantages over on-premises solutions, effectively overcoming many of these limitations [@khanuja2022applied]:
 
 - Virtually unlimited capacity: The cloud provides access to virtually unlimited HPC capacity, enabling users to move beyond fixed infrastructure constraints
 - Drives innovation: It breaks barriers to innovation by allowing users to rapidly experiment with new approaches and make data-driven decisions
@@ -36,7 +36,7 @@ HPC in the cloud is driving innovation across various industries, particularly i
 
 - HPC technology in the cloud allows the analysis of massive amounts of sensitive genomic data to gain insights into critical diseases, significantly reducing time for lab sample testing and drug discovery, while meeting security and compliance requirements
 - For example, Novartis used the AWS cloud to screen 10 million compounds against a cancer target in less than a week, taking only 9 hours and costing $4,232. This experiment would have required an estimated $40 million investment and much longer in-house
-- Challenges like large genomic datasets with issues in discoverability, accessibility, availability, and scalable processing are addressed by cloud storage systems like Amazon S3 (for virtually unlimited, durable storage) and AWS DataSync (for secure transfer) [fernandezfraga2024applying]
+- Challenges like large genomic datasets with issues in discoverability, accessibility, availability, and scalable processing are addressed by cloud storage systems like Amazon S3 (for virtually unlimited, durable storage) and AWS DataSync (for secure transfer) [@fernandezfraga2024applying]
 - Load imbalance in genomics applications can be minimized by dynamic load balancing methods within parallel processing techniques.
 
 **Addressing Broader Computational Challenges** 
@@ -71,54 +71,12 @@ The Elastic Fabric Adapter (EFA) further accelerates MPI-style workloads (e.g., 
 On AWS, P4d instances can be used to provision a supercomputer or an EC2 Ultracluster with more
 than 4,000 A100 GPUs, Petabit-scale networking, and scalable, shared high throughput storage on
 Amazon FSx for Lustre. Application and package developers use the NVIDIA CUDA library to build massively parallel applications for HPC and deep
-learning [khanuja2022applied].
-
-###TODO get ideias from "massive..." for the structure, software artifacts, paragraphs, small objectives, scope/non scope, toolings, references where industry already have gone
-###TODO decide metrics to evaluate, graphs, reports, diagrams
+learning [@khanuja2022applied].
 
 
 
+**AWS ParallelCluster for a CFD application**
 
-4 HPC AWS
-    https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3-pip.html
+This reference architecture uses AWS ParallelCluster to deploy a turnkey HPC environment for running Siemens’ Simcenter STAR-CCM+ CFD application. It automates provisioning of C5n instances with EFA for low-latency MPI, mounts an Amazon FSx for Lustre parallel file system for high-throughput I/O, and leverages 100 Gbps networking—all in under 15 minutes. Users then install STAR-CCM+ on the cluster and submit simulation jobs, with optional NICE DCV desktops for remote visualization. The strategy emphasizes rapid, repeatable deployment of optimized HPC resources to accelerate large-scale CFD workloads in the cloud [@aws_compute_starccm].
 
-https://docs.aws.amazon.com/parallelcluster/latest/ug/what-is-aws-parallelcluster.html
-
-https://github.com/aws-samples/aws-hpc-recipes
-
-https://aws.amazon.com/blogs/hpc/
-
-
-Diagrams
-    https://aws.amazon.com/blogs/compute/running-simcenter-star-ccm-on-aws
-
-https://aws.amazon.com/blogs/hpc/automate-your-clusters-by-creating-self-documenting-hpc-with-aws-parallelcluster/
-
-
-https://aws.amazon.com/blogs/hpc/deep-dive-into-the-aws-parallelcluster-3-configuration-file/
-https://aws.amazon.com/blogs/hpc/improve-the-speed-and-cost-of-hpc-deployment-with-mountpoint-for-amazon-s3/
-
-https://aws.amazon.com/blogs/hpc/securing-hpc-on-aws-isolated-clusters/
-
-benchmark
-    NAS nasa - https://www.nas.nasa.gov/software/npb.html
-
-
-
-
-Benefits of Modular Architectures in HPC on AWS
-◦
-Enhanced Scalability and Flexibility: Modular design, as facilitated by cloud services and frameworks like Ray, allows for dynamic scaling of resources (e.g., EC2 instances, GPUs) to meet varying workload demands, moving beyond the limitations of on-premises fixed capacities
-.
-◦
-Faster Innovation and Experimentation: Breaking down complex problems into modular components enables quicker experimentation and iteration on business use cases, accelerating the design, development, and testing of new products
-.
-◦
-Improved Maintainability and Adaptability: Modular components are easier to update, debug, and maintain. This also allows for the adaptive allocation of compute resources and smoother integration into existing workflows
-.
-◦
-Reduced Vendor Lock-in: By designing with modular, open-source frameworks like Ray that integrate with various backends and cloud providers, organizations can reduce dependency on a single vendor's proprietary solutions
-.
-
-
-<img src="../images/HPC-AWS-References-Mindmap.png" alt="HPC AWS" width="500">
+<img src="../images/AWS_HPC_ParallelCluster_StarccmFig1.png" alt="HPC AWS" width="500">
