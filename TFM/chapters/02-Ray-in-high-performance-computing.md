@@ -13,6 +13,26 @@ When we apply the same paradigm to DNA and protein sequencing — treating nucle
 5. **Memory Optimization Techniques:** Techniques like mixed precision embeddings, block sparse tables, or on-the-fly caching become essential to fit large models into limited device memory.
 6. **Cloud Computing as a Solution:** Elastic scaling across CPU, GPU, and FPGA nodes — with spot fleets and autoscaling policies — helps balance throughput and cost when processing petabyte scale genomic datasets.
 
+**Emergence of Ray for AI/ML and Distributed Computing:**
+
+- Addressing the scale of AI/ML: Machine learning, particularly deep learning and large language models (LLMs), has become pervasive and requires increasingly larger compute infrastructure [@nguyen2023building]
+- This demand for computational power has grown exponentially, vastly outpacing Moore's Law. Ray is designed as an open-source, unified compute framework that simplifies scaling AI and Python workloads, making distributed computing accessible to non-experts
+- Unified API and ecosystem: Unlike traditional Big Data systems that might require different APIs and distributed systems for various workloads, Ray provides a concise core API (Ray Core) and a suite of high-level libraries (Ray AIR) that abstract distributed computing complexities [@pumperla2023learning] 
+- These libraries (Ray Data, Ray Train, Ray Tune, Ray Serve, Ray RLlib) offer a consistent API for common ML tasks like data preprocessing, model training, hyperparameter tuning, and model serving
+- Distributed Training: Ray addresses the daunting task of training large models (billions of parameters) by simplifying challenges such as hardware failures, managing large cluster dependencies, job scheduling, and GPU optimization [@damji2023introduction]
+- It supports distributed data parallel and model parallel strategies, which can be combined to reduce overall training time on large datasets and models. Ray Train provides wrappers for popular frameworks like PyTorch and TensorFlow, handling the boilerplate code for distributed data parallel training (e.g., creating process groups and gradient synchronization)
+
+**Efficient Data Processing/Transformation:**
+
+- Ray Data offers basic data processing capabilities, acting as a scalable, flexible abstraction for data processing and a standard way to load, transform, and pass data within a Ray application
+- It builds on the Arrow framework and supports pipelines that enable overlapping compute between stages, reducing idle resources
+- It can parallelize text embedding 20x faster and efficiently supports streaming and pipelining across I/O, CPUs, and GPUs [@nguyen2023building]
+- Ray's underlying architecture uses tasks (stateless functions) and actors (stateful functions) with a shared-memory object store that can spill to disk (S3, EBS, NFS)
+- It leverages data affinity to schedule tasks where data is stored, minimizing data copying across nodes
+- Complementary to traditional Big Data: Ray is seen as complementary to Spark; while Spark excels at ETL and data cleansing, Ray focuses on "last mile" processing, such as data loading, cleaning, and featurization before ML training or inference
+- Ray can act as a unified compute layer for complex ML workflows, allowing an entire workflow to run as a single Python script.
+
+
 **Architectural Design Perspective**
 
 Together, these factors motivate a two stage architecture: Ray handles the high-throughput, distributed featurization and embedding generation, and then passes compact numeric representations to an HPC cluster (MPI/Slurm, GPU-accelerated) for the heavy lifting of downstream simulations or inference. This separation of concerns leverages Ray’s lightweight orchestration for data prep and the raw computational power of specialized hardware for complex, numeric-intensive tasks.
