@@ -61,10 +61,19 @@ class ComputeDNAEmbeddings:
         }
 
 # 6) Run in parallel and write results
-# TODO
-    #num_gpus=1
-    #
-    #
+# TODO [@pumperla2023learning] Consider using Ray's `num_gpus` argument to parallelize across GPUs.
+#    For example, if you have 4 GPUs:
+#    embedded = ds.map_batches(
+#        ComputeDNAEmbeddings,
+#        batch_size=32,               # tune for memory
+#        fn_constructor_kwargs={
+#            "seq_col": "sequence",
+#            "model_name": HF_MODEL,
+#            "device": "cuda",         # or "cpu"
+#        },
+#        concurrency=4,               # number of actors
+#        num_gpus=4,                  # set >0 if using GPUs
+#    )
 embedded = ds.map_batches(
     ComputeDNAEmbeddings,
     batch_size=32,               # tune for memory
@@ -77,4 +86,4 @@ embedded = ds.map_batches(
     num_gpus=0,                  # set >0 if using GPUs
 )
 embedded.write_parquet(OUTPUT_PATH, try_create_dir=True)
-print("✅ Embeddings written to", OUTPUT_PATH)
+print("Embeddings written to", OUTPUT_PATH)
