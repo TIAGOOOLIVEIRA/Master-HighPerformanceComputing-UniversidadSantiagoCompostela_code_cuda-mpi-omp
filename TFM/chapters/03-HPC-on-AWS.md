@@ -1,50 +1,25 @@
-High-Performance Computing (HPC), also known as accelerated computing, aggregates the computing power from a cluster of nodes to divide and conquer complex tasks, achieving significantly higher performance than a single machine. It is essential for processing the massive amounts of data generated today and for solving intricate scientific and engineering problems, such as drug discovery, flight simulations, and financial risk analysis
+# 2nd Phase: Numeric Simulation with Cloud HPC
 
-**Limitations of On-Premises HPC**
+## 1. What Is HPC and Why It Matters
 
-Traditionally, HPC applications have faced several limitations when run on-premises [wilson2016experiences]:
+High-Performance Computing (HPC), often called accelerated computing, brings together the CPU, GPU, and FPGA power of many clustered nodes to tackle complex problems far beyond the reach of a single machine. This distributed approach is crucial for processing the vast volumes of data produced in fields such as drug discovery, flight simulation, and financial risk analysis, where each simulation or analysis may involve terabytes of inputs and sophisticated numerical algorithms.
 
-- High upfront capital investment and long procurement cycles
-- Challenges in maintaining infrastructure over its life cycle and managing technology refreshes
-- Difficulty in forecasting annual budget and capacity requirements
-- Limited scalability and elasticity, as specialized hardware like GPUs and serverless technologies are not readily available and require significant procurement and maintenance efforts
-- Inability to efficiently cater to diverse HPC application needs such as parallel processing, low-latency/high-throughput networking, and fast I/O subsystems, leading to reduced efficiency and lost opportunities
-- Traditional HPC systems are compute-centric, emphasizing floating-point performance, but scientific applications are increasingly data-intensive, posing challenges for existing architectures
-- Voluminous data can consume network bandwidth and cause traffic issues during transfer, and local data centers struggle with data access, I/O, backup, power, and cooling [@mandoiu2016computational]
+## 2. Pitfalls of On-Premises HPC
 
-**Benefits of HPC in the Cloud**
+Until recently, most organizations relied on on-premises HPC clusters—an approach that demands huge upfront capital outlays and lengthy procurement cycles. Maintaining and refreshing this specialized hardware over its lifecycle is a continual challenge, and forecasting annual budgets and capacity needs often proves inaccurate. Scaling is constrained by the availability of GPUs or other accelerators, which must be ordered, installed, and configured by hand. Traditional systems also emphasize raw floating-point performance, yet modern scientific workloads have grown increasingly data-intensive, straining I/O subsystems and network bandwidth. Large dataset transfers can swamp local networks, and on-site data centers struggle with the added demands on power, cooling, and backup.
 
-Moving HPC workloads to the cloud offers significant advantages over on-premises solutions, effectively overcoming many of these limitations [@khanuja2022applied]:
+## 3. Cloud-Native HPC Advantages
 
-- Virtually unlimited capacity: The cloud provides access to virtually unlimited HPC capacity, enabling users to move beyond fixed infrastructure constraints
-- Drives innovation: It breaks barriers to innovation by allowing users to rapidly experiment with new approaches and make data-driven decisions
-- This eliminates the need for rework and hardware maintenance, letting teams focus on business use cases. The elasticity of the cloud allows infrastructure to scale up or down based on demand
-- Optimizes performance: Cloud HPC enables efficient resource utilization and supports rapid benchmarking and load testing, helping to optimize workloads without worrying about the cost, as you only pay for the resources used
-- Cloud platforms provide compute, storage, and networking services specifically designed for HPC, eliminating long procurement cycles for specialized hardware
-- Amplifies operational efficiency: Cloud platforms allow for process automation, frequent and reversible changes, and continuous improvement, supporting the development and execution of workloads efficiently
-- On-demand access to compute capacity minimizes job queues, allowing teams to focus on critical problems
-- Optimizes cost: The pay-per-use model significantly reduces high upfront capital investments
-- Leveraging services like Amazon EC2 Spot Instances can lead to savings of up to 90% compared to on-demand instances for containerized workloads.
-- Enables secure collaboration: Cloud platforms provide a collaborative environment for distributed teams to interact with simulation models in near real-time, ensuring security and compliance without physically moving data
+Shifting to the cloud overcomes these hurdles by offering effectively unlimited capacity and on-demand access to the latest compute, storage, and networking services. Teams can spin up thousands of GPU-accelerated instances—paying only for the minutes used—eliminating the need for hardware maintenance and long lead times. This elasticity not only drives rapid experimentation but also optimizes performance through fine-grained benchmarking and load testing. Automation with Infrastructure-as-Code (e.g. AWS ParallelCluster, CloudFormation) and continuous deployment patterns further amplifies operational efficiency. And by leveraging EC2 Spot Instances, organizations can reduce compute costs by up to 90% compared to on-demand pricing, all while ensuring data stays secure and compliant.
 
-**Industry-Specific Needs: Science**
+## 4. Science in the Cloud: A Genomics Example
 
-HPC in the cloud is driving innovation across various industries, particularly in science. Life Sciences and Healthcare (Genomics, Computational Chemistry & Drug Design):
+Cloud HPC is revolutionizing life-science research. Sensitive genomic pipelines—once limited by local disk capacity and network bottlenecks—now scale effortlessly on Amazon S3 and DataSync, enabling secure, high-throughput access to massive sequence datasets. For instance, Novartis screened 10 million small molecules against a cancer target on AWS in under nine hours (costing just \$4 232), a task that would have required tens of millions of dollars and weeks of runtime on-premises \[@fernandezfraga2024applying].
 
-- HPC technology in the cloud allows the analysis of massive amounts of sensitive genomic data to gain insights into critical diseases, significantly reducing time for lab sample testing and drug discovery, while meeting security and compliance requirements
-- For example, Novartis used the AWS cloud to screen 10 million compounds against a cancer target in less than a week, taking only 9 hours and costing $4,232. This experiment would have required an estimated $40 million investment and much longer in-house
-- Challenges like large genomic datasets with issues in discoverability, accessibility, availability, and scalable processing are addressed by cloud storage systems like Amazon S3 (for virtually unlimited, durable storage) and AWS DataSync (for secure transfer) [@fernandezfraga2024applying]
+## 5. Harnessing Heterogeneous Accelerators
 
+Modern cloud platforms seamlessly combine multi-core CPUs with GPUs and FPGAs to accelerate specialized kernels. For example, FPGA implementations of Smith–Waterman alignment can run up to 160× faster than CPU code, while SYCL offers a unified C++ ecosystem for heterogeneous acceleration. Apple’s M-series SoCs further integrate CPUs, GPUs, matrix engines, and neural accelerators on a single chip—promising high memory bandwidth and energy efficiency for desktop-scale HPC workloads.
 
-**Addressing Broader Computational Challenges** 
+## 6. AWS-Provisioned Supercomputers
 
-Cloud HPC platforms and related technologies address fundamental computational challenges:
-
-- Heterogeneous Computing: Modern platforms integrate multi-core CPUs with GPUs and FPGAs
-- FPGAs can implement specialized computer architectures by configuring logic elements, dramatically accelerating algorithms like the Smith-Waterman by up to 160-fold compared to software implementations. SYstem-wide Compute Language (SYCL) as well offers a robust ecosystem for heterogeneous C++ compute acceleration across various hardware platforms and vendors. Apple Silicon M-Series SoCs (M1, M2, M3, M4) integrate CPU, GPU, memory, storage controllers, and specialized accelerators like Advanced Matrix Extensions (AMX) and Neural Engine into a single chip, providing high memory bandwidth and energy-efficient HPC potential
-
-**Accelerated compute instances on AWS**
-On AWS, P4d instances can be used to provision a supercomputer or an EC2 Ultracluster with more
-than 4,000 A100 GPUs, Petabit-scale networking, and scalable, shared high throughput storage on
-Amazon FSx for Lustre. Application and package developers use the NVIDIA CUDA library to build massively parallel applications for HPC and deep
-learning [@khanuja2022applied].
+On AWS, P4d instances let you launch clusters with over 4 000 NVIDIA A100 GPUs connected by Petabit-scale networking, backed by Amazon FSx for Lustre for high-throughput shared storage. Developers build massively parallel applications using CUDA, unleashing unprecedented speed for both HPC simulations and deep-learning training \[@khanuja2022applied].
