@@ -1,3 +1,44 @@
 Notes and highlights from papers to reference in the thesis text
 
 fernandezfraga2024applying - Applying Dynamic Balancing to Improve the Performance of MPI Parallel Genomics Applications
+
+
+- Load imbalance is a common issue in parallel genomics applications due to heterogeneous processing costs and variable biological sequence sizes [fernandezfraga2024applying]
+
+
+**Distributed Computing and Programming Models**:
+
+- Ray is an open-source, unified compute framework that scales AI and Python workloads from laptops to cloud clusters with minimal code changes
+- It simplifies distributed computing challenges such as hardware failures, managing large cluster dependencies, job scheduling, and GPU optimization, particularly for training large language models. Ray provides core abstractions like tasks, actors, and objects, and high-level libraries like Ray AIR (AI Runtime) to unify ML workflows from data processing to model serving
+- Hadoop and Spark frameworks, popular for Big Data analysis, can be efficiently run on HPC platforms in the cloud to avoid large data transfers and leverage powerful resources
+- OpenMP and MPI are standard parallel programming models that work together (MPI+OpenMP tasking) for high performance and scalability on modern heterogeneous systems
+- Hybrid Execution Models: New strategies like Mashup leverage both traditional VM-based cloud computing platforms (e.g., AWS EC2) and serverless platforms (e.g., AWS Lambda) to execute scientific workflows in a hybrid fashion
+- This approach has shown an average of 34% reduction in execution time and 43% reduction in cost for widely-used HPC workflows by mitigating serverless-specific challenges like stateless execution, execution timeouts, and cold-start overheads
+- Data Movement and I/O: Unconventional architectures like processing-in-memory are being explored to overcome data movement restrictions inherent in load-store architectures (CPU, GPU, FPGA)
+- Cloud storage services like Amazon S3, EFS, and FSx offer scalable, high-throughput, and low-latency options to manage large datasets and reduce I/O overheads
+
+
+
+
+**DNA Sequencing computation challenges:**
+
+Processing whole‐genome data involves ingesting terabytes of error-prone short reads and running multi-stage pipelines—alignment, cleaning, sorting, and variant calling—across 15–20 tools that were not built for scale. 
+
+Cloud HPC supplies virtually unlimited compute and storage, crushing through these bottlenecks: massive parallel alignment (e.g., GPU-accelerated BWA or DeepVariant), data cleaning at petabyte scale, and high-throughput variant inference. 
+
+AWS offers C-, M-, and R-family instances for CPU-bound steps, G-family for GPU-enabled base-calling and deep-learning callers, and P4d instances—thousands of A100 GPUs with Petabit networking — for training and inference of neural variant detectors with near-linear scaling. 
+
+The Elastic Fabric Adapter (EFA) further accelerates MPI-style workloads (e.g., distributed genome assembly), slashing end-to-end runtimes and moving us closer to clinical 1–2-day turnaround.
+
+
+
+
+**AWS ParallelCluster for a CFD application**
+
+This reference architecture uses AWS ParallelCluster to deploy a turnkey HPC environment for running Siemens’ Simcenter STAR-CCM+ CFD application. It automates provisioning of C5n instances with EFA for low-latency MPI, mounts an Amazon FSx for Lustre parallel file system for high-throughput I/O, and leverages 100 Gbps networking—all in under 15 minutes. Users then install STAR-CCM+ on the cluster and submit simulation jobs, with optional NICE DCV desktops for remote visualization. The strategy emphasizes rapid, repeatable deployment of optimized HPC resources to accelerate large-scale CFD workloads in the cloud [@aws_compute_starccm].
+
+<img src="../images/AWS_HPC_ParallelCluster_StarccmFig1.png" alt="HPC AWS" width="500">
+
+<img src="../images/hpcblog-53-fig4.png" alt="HPC client - HPC" width="500">
+
+
