@@ -42,3 +42,19 @@ This reference architecture uses AWS ParallelCluster to deploy a turnkey HPC env
 <img src="../images/hpcblog-53-fig4.png" alt="HPC client - HPC" width="500">
 
 
+
+### Synthetic Data Generation for CFD
+Ray’s modularity shines in data augmentation:
+
+    Deep Generative Models (StyleGAN, PDE-aware VAEs) run as Ray actors to produce synthetic flow fields or mesh deformations.
+
+    On-the-fly Streaming: Generated images or volume grids are chunked and fed directly into CFD solvers (OpenFOAM, ANSYS) via Ray tasks, enabling rapid scenario exploration without manual data staging.
+
+
+CFD image preprocessing with DeepLearning/Encoding - geometric (Stereolithography - STL - 3D points))
+    eFlesh: Highly customizable Magnetic Touch Sensing using Cut-Cell Microstructures https://arxiv.org/abs/2506.09994
+    https://cfd-on-pcluster.workshop.aws
+    https://insidehpc.com/2017/05/hpc-service-high-performance-video-rendering/
+    Learning three-dimensional flow for interactive aerodynamic design dl.acm.org/doi/10.1145/3197517.3201325
+    https://www.researchgate.net/figure/mage-from-an-Autodesk-tutorial-displaying-flow-lines-over-a-car_fig8_331929090
+        2 ACTIVE MEMS-BASED FLOW CONTROL
