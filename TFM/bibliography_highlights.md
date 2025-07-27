@@ -91,3 +91,36 @@ Genomics for encoding GNA sequencing: LLM or Graph Neuron Netork (tasks of DNA c
 https://www.genome.gov/about-genomics/fact-sheets/Genomic-Data-Science
 https://registry.opendata.aws/
 https://registry.opendata.aws/1000-genomes/
+
+
+SageMaker and Bedrock for Multimodel AI syntetic data generation to feed model simulation
+
+
+
+
+
+	https://github.com/NVIDIA/cuda-q-academic/
+	https://developer.nvidia.com/blog/transforming-quantum-education-with-ai-supercomputing-and-nvidia-cuda-q-academic/?
+	 7.1: Cellular Automata - The Nature of Code  www.youtube.com/watch?app=desktop&v=DKGodqDs9sA
+	https://inductiva.ai/guides/quantumespresso/run-grir443-benchmark
+		https://www.linkedin.com/posts/luissarmento_running-quantum-espressos-grir443-benchmark-activity-7341852738877603840-vnGs?utm_source=share&utm_medium=member_desktop&rcm=ACoAAACieFcBu9KrShWHxCB9KX_urMExxjV2R6s
+
+	Protein contact prediction from amino acid co-evolution using convolutional networks for graph-valued images dl.acm.org/doi/pdf/10.5555/3157382.3157569
+		https://learn.microsoft.com/de-de/shows/neural-information-processing-systems-conference-nips-2016/protein-contact-prediction-from-amino-acid-co-evolution-using-convolutional-networks-graph-value
+
+	FPGA for low energy consumption, high throughput low price and flexibility
+		How Ray can also prepare data to feed a cluster of FPGA
+		Use cases for DNA tasks or image processing
+		Examples and references
+
+	UMA: A Family of Universal Models for Atoms arxiv.org/pdf/2506.23971
+		https://github.com/facebookresearch/fairchem
+
+Cloud agnostic and fair comparison on main platform capabilities on Azure. Where things fit together: data centric or data backbone where AI, data processing and simulation come together
+	add references from both cloud tech stack/strategy
+	Near/Future proof solution
+
+https://github.com/generative-ai-on-aws/generative-ai-on-aws
+
+Matrix multiplicatiob alforithm
+	https://www.quantamagazine.org/new-breakthrough-brings-matrix-multiplication-closer-to-ideal-20240307/
