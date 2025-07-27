@@ -86,3 +86,8 @@ Genomics for encoding GNA sequencing: LLM or Graph Neuron Netork (tasks of DNA c
         Genomic benchmarks: a collection of datasets for genomic sequence classification
         https://github.com/rieseberglab/fastq-examples
         https://learn.gencore.bio.nyu.edu/ngs-file-formats/fastq-format/
+
+
+https://www.genome.gov/about-genomics/fact-sheets/Genomic-Data-Science
+https://registry.opendata.aws/
+https://registry.opendata.aws/1000-genomes/
