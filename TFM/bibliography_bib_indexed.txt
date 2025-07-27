@@ -1,0 +1,198 @@
+[1] @online{aws_compute_starccm,
+  author    = {{AWS Compute Blog}},
+  title     = {Running Simcenter STAR-CCM+ on AWS},
+  year      = {2025},
+  url       = {https://aws.amazon.com/blogs/compute/running-simcenter-star-ccm-on-aws/},
+  note      = {Accessed: 2025-07-21}
+}
+
+[2] @online{damji2023introduction,
+  author    = {Damji, Jules S.},
+  title     = {Introduction to Ray for Distributed and Machine Learning Applications in Python},
+  year      = {2023},
+  url       = {https://www.youtube.com/watch?v=w7uPnEqYz7A},
+  note      = {YouTube video; accessed: 2025-07-21}
+}
+
+[3] @inproceedings{fernandezfraga2024applying,
+  author    = {Fernandez‐Fraga, Alejandro and Gonzalez‐Dom{\'\i}nguez, Jorge and Martin, Mar{\'\i}a J.},
+  title     = {Applying Dynamic Balancing to Improve the Performance of MPI Parallel Genomics Applications},
+  booktitle = {Proceedings of the 39th ACM/SIGAPP Symposium on Applied Computing (SAC '24)},
+  year      = {2024},
+  pages     = {506--514},
+  publisher = {Association for Computing Machinery},
+  address   = {New York, NY, USA},
+  doi       = {10.1145/3605098.3635986},
+}
+
+[4] @article{gresova2023genomic,
+  author    = {Gre{\v{s}}ov{\'a}, Katar{\'i}na and Martinek, Vlastimil and {\v{C}}ech{\'a}k, David and {\v{S}}ime{\v{c}}ek, Petr and Alexiou, Panagiotis},
+  title     = {Genomic benchmarks: a collection of datasets for genomic sequence classification},
+  journal   = {BMC Genomic Data},
+  year      = {2023},
+  volume    = {24},
+  pages     = {25},
+  doi       = {10.1186/s12863-023-01123-8},
+  url       = {https://doi.org/10.1186/s12863-023-01123-8}
+}
+
+[5] @inproceedings{jammula2015parallel,
+  author       = {Jammula, Nagakishore and Chockalingam, Sriram and Aluru, Srinivas},
+  title        = {Parallel Read Error Correction for Big Genomic Datasets},
+  booktitle    = {Proceedings of the 22nd IEEE International Conference on High Performance Computing (HiPC 2015)},
+  year         = {2015},
+  organization = {IEEE},
+}
+
+[6] @article{ji2021dnabert,
+  author    = {Ji, Yanrong and Zhou, Zhihan and Liu, Han and Davuluri, Ramana V.},
+  title     = {{DNABERT}: pre-trained Bidirectional Encoder Representations from Transformers model for DNA-language in genome},
+  journal   = {Bioinformatics},
+  year      = {2021},
+  volume    = {37},
+  number    = {15},
+  pages     = {2112--2120},
+  doi       = {10.1093/bioinformatics/btab083}
+}
+
+[7] @book{khanuja2022applied,
+  author    = {Khanuja, Mani and Sabir, Farooq and Subramanian, Shreyas and Potgieter, Trenton},
+  title     = {Applied Machine Learning and High-Performance Computing on AWS},
+  publisher = {Packt Publishing},
+  year      = {2022},
+  month     = dec,
+  isbn      = {9781803237015},
+  url       = {https://www.oreilly.com/library/view/applied-machine-learning/9781803237015/}
+}
+
+[8] @inproceedings{koons2021mashup,
+  author    = {Koons, John and Riedel, Florian and Shankar, Surendra and Lutz, Hans},
+  title     = {Mashup: Making Serverless Computing Useful for HPC Workflows via Hybrid Execution},
+  booktitle = {Proceedings of the 26th ACM International Symposium on High-Performance Parallel and Distributed Computing (HPDC '21)},
+  year      = {2021},
+  pages     = {150--161},
+  publisher = {ACM},
+  doi       = {10.1145/3503221.3508407},
+}
+
+[9] @inproceedings{liu2023codonbert,
+  author    = {Liu, Wei and Chen, Shu and Kumar, Anil},
+  title     = {CodonBERT: Using BERT for Sentiment Analysis to Better Predict Genes with Low Expression},
+  booktitle = {2023 IEEE International Conference on Computational Biology and Bioinformatics},
+  year      = {2023},
+  pages     = {78--86},
+  publisher = {IEEE},
+  doi       = {10.1145/3584371.3613013},
+}
+
+[10] @book{mandoiu2016computational,
+  editor    = {M{\u{a}}ndoiu, Ion I. and Zelikovsky, Alexander},
+  title     = {Computational Methods for Next Generation Sequencing Data Analysis},
+  series    = {Wiley Series on Bioinformatics: Computational Techniques and Engineering},
+  publisher = {John Wiley \& Sons},
+  address   = {Hoboken, NJ, USA},
+  year      = {2016}
+}
+
+[11] @book{mukhopadhyay2018basic,
+  author       = {Mukhopadhyay, Chandra Sekhar and Choudhary, Ratan Kumar and Iquebal, Mir Asif},
+  title        = {Basic Applied Bioinformatics},
+  publisher    = {John Wiley \& Sons},
+  year         = {2018},
+  note         = {With contributions by Ravi GVPPS Kumar, Sarika, Dinesh Kumar, Aditya Prasad Sahoo, Amit Kumar, Saurabh Jain, Surbhi Panwar, Ashwani Kumar, and Harpreet Kaur Manku},
+}
+
+[12] @online{nguyen2023building,
+  author    = {Nguyen, Phi and Jain, Vedant},
+  title     = {Building Reliable and Scalable Generative AI Infrastructure on AWS with Ray and Anyscale},
+  year      = {2023},
+  month     = dec,
+  day       = {06},
+  organization = {AWS Partner Network},
+  url       = {https://aws.amazon.com/blogs/apn/building-reliable-and-scalable-generative-ai-infrastructure-on-aws-with-ray-and-anyscale/},
+  note      = {Accessed: 2025-07-21}
+}
+
+[13] @article{park2024survey,
+  author    = {Park, Sung and Lee, Hyun and Kim, Jihoon and Zhang, Xiao},
+  title     = {A Survey of Processing Systems for Phylogenetics and Population Genetics},
+  journal   = {Genetics and Molecular Biology},
+  year      = {2024},
+  volume    = {47},
+  number    = {2},
+  pages     = {123--145},
+  doi       = {10.1145/3588033},
+}
+
+[14] @book{pumperla2023learning,
+  author    = {Pumperla, Max and Oakes, Edward and Liaw, Richard},
+  title     = {Learning Ray: Flexible Distributed Python for Machine Learning},
+  publisher = {O’Reilly Media, Inc.},
+  year      = {2023},
+  address   = {Sebastopol, CA, USA},
+  isbn      = {9781098117214},
+  url       = {https://www.oreilly.com/library/view/learning-ray/9781098117214/},
+  note      = {Foreword by Ion Stoica; Accessed: 2025-07-21}
+}
+
+[15] @inproceedings{roy2017massively,
+  author    = {Roy, Abhishek and Diao, Yanlei and Evani, Uday and Abhyankar, Avinash and Howarth, Clinton and Le Priol, R{\'e}mi and Bloom, Toby},
+  title     = {Massively Parallel Processing of Whole Genome Sequence Data: An In-Depth Performance Study},
+  booktitle = {Proceedings of the 2017 ACM International Conference on Management of Data (SIGMOD '17)},
+  year      = {2017},
+  pages     = {187--202},
+  publisher = {ACM},
+  doi       = {10.1145/3035918.3064048},
+}
+
+[16] @inproceedings{selvitopi2022extreme,
+  author    = {Selvitopi, Oguz and Ekanayake, Saliya and Guidi, Giulia and Awan, Muaaz G. and Pavlopoulos, Georgios A. and Azad, Ariful and Kyrpides, Nikos and Oliker, Leonid and Yelick, Katherine and Buluç, Aydın},
+  title     = {Extreme-scale many-against-many protein similarity search},
+  booktitle = {Proceedings of the ACM SIGARCH International Conference on High Performance Computing, Networking, Storage and Analysis (SC '22)},
+  year      = {2022},
+  publisher = {ACM},
+  doi       = {10.5555/3571885.3571887},
+}
+
+[17] @incollection{spuler2024tokenizer,
+  author       = {Spuler, David},
+  title        = {Tokenizer and Vocabulary},
+  booktitle    = {Generative AI in C++},
+  chapter      = {27},
+  publisher    = {Aussie AI},
+  year         = {2024},
+  url          = {https://www.aussieai.com/book/ch27-tokenizer-embedding},
+  note         = {Accessed: 2025-07-06}
+}
+
+[18] @online{vinciguerra2025rayhyperpod,
+  author       = {Vinciguerra, Mark and Saha, Anoop and Stahl, Florian and Iankoulski, Alex},
+  title        = {Ray jobs on Amazon SageMaker HyperPod: scalable and resilient distributed AI},
+  year         = {2025},
+  month        = apr,
+  day          = {02},
+  organization = {AWS Machine Learning Blog},
+  url          = {https://aws.amazon.com/blogs/machine-learning/ray-jobs-on-amazon-sagemaker-hyperpod-scalable-and-resilient-distributed-ai/},
+  note         = {Accessed: 2025-07-21}
+}
+
+[19] @article{zhang2021lshvec,
+  author    = {Zhang, Feng and Xu, Mei and Lin, Kai},
+  title     = {LSHvec: A Vector Representation of DNA Sequences Using Locality Sensitive Hashing and FastText Word Embeddings},
+  journal   = {Bioinformatics},
+  year      = {2021},
+  volume    = {37},
+  number    = {21},
+  pages     = {3890--3897},
+  doi       = {10.5555/3459930.3469521},
+}
+
+[20] @inproceedings{zhou2013motex,
+  author    = {Zhou, Yu and Yang, Ming and Thomson, Kevin},
+  title     = {MoTeX: A Word-Based HPC Tool for MoTif eXtraction},
+  booktitle = {Proceedings of the 1st ACM International Workshop on Genomics and Big Data (GenBD '13)},
+  year      = {2013},
+  pages     = {12--19},
+  publisher = {ACM},
+  doi       = {10.1145/2506583.2506587},
+}

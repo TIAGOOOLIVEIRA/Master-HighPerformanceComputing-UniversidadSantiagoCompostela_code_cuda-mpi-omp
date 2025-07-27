@@ -2,7 +2,7 @@
 
 ## 1. Feature Engineering with Ray Data
 
-Data Processing and Feature Engineering form the foundation of any large-scale AI workflow. In particular, tokenization and embedding creation turn raw inputs—whether words, images, or biological sequences—into dense numerical vectors that downstream models can consume. Ray Data, for example, excels at this “last mile” of preprocessing: it can load terabytes of raw files from S3 or FSx, apply parallel data cleaning and normalization, and then execute feature extraction leveraging UDFs (User Defined Functions) for language tokenizers or sequence encoders, for instance, at scale \[@spuler2024tokenizer]. By encapsulating each step as Ray tasks or actors, teams gain modularity, fault tolerance, and elastic autoscaling without bespoke orchestration code.
+Data Processing and Feature Engineering form the foundation of any large-scale AI workflow. In particular, tokenization and embedding creation turn raw inputs—whether words, images, or biological sequences—into dense numerical vectors that downstream models can consume. Ray Data, for example, excels at this “last mile” of preprocessing: it can load terabytes of raw files from S3 or FSx, apply parallel data cleaning and normalization, and then execute feature extraction leveraging UDFs (User Defined Functions) for language tokenizers or sequence encoders, for instance, at scale [17]. By encapsulating each step as Ray tasks or actors, teams gain modularity, fault tolerance, and elastic autoscaling without bespoke orchestration code.
 
 ## 2. Embeddings in the AI Pipeline
 
@@ -10,7 +10,7 @@ These embeddings occupy a pivotal role in the AI data pipeline. In Transformer m
 
 ## 3. Scaling Challenges in Genomic Sequencing
 
-When we apply the same paradigm to DNA and protein sequencing—treating nucleotides or amino acids as “tokens”—the scale of computation and data movement grows dramatically. As surveys of bioinformatic processing show \[@park2024survey], the main challenges include:
+When we apply the same paradigm to DNA and protein sequencing—treating nucleotides or amino acids as “tokens”—the scale of computation and data movement grows dramatically. As surveys of bioinformatic processing show [13], the main challenges include:
 
 1. **Vocabulary & Embedding Matrix Size:** k-mer combinatorics can balloon tables to millions of rows, stressing GPU memory and network bandwidth.
 2. **Sequence Length & Transformer Complexity:** Reads of thousands of bases drive $O(n^2)$ attention costs.
@@ -21,11 +21,11 @@ When we apply the same paradigm to DNA and protein sequencing—treating nucleot
 
 ## 4. Emergence of Ray as a Unified Distributed Framework
 
-Addressing these extremes of scale demands a unified, cloud-agnostic compute framework. Ray was designed to simplify distributed Python workloads, democratizing parallelism for ML and HPC \[@nguyen2023building]. Its concise Core API (tasks + actors) and suite of high-level libraries (Ray AIR: Data, Train, Tune, Serve, RLlib) hide orchestration complexity while covering end-to-end ML use cases \[@pumperla2023learning]. Ray Train, for example, wraps PyTorch and TensorFlow training loops—handling process-group setup, gradient sync, and failure recovery—so teams can focus on model code rather than cluster plumbing \[@damji2023introduction].
+Addressing these extremes of scale demands a unified, cloud-agnostic compute framework. Ray was designed to simplify distributed Python workloads, democratizing parallelism for ML and HPC [12]. Its concise Core API (tasks + actors) and suite of high-level libraries (Ray AIR: Data, Train, Tune, Serve, RLlib) hide orchestration complexity while covering end-to-end ML use cases [14]. Ray Train, for example, wraps PyTorch and TensorFlow training loops—handling process-group setup, gradient sync, and failure recovery—so teams can focus on model code rather than cluster plumbing [2].
 
 ## 5. Efficient Data Processing & Transformation
 
-Ray Data builds on Apache Arrow to offer a flexible, high-throughput abstraction for ETL and feature pipelines. It overlaps compute across stages, parallelizes embedding workloads up to 20× faster, and leverages data affinity to minimize cross-node spills \[@nguyen2023building]. Unlike monolithic Big Data engines, Ray focuses on “last mile” preprocessing—loading, cleaning, and featurizing data just in time for model training or inference—while integrating seamlessly with Spark or Dask when needed.
+Ray Data builds on Apache Arrow to offer a flexible, high-throughput abstraction for ETL and feature pipelines. It overlaps compute across stages, parallelizes embedding workloads up to 20× faster, and leverages data affinity to minimize cross-node spills [12]. Unlike monolithic Big Data engines, Ray focuses on “last mile” preprocessing—loading, cleaning, and featurizing data just in time for model training or inference—while integrating seamlessly with Spark or Dask when needed.
 
 ## 6. Architectural Design: Ray + HPC Integration
 
