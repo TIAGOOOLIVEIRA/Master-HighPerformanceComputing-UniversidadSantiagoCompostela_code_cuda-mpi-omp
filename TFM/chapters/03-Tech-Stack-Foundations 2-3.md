@@ -14,7 +14,7 @@ Shifting to the cloud overcomes these hurdles by offering effectively unlimited 
 
 ## 4. Science in the Cloud: A Genomics Example
 
-Cloud HPC is revolutionizing life-science research. Sensitive genomic pipelines—once limited by local disk capacity and network bottlenecks—now scale effortlessly on Amazon S3 and DataSync, enabling secure, high-throughput access to massive sequence datasets. For instance, Novartis screened 10 million small molecules against a cancer target on AWS in under nine hours (costing just \$4 232), a task that would have required tens of millions of dollars and weeks of runtime on-premises \[@fernandezfraga2024applying].
+Cloud HPC is revolutionizing life-science research. Sensitive genomic pipelines—once limited by local disk capacity and network bottlenecks—now scale effortlessly on Amazon S3 and DataSync, enabling secure, high-throughput access to massive sequence datasets. For instance, Novartis screened 10 million small molecules against a cancer target on AWS in under nine hours (costing just \$4 232), a task that would have required tens of millions of dollars and weeks of runtime on-premises [3].
 
 ## 5. Harnessing Heterogeneous Accelerators
 
@@ -22,4 +22,4 @@ Modern cloud platforms seamlessly combine multi-core CPUs with GPUs and FPGAs to
 
 ## 6. AWS-Provisioned Supercomputers
 
-On AWS, P4d instances let you launch clusters with over 4 000 NVIDIA A100 GPUs connected by Petabit-scale networking, backed by Amazon FSx for Lustre for high-throughput shared storage. Developers build massively parallel applications using CUDA, unleashing unprecedented speed for both HPC simulations and deep-learning training \[@khanuja2022applied].
+On AWS, P4d instances let you launch clusters with over 4 000 NVIDIA A100 GPUs connected by Petabit-scale networking, backed by Amazon FSx for Lustre for high-throughput shared storage. Developers build massively parallel applications using CUDA, unleashing unprecedented speed for both HPC simulations and deep-learning training [7].
