@@ -58,3 +58,31 @@ CFD image preprocessing with DeepLearning/Encoding - geometric (Stereolithograph
     Learning three-dimensional flow for interactive aerodynamic design dl.acm.org/doi/10.1145/3197517.3201325
     https://www.researchgate.net/figure/mage-from-an-Autodesk-tutorial-displaying-flow-lines-over-a-car_fig8_331929090
         2 ACTIVE MEMS-BASED FLOW CONTROL
+
+
+
+
+Genomics for encoding GNA sequencing: LLM or Graph Neuron Netork (tasks of DNA classification, interpretation of structural, )
+    pattern mathing over GNN - after encodding (graph vector embeddings)
+    visualizie results: NICE DVC to load mesh (from OpenFOAM) in ParaView 
+    Genomic benchmarks: a collection of datasets for genomic sequence classification pmc.ncbi.nlm.nih.gov/articles/PMC10150520/
+
+    160-fold acceleration of the Smith-Waterman algorithm using a field programmable gate array (FPGA) pmc.ncbi.nlm.nih.gov/articles/PMC1896180/pdf/1471-2105-8-185.pdf
+    https://www.oreilly.com/library/view/basic-applied-bioinformatics/9781119244332/c10.xhtml
+    Genomics, High Performance Computing and Machine Learning www.researchgate.net/publication/352869810_Genomics_High_Performance_Computing_and_Machine_Learning
+    computationonal exome and genome analysis api.pageplace.de/preview/DT0400.9781498775991_A30884522/preview-9781498775991_A30884522.pdf
+        https://www.researchgate.net/publication/320959019_Computational_Exome_and_Genome_Analysis
+    https://www.researchgate.net/publication/230846804_Parallel_Iterative_Algorithms_From_Sequential_to_Grid_Computing
+        Parallel Iterative Algorithms: From Sequential to Grid Computing books.google.com.pa/books?id=ft7E5hiIzDAC&printsec=frontcover#v=onepage&q=protein&f=false
+    basic applied bioinformatics
+
+    https://www.internationalgenome.org/
+        https://registry.opendata.aws/1000-genomes/
+
+    References for Dataset 
+    registry.opendata.aws
+    protein 
+        https://github.com/PacktPublishing/Applied-Machine-Learning-and-High-Performance-Computing-on-AWS/blob/main/Chapter12/protein-secondary-structure-model-parallel.ipynb
+        Genomic benchmarks: a collection of datasets for genomic sequence classification
+        https://github.com/rieseberglab/fastq-examples
+        https://learn.gencore.bio.nyu.edu/ngs-file-formats/fastq-format/
