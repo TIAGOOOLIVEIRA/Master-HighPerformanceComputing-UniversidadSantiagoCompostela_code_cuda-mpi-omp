@@ -1,3 +1,64 @@
 vocabulary
 
 Emerging Approaches
+
+Cloud agnostic for Embeddings
+Everything becomes array of numeric representation
+It can sometimes overcome precision for regular feature engineering
+Scientific workflow merged into Data transformation, AI (to enhance) ETL and Numeric simulation
+Cloud tech-stack to speedup and simplify data logistic, automation
+    no need for lockin
+to extract embeddgins
+What scientific tasks best fit and in the future
+However LLM (market openai,..) can not easily generalize for all possible problems (scientific)
+    so why a framework (distributed training, predicting, data transform distributed, accelerated gpu) can be key
+    code snippet for dnabert_XX, LSHVec in Ray
+    Run for real Ray tests
+Data centric
+    loop back...
+Target solution ALGORITHM:
+    emsembling between different devices for accelerantion: FPGA, GPU, CPU 
+        there is no one size fits all
+        comparing execution time of each task and chooses the platform where ti achieves lower KPI 
+    collect metrics per execution
+    leverages LLM for IaC automation to reduce hurdle of heterogeneous tech stack
+
+    add code snippet for how to extract embeddings levering other LLM´s
+            tradeoff for onboarding market llm: latency, batch, scalability, cost
+
+    HPC alternative: SageMaker leveraging AI
+        snippet from page 276 applying ML to genomics
+        ask exemple to claude: for metagenomic clustering in HuggingFace & SageMaker based on 
+            https://github.com/PacktPublishing/Build-Real-world-End-to-End-AI-Agents-using-AWS-Bedrock
+            https://github.com/PacktPublishing/Applied-Machine-Learning-and-High-Performance-Computing-on-AWS/tree/main/Chapter12
+
+Does two phase provide execution and cost effectiveness across...?
+Why does two-phased work effctivelly?
+How can scientific workflow take advantage of the next emerging trend in cloud computing?
+System for  Workflow Management System for Science Automation: pegasus, kepler, polyphony
+        https://kepler-project.org/
+Benchmarking to compare: 
+    performance of workflow, management system and schedulers
+KPI, challenges: Scaling time, cold start time, IO time, time limit...
+Hybrid execution strategy to find optimal execution platform
+Design principle: take advantage of..
+Outperforms
+Which platform is optimal sub-optimal for ...
+High level of concurrency, parallelism distribution
+Other approaches:
+    FaaS: function as software, lambda...
+    PaaS: BedRock
+    SaaS:
+    IaaS: 
+What are source of ineficiency when executing scientific workflows on traditional cluster:
+    scientific workflows
+scientific workflows (most modern capabilities): bring new trend: llm, agentic, 
+    share projects I am involved: AWS, Azure
+
+validate ParallelCluster building blocks (multi gpu, )
+    Elastic Fabric Adapter (EFA), Amazon FSx for Lustre, Kendra
+
+CFD future work: to leverage Ray for genAI on creating synthetic data for CFD meshes
+https://github.com/aws-samples/end-2-end-3d-ml
+https://aws.amazon.com/fr/blogs/hpc/enabling-rapid-genomic-and-multiomic-data-analysis-with-illumina-dragen-v4-4-on-amazon-ec2-f2-instances/
+https://github.com/generative-ai-on-aws/generative-ai-on-aws/tree/main/12_bedrock/images
