@@ -59,6 +59,10 @@ validate ParallelCluster building blocks (multi gpu, )
     Elastic Fabric Adapter (EFA), Amazon FSx for Lustre, Kendra
 
 CFD future work: to leverage Ray for genAI on creating synthetic data for CFD meshes
+    mention trend of data centric
+    mention my current job: Microsoft Discovery agentic AI for scientific workflow
+
 https://github.com/aws-samples/end-2-end-3d-ml
 https://aws.amazon.com/fr/blogs/hpc/enabling-rapid-genomic-and-multiomic-data-analysis-with-illumina-dragen-v4-4-on-amazon-ec2-f2-instances/
 https://github.com/generative-ai-on-aws/generative-ai-on-aws/tree/main/12_bedrock/images
+https://github.com/aws-samples/amazon-bedrock-workshop/blob/main/06_OpenSource_examples/02_Langchain_Chatbot_examples/00_Chatbot_Titan.ipynb

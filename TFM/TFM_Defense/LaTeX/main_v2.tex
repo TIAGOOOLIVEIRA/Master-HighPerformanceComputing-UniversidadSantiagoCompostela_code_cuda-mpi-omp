@@ -37,14 +37,14 @@
 \frame{\titlepage}
 
 % Slide 1: The New Frontier
-\begin{frame}{The New Frontier: Scaling Scientific and AI Workloads}
+\begin{frame}{The New Frontier: Scaling Scientific Workflow with ETL and AI Workloads}
     \begin{columns}
         \begin{column}{0.6\textwidth}
             \textbf{Context \& Motivation:}
             \begin{itemize}
                 \item \textbf{Large-scale AI} (NLP, Computer Vision) and \textbf{scientific domains} (drug discovery, genomics, CFD) rely on processing vast raw datasets
                 \item Transform raw knowledge into \textcolor{rayblue}{\textbf{dense numeric arrays (embeddings)}} for downstream algorithms
-                \item \textbf{Traditional HPC limitations:} massive capital investment, long procurement cycles, struggles with data-intensive I/O
+                \item \textbf{Traditional HPC limitations on pre-processing:} massive capital investment, long procurement cycles, struggles with data-intensive I/O
                 \item Apache Spark often \textbf{falls short at petabyte-scale processing}
             \end{itemize}
         \end{column}
@@ -59,9 +59,9 @@
                 \draw[->, thick, blue] (1.5, 2) -- (1.5, 2.8);
                 
                 % Cloud box
-                \draw[thick, green] (0,3) rectangle (3,4.5);
-                \node at (1.5,3.75) {\small Cloud Computing};
-                \node[green] at (1.5,3.3) {\tiny Unlimited \& On-demand};
+                \draw[thick, green] (0,3) rectangle (4,5);
+                \node at (2,3.75) {\small Cloud Computing};
+                \node[green] at (2,3.3)  {\tiny * Unlimited \& On-demand};
             \end{tikzpicture}
         \end{column}
     \end{columns}
@@ -205,8 +205,41 @@
     \end{block}
 \end{frame}
 
-% Slide 5: Conclusions and Future Directions
-\begin{frame}{Conclusions and Future Directions}
+% Slide 5: Conclusions
+\begin{frame}{Conclusions}
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \textbf{Key Conclusions:}
+            \begin{itemize}
+                \item Two-phase architecture delivers \textbf{significant gains} in scalability, elasticity, performance, and cost-efficiency
+                \item \textcolor{rayblue}{\textbf{GPU-accelerated Ray clusters scale nearly linearly}} for DNA embedding extraction
+                \item Automated lifecycle management and Spot Instances ensure \textcolor{green}{\textbf{optimized resource utilization}}
+                \item Successfully \textbf{decouples feature engineering from raw simulation workloads}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.4\textwidth}
+            \begin{tikzpicture}[scale=0.6]
+                % Success metrics visualization
+                \draw[thick, green] (0,0) -- (0,3) -- (3,3) -- (3,0) -- cycle;
+                \node[green, font=\bfseries] at (1.5,2.5) {SUCCESS};
+                \node[align=center] at (1.5,1.5) {\small Scalability \\ Performance \\ Cost-efficiency};
+                \node[green] at (1.5,0.3) {\tiny Objectives Met};
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.3cm}
+    \begin{block}{Future Work \& Research Avenues}
+        \begin{itemize}
+            \item \textbf{FPGA Workloads:} Explore AWS F1 instances using Xilinx Vitis for \textcolor{red}{\textbf{orders-of-magnitude speedups}}
+            \item \textbf{Apple M-Series SoCs:} Investigate Ray's affinity scheduling on macOS for edge prototyping
+            \item \textbf{Managed ETL \& Conversational DevOps:} Balance AWS Glue with deep AI tasks, integrate \textcolor{rayblue}{\textbf{domain-aware LLM agents}} for automated CloudFormation/CDK generation
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% Slide 6: Future Directions
+\begin{frame}{Future Directions}
     \begin{columns}
         \begin{column}{0.6\textwidth}
             \textbf{Key Conclusions:}
@@ -252,7 +285,7 @@
         
         \vspace{0.5cm}
         Tiago de Souza de Oliveira \\
-        \texttt{tiago.oliveira@university.edu}
+        \texttt{tiago.souza@rai.usc.es, tiagoooliveira@qmind-lab.com}
     \end{center}
 \end{frame}
 
