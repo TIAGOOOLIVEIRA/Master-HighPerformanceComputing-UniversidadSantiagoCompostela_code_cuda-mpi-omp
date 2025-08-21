@@ -309,27 +309,59 @@ EOF
 
 # Get latest Deep Learning AMI
 get_latest_ami() {
-    log_info "Finding latest Deep Learning AMI..."
+    # Try Deep Learning AMI first (redirect logs to stderr)
+    >&2 log_info "Finding latest Deep Learning AMI for region $AWS_REGION..."
     
-    # Get the latest Deep Learning AMI for the region
+    # Try Deep Learning AMI first
     AMI_ID=$(aws ec2 describe-images \
         --owners amazon \
-        --filters "Name=name,Values=Deep Learning AMI (Ubuntu 18.04) Version*" \
+        --filters "Name=name,Values=Deep Learning AMI GPU TensorFlow*" \
               "Name=state,Values=available" \
+              "Name=architecture,Values=x86_64" \
         --query 'Images | sort_by(@, &CreationDate) | [-1].ImageId' \
-        --output text)
+        --output text 2>/dev/null || echo "")
     
-    if [ "$AMI_ID" == "None" ] || [ -z "$AMI_ID" ]; then
-        log_warning "Could not find Deep Learning AMI, using default Ubuntu AMI"
+    if [ -z "$AMI_ID" ] || [ "$AMI_ID" == "None" ]; then
+        >&2 log_warning "Deep Learning AMI not found, trying Ubuntu 20.04 AMI"
         AMI_ID=$(aws ec2 describe-images \
             --owners 099720109477 \
             --filters "Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-20.04-amd64-server-*" \
                   "Name=state,Values=available" \
+                  "Name=architecture,Values=x86_64" \
             --query 'Images | sort_by(@, &CreationDate) | [-1].ImageId' \
-            --output text)
+            --output text 2>/dev/null || echo "")
     fi
     
-    echo $AMI_ID
+    # If still no AMI found, try a known working Ubuntu 20.04 AMI for us-east-1
+    if [ -z "$AMI_ID" ] || [ "$AMI_ID" == "None" ]; then
+        >&2 log_warning "Ubuntu AMI not found, using fallback AMI"
+        case "$AWS_REGION" in
+            "us-east-1")
+                AMI_ID="ami-0885b1f6bd170450c"  # Ubuntu 20.04 LTS
+                ;;
+            "us-west-2")
+                AMI_ID="ami-0892d3c7ee96c0bf7"  # Ubuntu 20.04 LTS
+                ;;
+            "eu-west-1")
+                AMI_ID="ami-0a8e758f5e873d1c1"  # Ubuntu 20.04 LTS
+                ;;
+            *)
+                >&2 log_error "Could not find suitable AMI for region $AWS_REGION"
+                >&2 log_error "Please specify a custom AMI ID for your region"
+                echo ""
+                return 1
+                ;;
+        esac
+    fi
+    
+    if [ -z "$AMI_ID" ] || [ "$AMI_ID" == "None" ]; then
+        >&2 log_error "Could not determine AMI ID"
+        echo ""
+        return 1
+    fi
+    
+    >&2 log_info "Selected AMI: $AMI_ID"
+    echo "$AMI_ID"
 }
 
 # Create cluster configuration
