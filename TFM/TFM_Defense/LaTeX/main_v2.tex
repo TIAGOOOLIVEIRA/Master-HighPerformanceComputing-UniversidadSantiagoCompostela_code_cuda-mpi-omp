@@ -45,7 +45,7 @@
                 \item \textbf{Large-scale AI} (NLP, Computer Vision) and \textbf{scientific domains} (drug discovery, genomics, CFD) rely on processing vast raw datasets
                 \item Transform raw knowledge into \textcolor{rayblue}{\textbf{dense numeric arrays (embeddings)}} for downstream algorithms
                 \item \textbf{Traditional HPC limitations on pre-processing:} massive capital investment, long procurement cycles, struggles with data-intensive I/O
-                \item Apache Spark often \textbf{falls short at petabyte-scale processing}
+                \item Map-Reduce and Apache Spark often \textbf{falls short at petabyte-scale processing and lack efficient capabilities for distributed training AI models}
             \end{itemize}
         \end{column}
         \begin{column}{0.4\textwidth}
@@ -74,7 +74,7 @@
 
 \begin{frame}{A Two-Phased Cloud-Native Architecture for Optimization}
     \begin{center}
-        \includegraphics[width=0.9\textwidth,height=0.6\textheight,keepaspectratio]{../../images/TFM-MindMap.drawio.png}
+        \includegraphics[width=0.9\textwidth,height=0.6\textheight,keepaspectratio]{TFM-MindMap.drawio.png}
     \end{center}
     
     \vspace{0.3cm}
@@ -242,12 +242,12 @@
 \begin{frame}{Future Directions}
     \begin{columns}
         \begin{column}{0.6\textwidth}
-            \textbf{Key Conclusions:}
+            \textbf{Key Emerging Capabilities:}
             \begin{itemize}
                 \item Two-phase architecture delivers \textbf{significant gains} in scalability, elasticity, performance, and cost-efficiency
                 \item \textcolor{rayblue}{\textbf{GPU-accelerated Ray clusters scale nearly linearly}} for DNA embedding extraction
-                \item Automated lifecycle management and Spot Instances ensure \textcolor{green}{\textbf{optimized resource utilization}}
-                \item Successfully \textbf{decouples feature engineering from raw simulation workloads}
+                \item Automated lifecycle management and Spot Instances ensure...
+                \item Successfully \textbf{decouples feature ...}
             \end{itemize}
         \end{column}
         \begin{column}{0.4\textwidth}
@@ -265,8 +265,8 @@
     \begin{block}{Future Work \& Research Avenues}
         \begin{itemize}
             \item \textbf{FPGA Workloads:} Explore AWS F1 instances using Xilinx Vitis for \textcolor{red}{\textbf{orders-of-magnitude speedups}}
-            \item \textbf{Apple M-Series SoCs:} Investigate Ray's affinity scheduling on macOS for edge prototyping
-            \item \textbf{Managed ETL \& Conversational DevOps:} Balance AWS Glue with deep AI tasks, integrate \textcolor{rayblue}{\textbf{domain-aware LLM agents}} for automated CloudFormation/CDK generation
+            \item \textbf{Apple M-Series SoCs:} Ray's  macOS  edge 
+            \item \textbf{Managed ETL \& Conversational DevOps:} agentic AI integrate \textcolor{rayblue}{\textbf{domain-aware LLM agents}} for automated CloudFormation/CDK generation
         \end{itemize}
     \end{block}
 \end{frame}
