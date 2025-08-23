@@ -1,21 +1,60 @@
 # Optimizing Vector Algorithm Processing through the integration of Ray IO and HPC in the Cloud
 
 ## Abstract
-The objectives of this study are integrate Ray ETL (Extract-Transform-Load)[2] stack that bridges AI-driven feature engineering with on-demand virtual HPC (High Performance Computing) provisioned with Amazon Web Services (AWS) ParallelCluster [7] for boosting developer productivity and assess its architectural quality attributes from a DNA sequencing task context end-to-end processing perspective.
+The objectives of this study are to integrate Ray ETL (Extract-Transform-Load) stack
+that bridges data transformation and AI-driven feature engineering with on-demand
+virtual HPC (High Performance Computing) clusters provisioned with Amazon Web
+Services (AWS) ParallelCluster for boosting developer productivity and assess its
+architectural quality attributes from a DNA sequencing task context end-to-end
+processing perspective.
 
 ### Keywords
- - Ray
- - HPC
- - IaC
- - Embeddings
- - Distributed Parallel Programming
+- Ray
+- HPC
+- IaC
+- Embeddings
+- Distributed Parallel Programming
+- CI-CD
+- Two‐Phase Pipeline
+- GPU Acceleration
+- LSHvec
+- DNABERT
 
-## Introduction
-The rapid rise of large scale AI — whether in natural language models or computer vision — hinges on turning raw knowledge (text, images, video) into dense numeric arrays (embeddings) that downstream algorithms can process efficiently. Tokenization and embedding pipelines must handle terabytes — or even petabytes — of data, extract meaningful features, and expose them as vectors for similarity search, graph traversal, or predictive modeling. Traditional frameworks like Apache Spark often fall short at this scale, driving demand for natively distributed, heterogeneous-aware solutions.
-
-HPC — often called accelerated computing — unites CPUs, GPUs, and FPGAs across clustered nodes to tackle simulations and analyses that single machines cannot handle, from drug‐discovery molecular dynamics to flight simulations and financial risk models. Traditional on-premises HPC demands massive capital investment, long procurement cycles, and manual hardware refreshes, while data-intensive workloads increasingly overwhelm local I/O, networking, and cooling infrastructures. Moving to the cloud addresses these limitations by providing virtually unlimited, on-demand capacity: teams can spin up thousands of GPU‐accelerated instances for minutes at a time, eliminate hardware maintenance, and run fine-grained benchmarks without overprovisioning. The IaC (Infrastructure-as-Code) - with AWS ParallelCluster and CloudFormation — plus CI-CD (Continuous Integration-Continuous Delivery) pipelines and EC2 Spot Instances (up to 90% cost savings) further automate deployments and optimize spend, all while maintaining security and compliance.
-
-In life-science research, cloud HPC is already transformative. Novartis, for example, screened 10 million compounds against a cancer target on AWS in under nine hours for just \$4 232—a task that would have taken weeks and cost tens of millions on-premises [3]. Beyond genomics, FPGA‐accelerated Smith–Waterman alignments run up to 160× faster than CPUs, and SYstem-wide Compute Language (SYCL) enables C++ heterogeneous acceleration across GPUs and FPGAs. Even Apple’s M-series [22] SoCs now integrate CPUs, GPUs, matrix engines, and neural accelerators into a single chip for energy-efficient desktop HPC. AWS P4d instances allow researchers to launch clusters with over 4 000 A100 GPUs, petabit-scale networking, and FSx for Lustre shared storage, unleashing unprecedented parallel performance for both scientific simulations and deep-learning training [7].
+## 1.0 Introduction
+The rapid rise of large scale AI — whether in natural language models or computer
+vision — hinges on turning raw knowledge (text, images, video) into dense numeric
+arrays (embeddings) that downstream algorithms can process efficiently.
+Tokenization and embedding pipelines must handle terabytes — or even petabytes
+— of data, extract meaningful features, and expose them as vectors for similarity
+search, graph traversal, or predictive modeling. Traditional frameworks like Apache
+Spark often fall short at this scale, driving demand for natively distributed,
+heterogeneous-aware solutions.
+HPC — often called accelerated computing — unites CPUs, GPUs, and FPGAs
+across clustered nodes to tackle simulations and analyses that single machines
+cannot handle, from drug‐discovery molecular dynamics to flight simulations and
+financial risk models. Traditional on-premises HPC demands massive capital
+investment, long procurement cycles, and manual hardware refreshes, while
+data-intensive workloads increasingly overwhelm local I/O, networking, and cooling
+infrastructures. Moving to the cloud addresses these limitations by providing virtually
+unlimited, on-demand capacity: teams can spin up thousands of GPU‐accelerated
+instances for minutes at a time, eliminate hardware maintenance, and run
+fine-grained benchmarks without overprovisioning. Using IaC
+(Infrastructure-as-Code) tools (e.g. AWS ParallelCluster, CloudFormation — plus
+CI-CD (Continuous Integration-Continuous Delivery) pipelines and EC2 Spot
+Instances (up to 90% cost savings) further automate deployments and optimize
+spend, all while maintaining security and compliance.
+In life-science research, cloud HPC is already transformative. Novartis, for example,
+screened 10 million compounds against a cancer target on AWS in under nine hours
+for just $4,232 — a task that would have taken weeks and cost tens of millions
+on-premises [3]. Beyond genomics, FPGA‐accelerated Smith–Waterman alignments
+run up to 160× faster than CPUs, and SYstem-wide Compute Language (SYCL)
+12
+enables C++ heterogeneous acceleration across GPUs and FPGAs. Even Apple’s
+M-series [22] SoCs now integrate CPUs, GPUs, matrix engines, and neural
+accelerators into a single chip for energy-efficient desktop HPC. AWS P4d instances
+allow researchers to launch clusters with over 4000 A100 GPUs, petabit-scale
+networking, and FSx for Lustre shared storage, unleashing unprecedented parallel
+performance for both scientific simulations and deep-learning training [7].
 
 
 ## Context and Motivation

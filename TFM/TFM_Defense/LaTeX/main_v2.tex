@@ -42,36 +42,37 @@
         \begin{column}{0.6\textwidth}
             \textbf{Context \& Motivation:}
             \begin{itemize}
-                \item \textbf{Large-scale AI} (NLP, Computer Vision) and \textbf{scientific domains} (drug discovery, genomics, CFD) rely on processing vast raw datasets
+                \item \textbf{Scientific domains} (genomics, CFD) and \textbf{Large-scale AI} (NLP, CV) rely on processing \textbf{huge datasets}
                 \item Transform raw knowledge into \textcolor{rayblue}{\textbf{dense numeric arrays (embeddings)}} for downstream algorithms
-                \item \textbf{Traditional HPC limitations on pre-processing:} massive capital investment, long procurement cycles, struggles with data-intensive I/O
-                \item Map-Reduce and Apache Spark often \textbf{falls short at petabyte-scale processing and lack efficient capabilities for distributed training AI models}
+                \item \textbf{HPC limitations on pre-processing:} struggles with data transformation and intensive I/O
+                \item Map-Reduce/Apache Spark often \textbf{falls short at PB-scale processing and lack distributed engine for training AI models}
             \end{itemize}
         \end{column}
         \begin{column}{0.4\textwidth}
             \begin{tikzpicture}[scale=0.8]
                 % Traditional HPC box
-                \draw[thick, red] (0,0) rectangle (3,1.5);
-                \node at (1.5,0.75) {\small Traditional HPC};
-                \node[red] at (1.5,0.3) {\tiny Limited \& Expensive};
+                \draw[thick, red] (0,0) rectangle (4,1.5);
+                \node at (2,0.75) {\small Traditional HPC};
+                \node[red] at (2,0.3) {\tiny Limited \& Expensive};
                 
                 % Arrow
-                \draw[->, thick, blue] (1.5, 2) -- (1.5, 2.8);
+                \draw[->, thick, blue] (2, 1.7) -- (2, 2.7);
                 
                 % Cloud box
-                \draw[thick, green] (0,3) rectangle (4,5);
+                \draw[blue] (0,3) rectangle (4,4.5);
                 \node at (2,3.75) {\small Cloud Computing};
-                \node[green] at (2,3.3)  {\tiny * Unlimited \& On-demand};
+                \node[blue] at (2,3.3)  {\tiny * Unlimited \& On-demand};
             \end{tikzpicture}
         \end{column}
     \end{columns}
     
     \vspace{0.3cm}
-    \begin{alertblock}{The Opportunity}
-        Cloud computing offers \textbf{unlimited, on-demand capacity} with up to \textcolor{awsorange}{\textbf{90\% cost savings}} through EC2 Spot Instances and Infrastructure-as-Code
-    \end{alertblock}
+    \begin{block}{The Opportunity}
+        Cloud computing offers \textbf{unlimited, on-demand capacity} with better cost efficiency balance leveraging the best for IaC, Devops and Data Interoperability
+    \end{block}
 \end{frame}
 
+% Slide 2: The New Frontier
 \begin{frame}{A Two-Phased Cloud-Native Architecture for Optimization}
     \begin{center}
         \includegraphics[width=0.9\textwidth,height=0.6\textheight,keepaspectratio]{TFM-MindMap.drawio.png}
@@ -81,13 +82,21 @@
     \begin{block}{Key Integration}
         \textbf{Unified storage layer} bridges Phase 1 outputs with Phase 2 inputs, enabling seamless data flow and high-throughput access
     \end{block}
+\end{frame}
+
+% Slide 3: The New Frontier
+\begin{frame}{Scientific workflow - regular workload}
+    \begin{center}
+        \includegraphics[width=0.9\textwidth,height=0.6\textheight,keepaspectratio]{TFM-MindMap.drawio.png}
+    \end{center}
     
-    \vspace{0.2cm}
-    \textbf{Example:} Metagenomics pipeline - FASTQ reads → k-mer embeddings → organism clustering
+    \vspace{0.3cm}
+    \begin{block}{Key Integration}
+        \textbf{How embeddings can} ... for numeric simulation \end{block}
 \end{frame}
 
 
-% Slide 2: Two-Phased Architecture
+% Slide 4: Two-Phased Architecture
 \begin{frame}{A Two-Phased Cloud-Native Architecture for Optimization}
     \begin{center}
         \begin{tikzpicture}[scale=0.9]
@@ -229,11 +238,11 @@
     \end{columns}
     
     \vspace{0.3cm}
-    \begin{block}{Future Work \& Research Avenues}
+    \begin{block}{Key achievements}
         \begin{itemize}
-            \item \textbf{FPGA Workloads:} Explore AWS F1 instances using Xilinx Vitis for \textcolor{red}{\textbf{orders-of-magnitude speedups}}
-            \item \textbf{Apple M-Series SoCs:} Investigate Ray's affinity scheduling on macOS for edge prototyping
-            \item \textbf{Managed ETL \& Conversational DevOps:} Balance AWS Glue with deep AI tasks, integrate \textcolor{rayblue}{\textbf{domain-aware LLM agents}} for automated CloudFormation/CDK generation
+            \item \textbf{Ray autoscaler - EC2:} Explore ... \textcolor{red}{\textbf{orders-of-magnitude speedups}}
+            \item \textbf{Storage at scale S3 FsxLustre:} data exchange
+            \item \textbf{HPC ParallelCluster and EFA:} Balance ...
         \end{itemize}
     \end{block}
 \end{frame}
