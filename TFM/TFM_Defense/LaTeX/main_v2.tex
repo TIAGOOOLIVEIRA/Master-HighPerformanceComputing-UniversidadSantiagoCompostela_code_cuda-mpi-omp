@@ -72,28 +72,52 @@
     \end{block}
 \end{frame}
 
-% Slide 2: The New Frontier
-\begin{frame}{A Two-Phased Cloud-Native Architecture for Optimization}
-    \begin{center}
-        \includegraphics[width=0.9\textwidth,height=0.6\textheight,keepaspectratio]{TFM-MindMap.drawio.png}
-    \end{center}
+
+% Slide 2: Scientific workflow
+\begin{frame}{Scientific workflow}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item Regular workload
+                \item Embeddings to capture aditional features and integrates with numeric simulation
+                \item Generative AI for enhancing input dataset
+                \item Data centric to ease workloads interoperability amongs different engine processing
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{DataCentric-DataBackbone-Strategy.png}
+        \end{column}
+    \end{columns}
     
     \vspace{0.3cm}
-    \begin{block}{Key Integration}
-        \textbf{Unified storage layer} bridges Phase 1 outputs with Phase 2 inputs, enabling seamless data flow and high-throughput access
+    \begin{block}{Key Insight}
+        \textbf{How embeddings can} ... for numeric simulation
     \end{block}
 \end{frame}
 
-% Slide 3: The New Frontier
-\begin{frame}{Scientific workflow - regular workload}
+% Slide 3: A Two-Phased
+\begin{frame}{A Two-Phased Cloud-Native Architecture for Optimization}
+    % Upper row with bullet points
+    \begin{itemize}
+        \item First bullet point about the two-phased architecture
+        \item Second bullet point about cloud-native optimization
+        \item Third bullet point about the integration approach
+    \end{itemize}
+    
+    \vspace{0.4cm}
+    
+    % Bottom row with image
     \begin{center}
-        \includegraphics[width=0.9\textwidth,height=0.6\textheight,keepaspectratio]{TFM-MindMap.drawio.png}
+        \includegraphics[width=0.9\textwidth,height=0.4\textheight,keepaspectratio]{Generalized_data-pipeline.drawio.png}
     \end{center}
     
     \vspace{0.3cm}
-    \begin{block}{Key Integration}
-        \textbf{How embeddings can} ... for numeric simulation \end{block}
+    \begin{block}{Workload Example}
+        \textbf{Metagenomics pipeline}  - FASTQ reads → k-mer embeddings → organism clustering
+    \end{block}
 \end{frame}
+
+
 
 
 % Slide 4: Two-Phased Architecture
@@ -101,41 +125,40 @@
     \begin{center}
         \begin{tikzpicture}[scale=0.9]
             % Phase 1 box
-            \draw[thick, rayblue, fill=rayblue!20] (0,0) rectangle (5,3);
-            \node[rayblue, font=\bfseries] at (2.5,2.5) {Phase 1: High-Throughput Data Preparation};
-            \node[align=left] at (2.5,1.5) {
+            \draw[thick, rayblue, fill=rayblue!20] (-3,0) rectangle (4.3,3);
+            \node[rayblue, font=\bfseries] at (1.2,4.5) {Phase 1: Data Preparation + Embeddings};
+            \node[align=left] at (0.0,1.5) {
                 \small • Ray for ETL \& ML pipelines \\
                 \small • Data cleaning, normalization \\
                 \small • K-mer vectorization \\
-                \small • Feature extraction
+                \small • Leverages LSHVec embeddings
             };
-            \node[rayblue] at (2.5,0.3) {\textbf{Output: Embeddings to S3}};
+            \node[rayblue] at (0.5,-0.5) {\textbf{Output: Embeddings to S3}};
             
             % Arrow
-            \draw[->, very thick, black] (5.5, 1.5) -- (7.5, 1.5);
-            \node at (6.5, 2) {\small Unified Storage};
-            \node at (6.5, 1) {\small (S3 + FSx)};
+            \draw[->, very thick, black] (4.5, 1.5) -- (6.8, 1.5);
+            \node at (5.6, 2) {\small Unified Storage};
+            \node at (5.6, 1) {\small (S3 + FSx)};
             
             % Phase 2 box
-            \draw[thick, hpcgreen, fill=hpcgreen!20] (8,0) rectangle (13,3);
-            \node[hpcgreen, font=\bfseries] at (10.5,2.5) {Phase 2: Compute-Intensive Simulation};
-            \node[align=left] at (10.5,1.5) {
+            \draw[thick, hpcgreen, fill=hpcgreen!20] (7,0) rectangle (14,3);
+            \node[hpcgreen, font=\bfseries] at (10.5,4.5) {Phase 2: Numeric Simulation};
+            \node[align=left] at (9.7,1.5) {
                 \small • AWS ParallelCluster \\
                 \small • Slurm-based HPC clusters \\
                 \small • LSH-based clustering \\
                 \small • Parallel MPI algorithms
             };
-            \node[hpcgreen] at (10.5,0.3) {\textbf{Output: Analysis Results}};
+            \node[hpcgreen] at (10.5,-0.5) {\textbf{Output: Analysis Results}};
         \end{tikzpicture}
     \end{center}
     
     \vspace{0.3cm}
     \begin{block}{Key Integration}
-        \textbf{Unified storage layer} bridges Phase 1 outputs with Phase 2 inputs, enabling seamless data flow and high-throughput access
+        \textbf{Unified storage layer}: seamless data flow and high-throughput access
     \end{block}
     
-    \vspace{0.2cm}
-    \textbf{Example:} Metagenomics pipeline - FASTQ reads → k-mer embeddings → organism clustering
+
 \end{frame}
 
 % Slide 3: Phase 1 Deep Dive
@@ -240,7 +263,7 @@
     \vspace{0.3cm}
     \begin{block}{Key achievements}
         \begin{itemize}
-            \item \textbf{Ray autoscaler - EC2:} Explore ... \textcolor{red}{\textbf{orders-of-magnitude speedups}}
+            \item \textbf{Ray autoscaler - EC2 + GPU:} Explore ... \textcolor{red}{\textbf{orders-of-magnitude speedups}}
             \item \textbf{Storage at scale S3 FsxLustre:} data exchange
             \item \textbf{HPC ParallelCluster and EFA:} Balance ...
         \end{itemize}
@@ -277,6 +300,18 @@
             \item \textbf{Apple M-Series SoCs:} Ray's  macOS  edge 
             \item \textbf{Managed ETL \& Conversational DevOps:} agentic AI integrate \textcolor{rayblue}{\textbf{domain-aware LLM agents}} for automated CloudFormation/CDK generation
         \end{itemize}
+    \end{block}
+\end{frame}
+
+% Slide 2: The New Frontier
+\begin{frame}{Studied Topics}
+    \begin{center}
+        \includegraphics[width=0.9\textwidth,height=0.6\textheight,keepaspectratio]{TFM-MindMap.drawio.png}
+    \end{center}
+    
+    \vspace{0.3cm}
+    \begin{block}{Centric idea}
+        \textbf{Unified storage layer} bridges Phase 1 outputs with Phase 2 inputs, enabling seamless data flow and high-throughput access
     \end{block}
 \end{frame}
 
