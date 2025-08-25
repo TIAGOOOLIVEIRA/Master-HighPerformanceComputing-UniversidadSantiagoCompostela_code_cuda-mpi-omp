@@ -1,4 +1,4 @@
-# Optimizing Vector Algorithm Processing through the integration of Ray IO and HPC in the Cloud
+# Chapter 1 - Introduction
 
 ## Abstract
 The objectives of this study are to integrate Ray ETL (Extract-Transform-Load) stack
@@ -20,7 +20,7 @@ processing perspective.
 - LSHvec
 - DNABERT
 
-## 1.0 Introduction
+## 1.0. Introduction
 The rapid rise of large scale AI — whether in natural language models or computer
 vision — hinges on turning raw knowledge (text, images, video) into dense numeric
 arrays (embeddings) that downstream algorithms can process efficiently.
@@ -57,7 +57,7 @@ networking, and FSx for Lustre shared storage, unleashing unprecedented parallel
 performance for both scientific simulations and deep-learning training [7].
 
 
-## Context and Motivation
+## 1.1. Context and Motivation
 
 In modern scientific and engineering workflows, vast raw datasets must undergo a series of complex transformations — cleaning, normalization, format conversion, alignment, partitioning, and feature extraction — before they can drive high-fidelity numerical simulations. Tasks like trimming low-quality sequencing reads, converting FASTQ into indexed BAM files, sharding terabytes of molecular trajectories into NetCDF [21] chunks, or generating unstructured CFD meshes all demand a dynamic, distributed framework that can orchestrate heterogeneous compute across CPUs, GPUs, and even FPGAs.
 
@@ -67,13 +67,35 @@ Ray’s lightweight tasks and actors, integrated with AWS services like S3, FSx 
 
 By automating the entire data lifecycle — ingesting raw reads into S3 or FSx-Lustre, sharding, vectorizing and extracting embeddings from them with Ray, dispatching compute intensive simulations on ParallelCluster, and then feeding results back into downstream ML or analytics workflows — this proposal establishes an **iterative feedback loop**. This cyclical pattern ensures that insights from each phase continuously enrich the next, delivering a fully interoperable, scalable pipeline that maximizes both performance and cost efficiency for next generation AI driven and HPC powered applications.
 
-## Objectives
-- 1. Design and evaluate Ray as a modular orchestration layer based on Ray for ETL and ML (Machine Learning) pipelines on AWS, including autoscaling EC2 to feed an HPC cluster provisioned with AWS ParallelCluster.
+## 1.2. Objectives
 
-- 2. Develop end-to-end application for data transfer based on S3 or FSx-Lustre, Ray tasks for preprocessing with encoding-decoding and feeding a virtual HPC cluster provisioned with AWS ParallelCluster in order to execute tasks within the context of a DNA simulation algorithm.
-
-- 3. Benchmark heterogeneous application pipeline and hardware for an architecture trade-off analysis.
+The specific objectives of this study are:
 
 
-## Document Structure
+- Design and evaluate a modular orchestration layer based on Ray for ETL and
+ML pipelines on AWS, including EC2 autoscaling to feed an HPC cluster
+provisioned with AWS ParallelCluster.
+- Develop end-to-end application for data transfer based on S3 or FSx-Lustre,
+Ray tasks for preprocessing with encoding-decoding and feeding a virtual HPC
+cluster provisioned with AWS ParallelCluster in order to execute tasks within
+the context of a DNA simulation algorithm.
+- Benchmark heterogeneous application pipeline and hardware for an
+architecture trade-off analysis.
 
+## 1.3. Document Structure
+
+To provide an overview of this document, we will structure the work into the following
+chapters:
+
+- Introduction: This current chapter. It covers the context, motivation,
+objectives, and the structure of the document.
+- State of the Art: A chapter to present existing work related to this project
+and analyze the current state of the field.
+- Technological Foundations: Show the tools used for the project and
+their roles, both in terms of hardware and software.
+- Architecture: A chapter explaining the design, implementation, and
+general operation of the proposed solution for this project.
+- Experiments: Data collected from the conducted tests and conclusions
+drawn from them.
+- Conclusions: The final vision of the work done and future lines of
+research.

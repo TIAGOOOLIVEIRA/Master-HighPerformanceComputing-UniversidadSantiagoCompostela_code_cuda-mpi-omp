@@ -79,9 +79,10 @@
         \begin{column}{0.5\textwidth}
             \begin{itemize}
                 \item Regular workload
-                \item Embeddings to capture aditional features and integrates with numeric simulation
+                \item Embeddings to capture additional features and integrates with numeric simulation
                 \item Generative AI for enhancing input dataset
                 \item Data centric to ease workloads interoperability amongs different engine processing
+                \item \textbf {Iterative feedback loop} ...
             \end{itemize}
         \end{column}
         \begin{column}{0.5\textwidth}
@@ -91,7 +92,7 @@
     
     \vspace{0.3cm}
     \begin{block}{Key Insight}
-        \textbf{How embeddings can} ... for numeric simulation
+        \textbf {Tokens become embeddings} through learned matrix multiplication plus positional encoding via vector addition
     \end{block}
 \end{frame}
 
@@ -131,7 +132,7 @@
                 \small • Ray for ETL \& ML pipelines \\
                 \small • Data cleaning, normalization \\
                 \small • K-mer vectorization \\
-                \small • Leverages LSHVec embeddings
+                \small • Leverages LSHVec embeddings, \\ instead of ProtBERT
             };
             \node[rayblue] at (0.5,-0.5) {\textbf{Output: Embeddings to S3}};
             
@@ -158,19 +159,58 @@
         \textbf{Unified storage layer}: seamless data flow and high-throughput access
     \end{block}
     
+\end{frame}
+
+% Slide 5: DNA Embedding Models for Ray Anyscale Deployment
+\begin{frame}{DNA Embedding Models for Ray Anyscale Deployment}
+
+\begin{itemize}
+    \item \textbf{DNABERT-2:} SoTA accuracy, 322B+ DNA tokens, Ray HuggingFace integration
+    \item \textbf{LSHVec:} Optimal scalability for terabyte-scale datasets with native distributed architecture and LSH optimization
+    \item \textbf{fastDNA:} Fastest inference performance with lightweight k-mer embeddings ideal for real-time applications
+    \item \textbf{ProtBERT:} Protein-specific model incompatible with DNA sequences (amino acid vocabulary only)
+\end{itemize}
+
+\vfill
+
+\begin{table}[b]
+\centering
+\tiny
+\begin{tabular}{|p{2.2cm}|p{2.0cm}|p{2.0cm}|p{2.0cm}|p{2.0cm}|}
+\hline
+\textbf{Metric} & \textbf{DNABERT-2} & \textbf{LSHVec} & \textbf{fastDNA} & \textbf{ProtBERT} \\
+\hline
+\textbf{Primary Domain/ Training} & DNA (322B+ tokens) & DNA metagenomics & DNA metagenomics & Proteins (No DNA) \\
+\hline
+\textbf{Model Size} & 117M params & ~16M params & 10-100M params & 420M params \\
+\hline
+\textbf{Embedding Dimension} & 768 & 50-200 (config.) & 10-100 (config.) & 1024 \\
+\hline
+\textbf{Computation Optimization} & BPE + attention & LSH + skip-gram & k-mer embeddings & BERT masked LM \\
+\hline
+\textbf{Ray Fitness} & Excellent & Excellent & Good & Incompatible \\
+\hline
+\end{tabular}
+\end{table}
+
+    \vspace{0.3cm}
+    \begin{block}{Tradeoff analysis}
+        \textbf{Locality-Sensitive Hashing (LSH)} optimization...
+    \end{block}
 
 \end{frame}
 
-% Slide 3: Phase 1 Deep Dive
+
+% Slide 6: Phase 1
 \begin{frame}{Phase 1 Deep Dive: Ray for Scalable Data Preprocessing}
     \begin{columns}
         \begin{column}{0.5\textwidth}
             \textbf{Ray's Role in Data Preparation:}
             \begin{itemize}
-                \item \textbf{Data Ingestion:} Raw FASTQ reads processing
-                \item \textbf{K-mer Embeddings:} Using \textcolor{rayblue}{\textbf{DNABERT-2-117M}} for fixed-length numeric vectors
+                \item \textbf{Data Ingestion:} Raw FASTQ reads processing as parquet files
+                \item \textbf{K-mer Embeddings:} Using \textcolor{rayblue}{\textbf{LSHVec}} for fixed-length numeric vectors
                 \item \textbf{Parallel Processing:} Lightweight tasks across CPUs/GPUs
-                \item \textbf{Output:} Parquet shards to Amazon S3
+                \item \textbf{Output:} Parquet shards to Amazon S3 - FSxLustre
             \end{itemize}
         \end{column}
         \begin{column}{0.5\textwidth}
@@ -194,13 +234,13 @@
     \end{columns}
     
     \vspace{0.3cm}
-    \begin{alertblock}{Key Achievement}
+    \begin{block}{Key Achievement}
         \textbf{Near-linear scaling} with Ray autoscaler dynamically managing cluster size and achieving \textcolor{green}{\textbf{65\% cost reduction}} through Spot Instances
-    \end{alertblock}
+    \end{block}
 \end{frame}
 
-% Slide 4: Phase 2 Deep Dive
-\begin{frame}{Phase 2 Deep Dive: HPC for Compute-Intensive Simulation \& Overall Impact}
+% Slide 7: Phase 2
+\begin{frame}{Phase 2 Deep Dive: HPC ParallelCluster \& Overall Impact}
     \begin{columns}
         \begin{column}{0.6\textwidth}
             \textbf{HPC Simulation with AWS ParallelCluster:}
@@ -229,31 +269,30 @@
     \vspace{0.3cm}
     \begin{block}{Synergistic Performance \& Benefits}
         \begin{itemize}
-            \item \textbf{Hardware Acceleration:} FPGAs achieve \textcolor{red}{\textbf{160-fold acceleration}} for Smith-Waterman algorithms
-            \item \textbf{Extreme-scale Processing:} GPU-enabled protein similarity searches across hundreds of millions of proteins in hours vs. weeks
-            \item \textbf{Cost Optimization:} \textcolor{green}{\textbf{Over 60\% infrastructure cost reduction}} through Spot Instances
+            \item \textbf{Hardware Acceleration:} FPGAs ... for Smith-Waterman algorithms
+            \item \textbf{Extreme-scale Processing:} GPU-enabled protein similarity ... in hours vs. weeks
             \item \textbf{Developer Agility:} Unified cloud-agnostic control plane streamlines complex pipelines
         \end{itemize}
     \end{block}
 \end{frame}
 
-% Slide 5: Conclusions
+% Slide 8: Conclusions
 \begin{frame}{Conclusions}
     \begin{columns}
         \begin{column}{0.6\textwidth}
             \textbf{Key Conclusions:}
             \begin{itemize}
                 \item Two-phase architecture delivers \textbf{significant gains} in scalability, elasticity, performance, and cost-efficiency
-                \item \textcolor{rayblue}{\textbf{GPU-accelerated Ray clusters scale nearly linearly}} for DNA embedding extraction
-                \item Automated lifecycle management and Spot Instances ensure \textcolor{green}{\textbf{optimized resource utilization}}
+                \item Automated life-cycle management and Spot Instances ensure \textcolor{green}{\textbf{optimized resource utilization}}
                 \item Successfully \textbf{decouples feature engineering from raw simulation workloads}
+                \item \textbf{Iterative feedback loop}...
             \end{itemize}
         \end{column}
         \begin{column}{0.4\textwidth}
             \begin{tikzpicture}[scale=0.6]
                 % Success metrics visualization
-                \draw[thick, green] (0,0) -- (0,3) -- (3,3) -- (3,0) -- cycle;
-                \node[green, font=\bfseries] at (1.5,2.5) {SUCCESS};
+                \draw[thick, green] (-1,0) -- (-1,4) -- (4,4) -- (4,0) -- cycle;
+                \node[green, font=\bfseries] at (1.5,3.5) {SUCCESS};
                 \node[align=center] at (1.5,1.5) {\small Scalability \\ Performance \\ Cost-efficiency};
                 \node[green] at (1.5,0.3) {\tiny Objectives Met};
             \end{tikzpicture}
@@ -263,17 +302,16 @@
     \vspace{0.3cm}
     \begin{block}{Key achievements}
         \begin{itemize}
-            \item \textbf{Ray autoscaler - EC2 + GPU:} Explore ... \textcolor{red}{\textbf{orders-of-magnitude speedups}}
+            \item \textbf{Ray autoscaler - EC2 + GPU:} Maximize scalability for \textcolor{red}{\textbf{DNA embedding extraction}}
             \item \textbf{Storage at scale S3 FsxLustre:} data exchange
             \item \textbf{HPC ParallelCluster and EFA:} Balance ...
         \end{itemize}
     \end{block}
 \end{frame}
 
-% Slide 6: Future Directions
+% Slide 9: Future Directions
 \begin{frame}{Future Directions}
-    \begin{columns}
-        \begin{column}{0.6\textwidth}
+
             \textbf{Key Emerging Capabilities:}
             \begin{itemize}
                 \item Two-phase architecture delivers \textbf{significant gains} in scalability, elasticity, performance, and cost-efficiency
@@ -281,29 +319,19 @@
                 \item Automated lifecycle management and Spot Instances ensure...
                 \item Successfully \textbf{decouples feature ...}
             \end{itemize}
-        \end{column}
-        \begin{column}{0.4\textwidth}
-            \begin{tikzpicture}[scale=0.6]
-                % Success metrics visualization
-                \draw[thick, green] (0,0) -- (0,3) -- (3,3) -- (3,0) -- cycle;
-                \node[green, font=\bfseries] at (1.5,2.5) {SUCCESS};
-                \node[align=center] at (1.5,1.5) {\small Scalability \\ Performance \\ Cost-efficiency};
-                \node[green] at (1.5,0.3) {\tiny Objectives Met};
-            \end{tikzpicture}
-        \end{column}
-    \end{columns}
+
     
     \vspace{0.3cm}
     \begin{block}{Future Work \& Research Avenues}
         \begin{itemize}
-            \item \textbf{FPGA Workloads:} Explore AWS F1 instances using Xilinx Vitis for \textcolor{red}{\textbf{orders-of-magnitude speedups}}
-            \item \textbf{Apple M-Series SoCs:} Ray's  macOS  edge 
-            \item \textbf{Managed ETL \& Conversational DevOps:} agentic AI integrate \textcolor{rayblue}{\textbf{domain-aware LLM agents}} for automated CloudFormation/CDK generation
+            \item \textbf{FPGA Workloads:} Explore AWS F1 instances using Xilinx Vitis
+            \item \textbf{Apple M-Series SoCs:} Numeric simulation or AI training-inference
+            \item \textbf{Agentic AI \& Conversational DevOps:} Microsoft Discovery - Project I am working
         \end{itemize}
     \end{block}
 \end{frame}
 
-% Slide 2: The New Frontier
+% Slide 10: The New Frontier
 \begin{frame}{Studied Topics}
     \begin{center}
         \includegraphics[width=0.9\textwidth,height=0.6\textheight,keepaspectratio]{TFM-MindMap.drawio.png}
