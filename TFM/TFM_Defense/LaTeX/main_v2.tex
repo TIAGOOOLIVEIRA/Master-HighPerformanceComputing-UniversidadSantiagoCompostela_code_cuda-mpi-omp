@@ -39,16 +39,16 @@
 % Slide 1: The New Frontier
 \begin{frame}{The New Frontier: Scaling Scientific Workflow with ETL and AI Workloads}
     \begin{columns}
-        \begin{column}{0.6\textwidth}
+        \begin{column}{0.7\textwidth}
             \textbf{Context \& Motivation:}
             \begin{itemize}
                 \item \textbf{Scientific domains} (genomics, CFD) and \textbf{Large-scale AI} (NLP, CV) rely on processing \textbf{huge datasets}
                 \item Transform raw knowledge into \textcolor{rayblue}{\textbf{dense numeric arrays (embeddings)}} for downstream algorithms
-                \item \textbf{HPC limitations on pre-processing:} struggles with data transformation and intensive I/O
+                \item \textbf{HPC limitations on pre-processing:} struggles with I/O bottlenecks, resource mngt/orchestration, Inefficient Data Handling (unstructured data)
                 \item Map-Reduce/Apache Spark often \textbf{falls short at PB-scale processing and lack distributed engine for training AI models}
             \end{itemize}
         \end{column}
-        \begin{column}{0.4\textwidth}
+        \begin{column}{0.3\textwidth}
             \begin{tikzpicture}[scale=0.8]
                 % Traditional HPC box
                 \draw[thick, red] (0,0) rectangle (4,1.5);
@@ -68,7 +68,7 @@
     
     \vspace{0.3cm}
     \begin{block}{The Opportunity}
-        Cloud computing offers \textbf{unlimited, on-demand capacity} with better cost efficiency balance leveraging the best for IaC, Devops and Data Interoperability
+        Cloud computing offers \textbf{*unlimited, on-demand capacity} with better cost efficiency balance leveraging the best for IaC, Devops and Data Interoperability
     \end{block}
 \end{frame}
 
@@ -76,16 +76,15 @@
 % Slide 2: Scientific workflow
 \begin{frame}{Scientific workflow}
     \begin{columns}
-        \begin{column}{0.5\textwidth}
+        \begin{column}{0.6\textwidth}
             \begin{itemize}
-                \item Regular workload
-                \item Embeddings to capture additional features and integrates with numeric simulation
+                \item A \textbf{data-centric} pipeline that transforms raw inputs into structured embeddings and feeds them into HPC simulations, with \textbf{iterative loop feedback} between \textbf{stages or phases} to boost performance and cost efficiency
                 \item Generative AI for enhancing input dataset
-                \item Data centric to ease workloads interoperability amongs different engine processing
-                \item \textbf {Iterative feedback loop} ...
+                \item Data centric to ease workloads interoperability among different engine processing
+                \item Embeddings to capture additional features and integrates with numeric simulation
             \end{itemize}
         \end{column}
-        \begin{column}{0.5\textwidth}
+        \begin{column}{0.4\textwidth}
             \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{DataCentric-DataBackbone-Strategy.png}
         \end{column}
     \end{columns}
@@ -100,9 +99,9 @@
 \begin{frame}{A Two-Phased Cloud-Native Architecture for Optimization}
     % Upper row with bullet points
     \begin{itemize}
-        \item First bullet point about the two-phased architecture
-        \item Second bullet point about cloud-native optimization
-        \item Third bullet point about the integration approach
+        \item A regular \textbf{Scientific Workflow} demands... 
+        \item The separation of concerns...
+        \item Metagenomic read clustering 
     \end{itemize}
     
     \vspace{0.4cm}
@@ -156,7 +155,9 @@
     
     \vspace{0.3cm}
     \begin{block}{Key Integration}
-        \textbf{Unified storage layer}: seamless data flow and high-throughput access
+        \textbf{Unified storage layer}: Seamless data flowing between stages and high-throughput access
+        
+        \textbf{To chain Phase 1 - Phase 2}: Event-driven workflow; Job Submit; pull-trigger-flag
     \end{block}
     
 \end{frame}
@@ -167,7 +168,7 @@
 \begin{itemize}
     \item \textbf{DNABERT-2:} SoTA accuracy, 322B+ DNA tokens, Ray HuggingFace integration
     \item \textbf{LSHVec:} Optimal scalability for terabyte-scale datasets with native distributed architecture and LSH optimization
-    \item \textbf{fastDNA:} Fastest inference performance with lightweight k-mer embeddings ideal for real-time applications
+    \item \textbf{fastDNA:} Fastest inference performance with lightweight k-mer embeddings
     \item \textbf{ProtBERT:} Protein-specific model incompatible with DNA sequences (amino acid vocabulary only)
 \end{itemize}
 
@@ -195,7 +196,7 @@
 
     \vspace{0.3cm}
     \begin{block}{Tradeoff analysis}
-        \textbf{Locality-Sensitive Hashing (LSH)} optimization...
+        \textbf{Locality-Sensitive Hashing (LSH) Vec}: Designed for distributed training, to handle TB-scale datasets, hashing algorithm which dramatically reduces vocabulary size
     \end{block}
 
 \end{frame}
@@ -208,7 +209,7 @@
             \textbf{Ray's Role in Data Preparation:}
             \begin{itemize}
                 \item \textbf{Data Ingestion:} Raw FASTQ reads processing as parquet files
-                \item \textbf{K-mer Embeddings:} Using \textcolor{rayblue}{\textbf{LSHVec}} for fixed-length numeric vectors
+                \item \textbf{K-mer Embeddings:} Using \textcolor{rayblue}{\textbf{LSHVec}} for fixed-length embeddings extraction
                 \item \textbf{Parallel Processing:} Lightweight tasks across CPUs/GPUs
                 \item \textbf{Output:} Parquet shards to Amazon S3 - FSxLustre
             \end{itemize}
@@ -222,11 +223,11 @@
                     \toprule
                     \textbf{Metric} & \textbf{Result} \\
                     \midrule
-                    Scaling (1→2 GPUs) & 2× throughput \\
-                    Processing rate & ~22 MB/s \\
-                    Node startup time & ~90s \\
-                    Spot Instance savings & \textcolor{green}{\textbf{65\%}} \\
-                    Cost per GB & \textcolor{green}{\textbf{\$0.12}} \\
+                    Scaling (1→2 GPUs) & (xx)× throughput \\
+                    Processing rate & ~yy MB/s \\
+                    Node startup time & ~xxs \\
+                    Spot Instance savings & \textcolor{green}{\textbf{YY\%}} \\
+                    Cost per GB & \textcolor{green}{\textbf{\$x.xx}} \\
                     \bottomrule
                 \end{tabular}
             \end{table}
@@ -235,14 +236,13 @@
     
     \vspace{0.3cm}
     \begin{block}{Key Achievement}
-        \textbf{Near-linear scaling} with Ray autoscaler dynamically managing cluster size and achieving \textcolor{green}{\textbf{65\% cost reduction}} through Spot Instances
+        \textbf{Fully automation} with Ray autoscaler dynamically managing cluster size and achieving operational and cost efficiency through Spot Instances
     \end{block}
 \end{frame}
 
 % Slide 7: Phase 2
 \begin{frame}{Phase 2 Deep Dive: HPC ParallelCluster \& Overall Impact}
-    \begin{columns}
-        \begin{column}{0.6\textwidth}
+
             \textbf{HPC Simulation with AWS ParallelCluster:}
             \begin{itemize}
                 \item \textbf{Embedding Consumption:} Direct access from FSx/S3
@@ -250,28 +250,14 @@
                 \item \textbf{Low-latency Communication:} Elastic Fabric Adapter (EFA) for MPI
                 \item \textbf{Clustering Algorithms:} Parallel LSH and k-means for organism grouping
             \end{itemize}
-        \end{column}
-        \begin{column}{0.4\textwidth}
-            \begin{tikzpicture}[scale=0.7]
-                % GPU representation
-                \draw[thick, awsorange, fill=awsorange!20] (0,0) rectangle (3,1);
-                \node at (1.5,0.5) {\small NVIDIA A100};
-                
-                % Performance metrics
-                \node[align=center] at (1.5,1.5) {\small \textcolor{red}{\textbf{160× acceleration}} \\ \tiny (FPGA Smith-Waterman)};
-                
-                % Cost savings
-                \node[align=center] at (1.5,2.5) {\small \textcolor{green}{\textbf{60\% cost reduction}} \\ \tiny (Spot Instances)};
-            \end{tikzpicture}
-        \end{column}
-    \end{columns}
+
     
     \vspace{0.3cm}
     \begin{block}{Synergistic Performance \& Benefits}
         \begin{itemize}
-            \item \textbf{Hardware Acceleration:} FPGAs ... for Smith-Waterman algorithms
-            \item \textbf{Extreme-scale Processing:} GPU-enabled protein similarity ... in hours vs. weeks
-            \item \textbf{Developer Agility:} Unified cloud-agnostic control plane streamlines complex pipelines
+            
+            \item \textbf{Extreme-scale Processing:} GPU acceleration for DNA sequencing processing performance
+            \item \textbf{Developer Agility:} ParallelCluster automation for HPC cluster deployment
         \end{itemize}
     \end{block}
 \end{frame}
@@ -279,16 +265,17 @@
 % Slide 8: Conclusions
 \begin{frame}{Conclusions}
     \begin{columns}
-        \begin{column}{0.6\textwidth}
+        \begin{column}{0.7\textwidth}
             \textbf{Key Conclusions:}
             \begin{itemize}
-                \item Two-phase architecture delivers \textbf{significant gains} in scalability, elasticity, performance, and cost-efficiency
-                \item Automated life-cycle management and Spot Instances ensure \textcolor{green}{\textbf{optimized resource utilization}}
+                \item \textbf{Iterative feedback loop} 
+                \item Cloud Two-phase architecture delivers \textbf{significant gains} in elasticity, performance, interoperability and cost-efficiency
+                \item Automated life-cycle management and Spot Instances ensure {\textbf{optimized resource utilization}}
                 \item Successfully \textbf{decouples feature engineering from raw simulation workloads}
-                \item \textbf{Iterative feedback loop}...
+                
             \end{itemize}
         \end{column}
-        \begin{column}{0.4\textwidth}
+        \begin{column}{0.3\textwidth}
             \begin{tikzpicture}[scale=0.6]
                 % Success metrics visualization
                 \draw[thick, green] (-1,0) -- (-1,4) -- (4,4) -- (4,0) -- cycle;
@@ -302,9 +289,8 @@
     \vspace{0.3cm}
     \begin{block}{Key achievements}
         \begin{itemize}
-            \item \textbf{Ray autoscaler - EC2 + GPU:} Maximize scalability for \textcolor{red}{\textbf{DNA embedding extraction}}
-            \item \textbf{Storage at scale S3 FsxLustre:} data exchange
-            \item \textbf{HPC ParallelCluster and EFA:} Balance ...
+            \item \textbf{Ray autoscaler (EC2 + GPU):} Maximize scalability for \textbf{DNA embedding extraction}
+            \item \textbf{Storage at scale S3 FsxLustre:} Ease data interoperability
         \end{itemize}
     \end{block}
 \end{frame}
@@ -314,19 +300,19 @@
 
             \textbf{Key Emerging Capabilities:}
             \begin{itemize}
-                \item Two-phase architecture delivers \textbf{significant gains} in scalability, elasticity, performance, and cost-efficiency
-                \item \textcolor{rayblue}{\textbf{GPU-accelerated Ray clusters scale nearly linearly}} for DNA embedding extraction
-                \item Automated lifecycle management and Spot Instances ensure...
-                \item Successfully \textbf{decouples feature ...}
+
+                \item \textcolor{rayblue}{\textbf{GPU-accelerated Ray clusters highest scalability}} for DNA embedding extraction
+                \item Evaluating Serverless ETL (AWS Glue) vs. Ray with GPU acceleration
+                \item \textbf{Elastic Fabric Adapter} for low-latency + Amazon \textbf{FSx for Lustre} for high-throughput
             \end{itemize}
 
     
     \vspace{0.3cm}
     \begin{block}{Future Work \& Research Avenues}
         \begin{itemize}
-            \item \textbf{FPGA Workloads:} Explore AWS F1 instances using Xilinx Vitis
-            \item \textbf{Apple M-Series SoCs:} Numeric simulation or AI training-inference
-            \item \textbf{Agentic AI \& Conversational DevOps:} Microsoft Discovery - Project I am working
+            \item \textbf{FPGA Workloads:} Explore AWS F1 instances as alternative for accelerating the Smith-Waterman algorithm
+            \item \textbf{Apple M-Series SoCs:} Metal Shading Language for chemical engineering or image classification/inference
+            \item \textbf{Agentic AI for HPC already reality:} Microsoft Discovery - Workflow/Solver Agents; Data Centric + \textbf{Iterative feedback loop} across processing engines
         \end{itemize}
     \end{block}
 \end{frame}
@@ -339,7 +325,7 @@
     
     \vspace{0.3cm}
     \begin{block}{Centric idea}
-        \textbf{Unified storage layer} bridges Phase 1 outputs with Phase 2 inputs, enabling seamless data flow and high-throughput access
+        \textbf{Optimizing Vector Algorithm - Embeddings extraction}:  Processing through the integration of Ray IO and HPC in the Cloud
     \end{block}
 \end{frame}
 
