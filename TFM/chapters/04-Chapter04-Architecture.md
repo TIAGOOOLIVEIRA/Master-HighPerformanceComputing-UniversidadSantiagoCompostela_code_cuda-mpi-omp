@@ -57,7 +57,8 @@ We use the Ray autoscaler config below to provision a head node and GPU-capable
 workers. This YAML is stored alongside application code and applied automatically
 on each commit:
 
-<image>
+<img src="../images/codesnippet_1.png" alt="codesnippet_1" width="500">
+
 
 - This configuration launches Docker containers on each node, detects GPUs
 automatically, and tears down idle nodes after five minutes, ensuring our
@@ -69,14 +70,14 @@ Our preprocessing script, dna embeddings.py, reads FASTQ files from S3, applies
 AI-based tokenization/encoding, and writes out Parquet shards of (N×D)
 embeddings:
 
-<image>
+<img src="../images/codesnippet_2.png" alt="codesnippet_2" width="500">
 
 This modular design allows dna embeddings.py to invoke UDFs for tokenization and
 ProtBERT inference on GPU actors, producing Parquet shards of (N×D) float arrays
 ready for downstream simulation.
 Within dna embeddings.py, each batch is processed by GPU-resident actors:
 
-<image>
+<img src="../images/codesnippet_3.png" alt="codesnippet_3" width="500">
 
 This pattern — loading data in parallel, caching models in long-lived actors, and
 spilling to S3/FSx — leverages both CPU and GPU resources dynamically [14].
@@ -95,7 +96,7 @@ CloudFormation template (or pcluster create) defines:
 With this in place, users submit simulation jobs that read embeddings directly from
 FSx or S3:
 
-<image>
+<img src="../images/codesnippet_4.png" alt="codesnippet_4" width="500">
 
 ## 4.5. Storage and Data Flow
 
