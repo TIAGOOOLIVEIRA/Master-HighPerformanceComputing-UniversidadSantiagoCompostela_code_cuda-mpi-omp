@@ -39,7 +39,7 @@
 % Slide 1: The New Frontier
 \begin{frame}{The New Frontier: Scaling Scientific Workflow with ETL and AI Workloads}
     \begin{columns}
-        \begin{column}{0.7\textwidth}
+        \begin{column}{0.8\textwidth}
             \textbf{Context \& Motivation:}
             \begin{itemize}
                 \item \textbf{Scientific domains} (genomics, CFD) and \textbf{Large-scale AI} (NLP, CV) rely on processing \textbf{huge datasets}
@@ -48,7 +48,7 @@
                 \item Map-Reduce/Apache Spark often \textbf{falls short at PB-scale processing and lack distributed engine for training AI models}
             \end{itemize}
         \end{column}
-        \begin{column}{0.3\textwidth}
+        \begin{column}{0.2\textwidth}
             \begin{tikzpicture}[scale=0.8]
                 % Traditional HPC box
                 \draw[thick, red] (0,0) rectangle (4,1.5);
@@ -68,7 +68,9 @@
     
     \vspace{0.3cm}
     \begin{block}{The Opportunity}
-        Cloud computing offers \textbf{*unlimited, on-demand capacity} with better cost efficiency balance leveraging the best for IaC, Devops and Data Interoperability
+        Cloud allows a better cost efficiency balance leveraging IaC, Devops and Data Interoperability
+        
+        \textbf{Vectorizing} here refers to transforming data into \textbf{embeddings}, not to loop vectorization (SIMD/GPU optimization in HPC)
     \end{block}
 \end{frame}
 
@@ -85,7 +87,7 @@
             \end{itemize}
         \end{column}
         \begin{column}{0.4\textwidth}
-            \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{DataCentric-DataBackbone-Strategy.png}
+            \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{../../images/DataCentric-DataBackbone-Strategy.png}
         \end{column}
     \end{columns}
     
@@ -99,18 +101,18 @@
 \begin{frame}{A Two-Phased Cloud-Native Architecture for Optimization}
     % Upper row with bullet points
     \begin{itemize}
-        \item A regular \textbf{Scientific Workflow} demands... 
-        \item The separation of concerns...
-        \item Metagenomic read clustering 
+
+
+\item \textbf{Scientific Workflow} Demands: Modern workloads need tech-stacks for high-throughput ETL, scalable HPC, distributed storage (S3/FSx), and heterogeneous compute (CPU/GPU/FPGA) to handle large, irregular datasets.
+
+\item \textbf{Separation of Concerns}: A two-phase architecture cleanly decouples data preparation with Ray from numerical simulation with Slurm/MPI, ensuring modularity, scalability, and iterative feedback.
+
+\item \textbf{Metagenomic Read Clustering}: Phase 1 converts FASTQ reads into LSHVec embeddings, stored as Parquet shards, which Phase 2 clusters in HPC jobs to identify microbial communities.
+
+\item Pipeline Value: This design achieves \textbf{efficient handoff between ETL and HPC}, boosting reproducibility, performance, and cost-aware scaling in cloud environments.
+        
     \end{itemize}
-    
-    \vspace{0.4cm}
-    
-    % Bottom row with image
-    \begin{center}
-        \includegraphics[width=0.9\textwidth,height=0.4\textheight,keepaspectratio]{Generalized_data-pipeline.drawio.png}
-    \end{center}
-    
+        
     \vspace{0.3cm}
     \begin{block}{Workload Example}
         \textbf{Metagenomics pipeline}  - FASTQ reads → k-mer embeddings → organism clustering
@@ -118,10 +120,27 @@
 \end{frame}
 
 
+% Slide 3: A Two-Phased
+\begin{frame}{A Two-Phased Cloud-Native Architecture for Optimization}
+    % Upper row with bullet points
+        \vspace{0.4cm}
+    
+    % Bottom row with image
+    \begin{center}
+        \includegraphics[width=1\textwidth,height=0.6\textheight,keepaspectratio]{../../images/Generalized_data-pipeline.drawio.png}
+    \end{center}
+        
+    \vspace{0.3cm}
+    \begin{block}{Workload Example}
+        \textbf{Metagenomics pipeline}  - FASTQ reads → k-mer embeddings → organism clustering
+    \end{block}
+\end{frame}
 
 
 % Slide 4: Two-Phased Architecture
 \begin{frame}{A Two-Phased Cloud-Native Architecture for Optimization}
+    % Push diagram up a bit to leave room for footnotes
+    \vspace{-0.8cm}
     \begin{center}
         \begin{tikzpicture}[scale=0.9]
             % Phase 1 box
@@ -153,14 +172,15 @@
         \end{tikzpicture}
     \end{center}
     
-    \vspace{0.3cm}
+    % Reduce spacing after diagram to reclaim space
+    \vspace{-0.4cm}
     \begin{block}{Key Integration}
         \textbf{Unified storage layer}: Seamless data flowing between stages and high-throughput access
         
         \textbf{To chain Phase 1 - Phase 2}: Event-driven workflow; Job Submit; pull-trigger-flag
     \end{block}
-    
 \end{frame}
+
 
 % Slide 5: DNA Embedding Models for Ray Anyscale Deployment
 \begin{frame}{DNA Embedding Models for Ray Anyscale Deployment}
@@ -313,6 +333,7 @@
             \item \textbf{FPGA Workloads:} Explore AWS F1 instances as alternative for accelerating the Smith-Waterman algorithm
             \item \textbf{Apple M-Series SoCs:} Metal Shading Language for chemical engineering or image classification/inference
             \item \textbf{Agentic AI for HPC already reality:} Microsoft Discovery - Workflow/Solver Agents; Data Centric + \textbf{Iterative feedback loop} across processing engines
+            \item The investigations will continue, however, the data found so far confirm the initial hypothesis
         \end{itemize}
     \end{block}
 \end{frame}
@@ -320,7 +341,7 @@
 % Slide 10: The New Frontier
 \begin{frame}{Studied Topics}
     \begin{center}
-        \includegraphics[width=0.9\textwidth,height=0.6\textheight,keepaspectratio]{TFM-MindMap.drawio.png}
+        \includegraphics[width=0.9\textwidth,height=0.6\textheight,keepaspectratio]{../../images/TFM-MindMap.drawio.png}
     \end{center}
     
     \vspace{0.3cm}
