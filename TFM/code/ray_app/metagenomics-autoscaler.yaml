@@ -1,0 +1,381 @@
+# Ray Autoscaler Configuration for Metagenomic Read Clustering with LSHVec
+# This configuration sets up a Ray cluster optimized for distributed metagenomic processing
+# Architecture: 1 head node (c5.2xlarge) + 2-8 GPU worker nodes (p3.2xlarge)
+
+cluster_name: metagenomics-cluster
+
+# The maximum number of workers nodes to launch in addition to the head node
+max_workers: 8
+
+# The autoscaler will scale up the cluster faster with higher upscaling speed
+# E.g., if the task requires adding more nodes then autoscaler will gradually
+# scale up the cluster in chunks of upscaling_speed*currently_running_nodes
+upscaling_speed: 1.0
+
+# If a node is idle for this many minutes, it will be removed
+idle_timeout_minutes: 10
+
+# Cloud-provider specific configuration
+provider:
+    type: aws
+    region: us-east-1
+    # Availability zone(s), comma-separated, that nodes may be launched in
+    availability_zone: us-east-1a,us-east-1b
+    # Whether to allow node reuse. If set to False, nodes will be terminated instead of stopped
+    cache_stopped_nodes: True
+    # Enable CloudWatch monitoring
+    cloudwatch:
+        agent:
+            config: "cloudwatch/cloudwatch-config.json"
+        dashboard:
+            config: "cloudwatch/dashboard-config.json"
+
+# How Ray will authenticate with newly launched nodes
+auth:
+    ssh_user: ubuntu
+    # Optional: specify a custom SSH private key path
+    # ssh_private_key: ~/.ssh/ray-autoscaler_us-east-1.pem
+
+# Docker configuration (optional - can use native installation instead)
+docker:
+    image: "rayproject/ray-ml:latest-gpu"
+    container_name: "ray_metagenomics"
+    # Set to True to pull latest image on each startup
+    pull_before_run: True
+    run_options:
+        - --ulimit nofile=65536:65536
+        - --shm-size=2g
+        # Mount host directories for data and temp storage
+        - -v /tmp:/tmp
+        - -v /fsx:/fsx
+        - -v /data:/data
+
+# Commands that will be run on all nodes to set up the cluster
+setup_commands:
+    # Update system packages
+    - sudo apt-get update
+    - sudo apt-get install -y wget curl git build-essential htop nvtop
+    
+    # Install Python and essential packages
+    - sudo apt-get install -y python3-pip python3-dev
+    - pip3 install --upgrade pip setuptools wheel
+    
+    # Install Ray with all dependencies
+    - pip3 install "ray[default,serve,tune,data]==2.8.0"
+    
+    # Install AWS CLI and boto3
+    - pip3 install boto3 awscli
+    
+    # Install bioinformatics packages
+    - pip3 install biopython pandas numpy scipy scikit-learn
+    - pip3 install pyarrow fastparquet
+    
+    # Install SRA Toolkit for downloading metagenomic datasets
+    - cd /tmp
+    - wget -q https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz
+    - tar -xzf sratoolkit.current-ubuntu64.tar.gz
+    - sudo mv sratoolkit.*/bin/* /usr/local/bin/
+    - rm -rf sratoolkit.*
+    
+    # Install LSHVec for sequence embeddings
+    - cd /opt
+    - sudo git clone https://github.com/Lizhen0909/LSHVec.git
+    - cd LSHVec
+    - sudo make clean && sudo make
+    - sudo ln -sf /opt/LSHVec/lshvec /usr/local/bin/
+    - sudo ln -sf /opt/LSHVec/hashSeq /usr/local/bin/
+    
+    # Install monitoring tools
+    - pip3 install psutil GPUtil matplotlib seaborn
+    
+    # Create necessary directories
+    - sudo mkdir -p /fsx /data /logs /tmp/ray-temp
+    - sudo chown -R ubuntu:ubuntu /data /logs /tmp/ray-temp
+    
+    # Configure environment variables
+    - echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bashrc
+    - echo 'export PYTHONPATH="/opt/LSHVec:$PYTHONPATH"' >> ~/.bashrc
+    - echo 'export RAY_TMPDIR="/tmp/ray-temp"' >> ~/.bashrc
+    - echo 'export RAY_OBJECT_STORE_ALLOW_SLOW_STORAGE=1' >> ~/.bashrc
+
+# Custom commands that will be run on the head node after common setup
+head_setup_commands:
+    # Install additional monitoring and management tools on head node
+    - pip3 install ray[dashboard] jupyter notebook
+    
+    # Setup Ray dashboard configuration
+    - mkdir -p ~/.ray
+    - echo "dashboard_host: 0.0.0.0" > ~/.ray/ray.yaml
+    - echo "dashboard_port: 8265" >> ~/.ray/ray.yaml
+    
+    # Create symbolic links for application code
+    - sudo mkdir -p /opt/metagenomics-app
+    - sudo chown ubuntu:ubuntu /opt/metagenomics-app
+    
+    # Setup log rotation
+    - sudo apt-get install -y logrotate
+    - echo '/tmp/ray/session_*/logs/*.log { daily rotate 7 compress missingok notifempty }' | sudo tee /etc/logrotate.d/ray
+    
+    # Install CloudWatch agent (if monitoring enabled)
+    - wget -q https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+    - sudo dpkg -i amazon-cloudwatch-agent.deb || true
+    - rm amazon-cloudwatch-agent.deb
+
+# Custom commands that will be run on worker nodes after common setup
+worker_setup_commands:
+    # Configure GPU settings for worker nodes
+    - nvidia-smi || echo "No NVIDIA GPU detected"
+    
+    # Set up CUDA environment if GPUs are available
+    - if command -v nvidia-smi &> /dev/null; then echo 'export CUDA_VISIBLE_DEVICES=0' >> ~/.bashrc; fi
+    
+    # Configure worker-specific Ray settings
+    - echo 'export RAY_DISABLE_IMPORT_WARNING=1' >> ~/.bashrc
+    - echo 'export RAY_OBJECT_STORE_ALLOW_SLOW_STORAGE=1' >> ~/.bashrc
+    
+    # Increase file descriptor limits for high-throughput processing
+    - echo 'ubuntu soft nofile 65536' | sudo tee -a /etc/security/limits.conf
+    - echo 'ubuntu hard nofile 65536' | sudo tee -a /etc/security/limits.conf
+
+# Command to start ray on the head node
+head_start_ray_commands:
+    - ray stop
+    - ulimit -n 65536
+    - ray start --head --port=6379 --object-manager-port=8076 --dashboard-host=0.0.0.0 --dashboard-port=8265 --autoscaling-config=~/ray_bootstrap_config.yaml --num-cpus=0
+
+# Command to start ray on worker nodes
+worker_start_ray_commands:
+    - ray stop
+    - ulimit -n 65536
+    - ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076
+
+# Files or directories to copy to the head and worker nodes
+file_mounts:
+    # Application code
+    "/opt/metagenomics-app/ray_metagenomics_app.py": "./ray_metagenomics_app.py"
+    "/opt/metagenomics-app/monitoring_config.py": "./monitoring_config.py"
+    "/opt/metagenomics-app/config.yaml": "./config.yaml"
+    
+    # Configuration files
+    "~/cluster-config.yaml": "./metagenomics-autoscaler.yaml"
+    
+    # CloudWatch configuration (if using monitoring)
+    "~/cloudwatch/": "./cloudwatch/"
+
+# List of commands that will be run before `ray start` on the head and worker nodes
+initialization_commands:
+    # Mount FSx Lustre filesystem if specified
+    - |
+        if [ ! -z "${FSX_DNS_NAME}" ]; then
+            sudo mkdir -p /fsx
+            sudo mount -t lustre ${FSX_DNS_NAME}@tcp:/fsx /fsx || echo "FSx mount failed"
+            echo "${FSX_DNS_NAME}@tcp:/fsx /fsx lustre defaults,_netdev 0 0" | sudo tee -a /etc/fstab
+        fi
+    
+    # Configure AWS credentials if available
+    - |
+        if [ ! -z "${AWS_ACCESS_KEY_ID}" ]; then
+            mkdir -p ~/.aws
+            echo "[default]" > ~/.aws/credentials
+            echo "aws_access_key_id = ${AWS_ACCESS_KEY_ID}" >> ~/.aws/credentials
+            echo "aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}" >> ~/.aws/credentials
+            echo "region = us-east-1" >> ~/.aws/credentials
+        fi
+    
+    # Set up SRA toolkit configuration
+    - mkdir -p ~/.ncbi
+    - echo '/LIBS/GUID = "$(uuidgen)"' > ~/.ncbi/user-settings.mkfg
+    - echo '/config/default = "false"' >> ~/.ncbi/user-settings.mkfg
+    - echo '/repository/user/main/public/root = "/tmp/sra-cache"' >> ~/.ncbi/user-settings.mkfg
+
+# Available node types in the Ray cluster
+available_node_types:
+    # Head node configuration
+    ray.head.default:
+        resources: 
+            CPU: 8
+            memory: 16000000000  # 16GB in bytes
+        node_config:
+            InstanceType: c5.2xlarge
+            # Use Deep Learning AMI with pre-installed CUDA and drivers
+            ImageId: ami-06d1383bd9b4947a4  # Replace with latest Deep Learning AMI
+            KeyName: my-tfm-aws-key  # Replace with your key pair
+            
+            # Security groups (replace with your security group IDs)
+            SecurityGroupIds:
+                - sg-0a1be811aec0b57fa  # Ray cluster security group
+            
+            # Subnet (replace with your subnet ID)
+            SubnetId: subnet-028667cdb554810f9
+            
+            # IAM instance profile for S3 and FSx access
+            IamInstanceProfile:
+                Name: RayMetagenomicsProfile
+            
+            # Root volume configuration
+            BlockDeviceMappings:
+                - DeviceName: /dev/sda1
+                  Ebs:
+                      VolumeSize: 200
+                      VolumeType: gp3
+                      Iops: 3000
+                      Throughput: 125
+                      DeleteOnTermination: true
+            
+            # User data script for additional setup
+            UserData: |
+                #!/bin/bash
+                echo "Starting head node initialization..."
+                
+                # Configure hostname
+                hostnamectl set-hostname ray-head-node
+                
+                # Set timezone
+                timedatectl set-timezone UTC
+                
+                # Configure swappiness for better memory management
+                echo 'vm.swappiness=10' >> /etc/sysctl.conf
+                sysctl -p
+                
+                echo "Head node initialization completed"
+
+    # GPU worker nodes configuration
+    ray.worker.gpu:
+        min_workers: 2
+        max_workers: 6
+        resources:
+            CPU: 8
+            GPU: 1
+            memory: 64000000000  # 64GB in bytes
+        node_config:
+            InstanceType: p3.2xlarge  # 1 Tesla V100 GPU, 8 vCPUs, 61 GiB RAM
+            # Use Deep Learning AMI with CUDA pre-installed
+            ImageId: ami-06d1383bd9b4947a4  # Replace with latest Deep Learning AMI
+            KeyName: my-tfm-aws-key  # Replace with your key pair
+            
+            SecurityGroupIds:
+                - sg-0a1be811aec0b57fa  # Ray cluster security group
+            SubnetId: subnet-028667cdb554810f9
+            
+            IamInstanceProfile:
+                Name: RayMetagenomicsProfile
+            
+            # Use spot instances for cost savings (optional)
+            InstanceMarketOptions:
+                MarketType: spot
+                SpotOptions:
+                    MaxPrice: "1.50"  # Max price per hour for p3.2xlarge
+                    SpotInstanceType: one-time
+            
+            # Root volume + additional storage for temp data
+            BlockDeviceMappings:
+                - DeviceName: /dev/sda1
+                  Ebs:
+                      VolumeSize: 500
+                      VolumeType: gp3
+                      Iops: 3000
+                      Throughput: 125
+                      DeleteOnTermination: true
+                # Additional volume for temporary data processing
+                - DeviceName: /dev/sdf
+                  Ebs:
+                      VolumeSize: 1000
+                      VolumeType: gp3
+                      Iops: 3000
+                      Throughput: 125
+                      DeleteOnTermination: true
+            
+            UserData: |
+                #!/bin/bash
+                echo "Starting GPU worker node initialization..."
+                
+                # Configure hostname
+                hostnamectl set-hostname ray-worker-gpu-$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+                
+                # Format and mount additional storage
+                if [ -b /dev/nvme2n1 ]; then
+                    mkfs.ext4 /dev/nvme2n1
+                    mkdir -p /data
+                    mount /dev/nvme2n1 /data
+                    echo '/dev/nvme2n1 /data ext4 defaults 0 0' >> /etc/fstab
+                fi
+                
+                # Configure GPU settings
+                nvidia-smi -pm 1  # Enable persistence mode
+                nvidia-smi -ac 877,1530  # Set application clocks for optimal performance
+                
+                echo "GPU worker node initialization completed"
+
+    # CPU-only worker nodes (for preprocessing tasks)
+    ray.worker.cpu:
+        min_workers: 0
+        max_workers: 2
+        resources:
+            CPU: 16
+            memory: 32000000000  # 32GB in bytes
+        node_config:
+            InstanceType: c5.4xlarge  # 16 vCPUs, 32 GiB RAM
+            ImageId: ami-06d1383bd9b4947a4  # Replace with latest Deep Learning AMI
+            KeyName: my-tfm-aws-key
+            
+            SecurityGroupIds:
+                - sg-0a1be811aec0b57fa
+            SubnetId: subnet-028667cdb554810f9
+            
+            IamInstanceProfile:
+                Name: RayMetagenomicsProfile
+            
+            # Use spot instances for cost savings
+            InstanceMarketOptions:
+                MarketType: spot
+                SpotOptions:
+                    MaxPrice: "0.40"  # Max price per hour for c5.4xlarge
+                    SpotInstanceType: one-time
+            
+            BlockDeviceMappings:
+                - DeviceName: /dev/sda1
+                  Ebs:
+                      VolumeSize: 200
+                      VolumeType: gp3
+                      Iops: 3000
+                      Throughput: 125
+                      DeleteOnTermination: true
+
+# Specify the node type of the head node (as configured above)
+head_node_type: ray.head.default
+
+# Files or directories to sync to the head and worker nodes
+rsync_exclude:
+    - "*.pyc"
+    - "__pycache__"
+    - ".git"
+    - "*.log"
+    - ".DS_Store"
+    - "*.tmp"
+
+# Pattern for files to exclude when running `ray rsync_down`
+rsync_filter:
+    - ".gitignore"
+
+# Environment variables to set on all nodes
+env_vars:
+    RAY_TMPDIR: "/tmp/ray-temp"
+    RAY_OBJECT_STORE_ALLOW_SLOW_STORAGE: "1"
+    RAY_DISABLE_IMPORT_WARNING: "1"
+    # Set these if using FSx Lustre
+    # FSX_DNS_NAME: "fs-12345678.fsx.us-east-1.amazonaws.com"
+    # S3_BUCKET: "your-metagenomics-bucket"
+
+# Custom Ray cluster configuration
+cluster_synced_files: []
+
+# Additional options for debugging
+# Enable verbose logging for troubleshooting
+# log_level: DEBUG
+
+# Ray autoscaler will use these resources to determine scaling decisions
+# This should match the total resources across all node types
+cluster_resources:
+    CPU: 40  # Total CPUs across all node types
+    GPU: 6   # Total GPUs across all node types
+    memory: 176000000000  # Total memory in bytes
