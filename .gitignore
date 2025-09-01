@@ -53,3 +53,5 @@ dkms.conf
 
 #IDE
 .vscode/settings.json
+
+**/.DS_Store
