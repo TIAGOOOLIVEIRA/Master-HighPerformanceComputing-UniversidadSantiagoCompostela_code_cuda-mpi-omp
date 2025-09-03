@@ -1,0 +1,34 @@
+Region: us-east-1  # change if needed
+Image:
+  Os: alinux2  # Amazon Linux 2 (CentOS7 is deprecated)
+
+HeadNode:
+  InstanceType: c5n.4xlarge
+  Iam:
+    SsmAccess: true
+  Networking:
+    SubnetId: subnet-0bb08c809f17b9149   # your master subnet
+  Ssh:
+    KeyName: my-tfm-aws-key
+
+Scheduling:
+  Scheduler: slurm
+  SlurmQueues:
+    - Name: hpc-queue
+      CapacityType: SPOT   # <-- spot compute nodes
+      Networking:
+        SubnetIds:
+          - subnet-0bb08c809f17b9149
+        PlacementGroup:
+          Enabled: true
+      ComputeResources:
+        - Name: c5-efa
+          InstanceType: c5n.9xlarge
+          MinCount: 0
+          MaxCount: 3
+          Efa:
+            Enabled: true   # <-- Elastic Fabric Adapter
+
+Tags:
+  - Key: Name
+    Value: HPCGen
