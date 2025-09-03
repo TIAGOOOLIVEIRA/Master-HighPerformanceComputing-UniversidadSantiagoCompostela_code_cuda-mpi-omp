@@ -1,0 +1,13 @@
+{
+  "Comment": "Submit Slurm jobs to AWS ParallelCluster from SNS",
+  "StartAt": "ParseAndSubmitJob",
+  "States": {
+    "ParseAndSubmitJob": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:002458070613:function:SubmitSlurmMetagenJob:$LATEST",
+      "ResultPath": "$.lambdaResult",
+      "End": true
+    }
+  },
+  "QueryLanguage": "JSONPath"
+}
