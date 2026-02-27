@@ -10,14 +10,13 @@ This repository is organized into the following main directories:
 
 1. **`cuda/`**  
    Contains assignments and projects completed as part of the coursework. Examples include:
-   - **CUDA Applications**: Parallelized algorithms using NVIDIA CUDA.
-   - **OpenMP Implementations**: Shared memory parallelism in C/C++.
-   - **MPI Programs**: Distributed memory solutions for clusters.
+   - **CUDA Applications**: Parallelized algorithms using NVIDIA CUDA inC/C++.
+   - **Jetson Nano**: A lab to deploy a docker container with CUDA libraries in a Jetson Nano device so to perform fine-tuning and inferences for Computing Vision.
    
 2. **`cloud/`**  
    Scripts and configurations for setting up and managing HPC workloads on cloud platforms, particularly **AWS**. This includes:
    - Job submission scripts for AWS Batch.
-   - Auto-scaling configurations for HPC clusters.
+   - Auto-scaling configurations for HPC clusters leveraging **Cloud Formation**.
    - Optimization for cloud-based compute nodes.
 
 3. **`hpc_tools/`**  
@@ -25,18 +24,18 @@ This repository is organized into the following main directories:
    - Usage of **NVIDIA Nsight**, **gprof**, **Valgrind**, and others.
    - Performance tuning and benchmarking tools.
    - Custom scripts for automating performance analysis workflows.
+   - **PyTorch**: To evaluate PyTorch fine-tunning/training and inferences in a distributed architecture leveraging Lightning and other strategies for distributing workload.
+   - **Ray** To evaluate how PyTorch atop Ray behaves.
 
 4. **`mpi/`**  
-   Documentation, code samples, and notes based on:
-   - **Books**: Summaries and examples from key HPC textbooks.
-   - **Papers**: Reproducing experiments or methodologies from academic research.
-   - **Trainings**: Exercises and examples from HPC-related training courses.
+   Exercises, code samples, and notes based on:
+   - **Distribution stratgies**: Reduce/scatter, all gather, etc.
+   - Advanced concepts for workload distribution and local parallelism leveraging OMP.
 
 5. **`omp/`**  
-   Documentation, code samples, and notes based on:
-   - **Books**: Summaries and examples from key HPC textbooks.
-   - **Papers**: Reproducing experiments or methodologies from academic research.
-   - **Trainings**: Exercises and examples from HPC-related training courses.
+   Exercises, code samples, and notes based on:
+   - **Challenge tasks**: To implement and profiling algorithms like KMeans, KNN and Seismic leverraging high paralellism in OpenMP.
+   - **Profiling tools**: Leverage tools like LIKWID and gprof
 
 6. **`opencl/`**  
    Documentation, code samples, and notes based on:
@@ -51,6 +50,11 @@ This repository is organized into the following main directories:
    - **Atomic**: 
    - **Threading Building Blocks**:
    - - **Load Balancing**: 
+
+8. **`fpga/`**
+   Source code for exercises in C++ utilizing advanced parallelism and workload distribution capabilities in an HPC environment:
+   - **Threads**: 
+
 
 ---
 
