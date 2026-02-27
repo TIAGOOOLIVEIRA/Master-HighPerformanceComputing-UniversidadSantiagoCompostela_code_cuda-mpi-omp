@@ -43,6 +43,14 @@ This repository is organized into the following main directories:
    - **Books**: Summaries and examples from key HPC textbooks.
    - **Papers**: Reproducing experiments or methodologies from academic research.
    - **Trainings**: Exercises and examples from HPC-related training courses.
+  
+7. **`advanced_parallelprogramming/`**
+   Source code for exercises in C++ utilizing advanced parallelism and workload distribution capabilities in an HPC environment:
+   - **Threads**: 
+   - **Mutex**: 
+   - **Atomic**: 
+   - **Threading Building Blocks**:
+   - - **Load Balancing**: 
 
 ---
 
