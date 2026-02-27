@@ -22,7 +22,7 @@ This repository is organized into the following main directories:
 3. **`hpc_tools/`**  
    Tools and utilities for profiling, debugging, and analyzing performance:
    - Usage of **NVIDIA Nsight**, **gprof**, **Valgrind**, and others.
-   - Performance tuning and benchmarking tools.
+   - **SpMV benchmarking**: Comparing compiler GCC and ICC performance improvements given optimization arguments also matrix sparsity strategies (Dense, COO, CSR, CSC)
    - Custom scripts for automating performance analysis workflows.
    - **PyTorch**: To evaluate PyTorch fine-tunning/training and inferences in a distributed architecture leveraging Lightning and other strategies for distributing workload.
    - **Ray** To evaluate how PyTorch atop Ray behaves.
