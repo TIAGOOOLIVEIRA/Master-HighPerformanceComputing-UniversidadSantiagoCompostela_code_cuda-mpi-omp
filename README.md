@@ -1,87 +1,119 @@
 # HPC Master’s Degree Repository
 
-Welcome to my repository dedicated to tasks, assignments, and investigations related to my Master’s Degree in **High-Performance Computing (HPC)**. This repository serves as a structured collection of source code, scripts, tools, and reference materials developed or studied throughout the course.
+Welcome to my repository dedicated to assignments, experiments, and investigations developed throughout my Master’s Degree in **High-Performance Computing (HPC)**.
+
+This repository consolidates source code, performance studies, cloud experiments, distributed training evaluations, and acceleration strategies explored during the program.
 
 ---
 
 ## 🗂️ Repository Structure
 
-This repository is organized into the following main directories:
+The repository is organized into the following main directories (alphabetical order):
 
-1. **`cuda/`**  
-   Contains assignments and projects completed as part of the coursework. Examples include:
-   - **CUDA Applications**: Parallelized algorithms using NVIDIA CUDA inC/C++.
-   - **Jetson Nano**: A lab to deploy a docker container with CUDA libraries in a Jetson Nano device so to perform fine-tuning and inferences for Computing Vision.
-   
-2. **`cloud/`**  
-   Scripts and configurations for setting up and managing HPC workloads on cloud platforms, particularly **AWS**. This includes:
-   - Job submission scripts for AWS Batch.
-   - Auto-scaling configurations for HPC clusters leveraging **Cloud Formation**.
-   - Optimization for cloud-based compute nodes.
+### `advanced_parallelprogramming/`
+C++ exercises focused on advanced concurrency and workload distribution:
+- Multithreading and synchronization (mutexes, atomics)
+- Task-based parallelism (e.g., Threading Building Blocks)
+- Load balancing strategies
+- Performance-oriented concurrent design patterns
 
-3. **`hpc_tools/`**  
-   Tools and utilities for profiling, debugging, and analyzing performance:
-   - Usage of **NVIDIA Nsight**, **gprof**, **Valgrind**, and others.
-   - **SpMV benchmarking**: Comparing compiler GCC and ICC performance improvements given optimization arguments also matrix sparsity strategies (Dense, COO, CSR, CSC)
-   - Custom scripts for automating performance analysis workflows.
-   - **PyTorch**: To evaluate PyTorch fine-tunning/training and inferences in a distributed architecture leveraging Lightning and other strategies for distributing workload.
-   - **Ray** To evaluate how PyTorch atop Ray behaves.
+---
 
-4. **`mpi/`**  
-   Exercises, code samples, and notes based on:
-   - **Distribution stratgies**: Reduce/scatter, all gather, etc.
-   - Advanced concepts for workload distribution and local parallelism leveraging OMP.
+### `cloud/`
+Experiments and scripts for running HPC and distributed workloads in the cloud (primarily AWS):
+- HPC cluster provisioning (CloudFormation-based setups)
+- Job submission workflows
+- Auto-scaling configurations
+- Cost-efficiency and resource optimization studies
 
-5. **`omp/`**  
-   Exercises, code samples, and notes based on:
-   - **Challenge tasks**: To implement and profiling algorithms like KMeans, KNN and Seismic leverraging high paralellism in OpenMP.
-   - **Profiling tools**: Leverage tools like LIKWID and gprof
+---
 
-6. **`opencl/`**  
-   Documentation, code samples, and notes based on:
-   - **Books**: Summaries and examples from key HPC textbooks.
-   - **Papers**: Reproducing experiments or methodologies from academic research.
-   - **Trainings**: Exercises and examples from HPC-related training courses.
-  
-7. **`advanced_parallelprogramming/`**
-   Source code for exercises in C++ utilizing advanced parallelism and workload distribution capabilities in an HPC environment:
-   - **Threads**: 
-   - **Mutex**: 
-   - **Atomic**: 
-   - **Threading Building Blocks**:
-   - - **Load Balancing**: 
+### `cuda/`
+CUDA-based GPU acceleration projects:
+- Parallel algorithm implementations in CUDA C/C++
+- Performance optimization strategies
+- Jetson Nano lab: Dockerized CUDA environment for computer vision fine-tuning and inference
 
-8. **`fpga/`**
-   Source code for exercises in C++ utilizing advanced parallelism and workload distribution capabilities in an HPC environment:
-   - **Threads**: 
+---
 
+### `fpga/`
+High-Level Synthesis (Vitis HLS) experiments targeting hardware acceleration:
+- 2D convolution optimization
+- Exploration of FPGA acceleration strategies in HPC contexts
+
+---
+
+### `hpc_tools/`
+Profiling, benchmarking, and distributed AI evaluation tools:
+- Profiling with NVIDIA Nsight, gprof, Valgrind, LIKWID
+- SpMV benchmarking (Dense, COO, CSR, CSC) with GCC and ICC optimization comparisons
+- Distributed PyTorch training (Lightning, DDP strategies)
+- Evaluation of PyTorch on top of Ray for distributed workloads
+- Automated performance analysis scripts
+
+---
+
+### `mpi/`
+Distributed-memory programming exercises:
+- Collective communication patterns (reduce, scatter, all-gather, etc.)
+- Hybrid strategies combining MPI with OpenMP
+- Workload distribution techniques
+
+---
+
+### `omp/`
+Shared-memory parallel programming using OpenMP:
+- Parallel implementations of algorithms (KMeans, KNN, Seismic workloads)
+- Profiling and performance tuning
+- Scaling and scheduling strategies
+
+---
+
+### `opencl/`
+Cross-platform acceleration experiments:
+- Portable kernel development
+- Vector-based kernel execution
+- Multi-platform execution (Linux HPC environments and macOS)
 
 ---
 
 ## 💡 Objectives
 
 This repository aims to:
-- **Demonstrate hands-on knowledge** in programming for parallel and distributed systems.
-- **Document the learning journey** in HPC concepts and their practical applications.
-- **Facilitate sharing** of insights, examples, and best practices in HPC development.
+
+- Demonstrate practical expertise in parallel and distributed programming.
+- Explore performance optimization across CPUs, GPUs, FPGAs, and cloud environments.
+- Evaluate scalability, workload distribution, and cost-performance trade-offs.
+- Document applied research in HPC, distributed AI, and scientific computing workflows.
 
 ---
 
 ## 🔧 Tools & Technologies
 
-The repository includes work involving the following tools and technologies:
+### Programming Languages
+- C / C++
+- CUDA C++
+- OpenMP
+- MPI
+- OpenCL
+- Python (for distributed AI and orchestration)
 
-- **Programming Languages**:  
-  Primarily C and C++ with extensions for CUDA, OpenMP, and MPI.
+### Performance & Profiling Tools
+- NVIDIA Nsight
+- gprof
+- Valgrind
+- LIKWID
+- Intel VTune
+- Linux perf
 
-- **HPC Tools**:  
-  - Profilers: NVIDIA Nsight, gprof.  
-  - Debuggers: Valgrind, CUDA Debugger.  
-  - Performance Analyzers: Perf, VTune.
+### Distributed & AI Frameworks
+- PyTorch
+- PyTorch Lightning
+- Ray
 
-- **Cloud Platforms**:  
-  - AWS for on-demand HPC resources.  
-  - Scripts for auto-scaling and cost-efficient usage.
+### Cloud & Infrastructure
+- AWS (HPC clusters, scaling strategies)
+- Infrastructure as Code (CloudFormation)
 
 ---
 
@@ -89,19 +121,4 @@ The repository includes work involving the following tools and technologies:
 
 1. Clone the repository:
    ```bash
-   git clone https://www.usc.gal/en/studies/masters/engineering-and-architecture/master-high-performance-computing-online.git
-
-
-2. Navigate to the appropriate folder for the task or topic you are interested in:
-   ```bash
-   cd hpc-masters/assignments
-
-3. Follow the instructions or README files within each folder to build, execute, or explore the materials.
-
-## 📚 Resources & References
-
-The following resources have been instrumental in this journey:
-
-    Books: "Parallel and High Performance Computing; C++ Concurrency in Action; " and others.
-    Trainings: NVIDIA Deep Learning Institute, AWS HPC Workshops; HLRS
-    Papers: ACM Research articles on performance analysis, scaling HPC applications, and optimization strategies.
+   git clone <repository-url>
